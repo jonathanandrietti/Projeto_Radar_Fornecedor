@@ -3,64 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Radar de Fornecedores</title>
+    <title>Radar de Fornecedores e Compradores</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom configuration for Tailwind -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            200: '#bae6fd',
-                            300: '#7dd3fc',
-                            400: '#38bdf8',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
-                            850: '#0b3b5c',
-                            900: '#0c4a6e',
-                            950: '#062d4a',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Custom external CSS -->
+    <link rel="stylesheet" href="/style.css">
+    <!-- Custom external JS -->
+    <script src="/script.js" defer></script>
 </head>
-<body class="bg-slate-200 min-h-screen font-sans text-gray-800 flex flex-col md:flex-row">
+<body class="min-h-screen font-sans text-gray-800 flex flex-col md:flex-row">
 
     <!-- Left Sidebar (Coluna Lateral Esquerda) -->
-    <aside class="w-full md:w-[450px] bg-gradient-to-b from-primary-950 via-primary-900 to-primary-850 text-white flex flex-col p-6 shadow-xl border-r border-primary-850 flex-shrink-0">
-        <div class="flex flex-col items-center justify-center flex-grow py-6">
-            <!-- Custom Logo 400x400px -->
-            <div class="bg-white p-4 rounded-2xl shadow-inner flex items-center justify-center w-[400px] h-[400px] overflow-hidden mb-6 hover:shadow-lg transition duration-300">
-                <img src="/imagem/LogoFundo.png" alt="Logo Radar" class="w-full h-full object-contain">
+    <aside class="w-full md:w-[400px] text-white flex flex-col p-6 shadow-xl flex-shrink-0 text-center">
+        <div class="flex flex-col items-center justify-center py-4">
+            <!-- Custom Logo 200x200px (Logo.png em vez de LogoFundo.png) -->
+            <div class="bg-white p-3 rounded-2xl shadow-inner flex items-center justify-center w-[200px] h-[200px] overflow-hidden mb-4 hover:shadow-lg transition duration-300 mx-auto">
+                <img src="/imagem/Logo.png" alt="Logo Radar" class="w-full h-full object-contain">
             </div>
             
             <div class="text-center">
-                <h1 class="text-3xl font-black tracking-tight flex items-center justify-center gap-2">
+                <h1 class="text-2xl font-black tracking-tight flex items-center justify-center gap-2">
                     <i class="fa-solid fa-satellite-dish text-primary-400"></i> RADAR
                 </h1>
-                <p class="text-sm text-primary-200 uppercase tracking-widest font-bold mt-1">Gestão de Fornecedores</p>
-                <div class="w-24 h-1 bg-primary-500 mx-auto my-4 rounded-full"></div>
+                <p class="text-xs text-primary-200 uppercase tracking-widest font-bold mt-1">Gestão de Parceiros</p>
+                <div class="w-16 h-1 bg-primary-500 mx-auto my-3 rounded-full"></div>
+            </div>
+        </div>
+
+        <!-- Sidebar Navigation Menu -->
+        <div class="flex-grow py-4 space-y-1.5 w-full text-left">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 px-2">Navegação Principal</p>
+            <button onclick="mudarModo('fornecedores')" id="menu-fornecedores" class="w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 transition font-semibold btn-sidebar-active">
+                <i class="fa-solid fa-truck-field text-lg text-primary-400"></i> Empresas Fornecedoras
+            </button>
+            <button onclick="mudarModo('compradores')" id="menu-compradores" class="w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 transition font-semibold btn-sidebar-inactive">
+                <i class="fa-solid fa-cart-shopping text-lg text-primary-400"></i> Empresas Compradoras
+            </button>
+            
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-6 mb-2 px-2">Em breve (Futuro)</p>
+            <div class="opacity-60 space-y-1.5 w-full text-xs">
+                <div class="px-4 py-2 bg-neutral-900 rounded-lg flex items-center justify-between text-slate-400 border border-neutral-800">
+                    <span class="flex items-center gap-3"><i class="fa-solid fa-tags"></i> Categorias</span>
+                    <span class="text-[9px] bg-neutral-800 text-slate-400 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Breve</span>
+                </div>
+                <div class="px-4 py-2 bg-neutral-900 rounded-lg flex items-center justify-between text-slate-400 border border-neutral-800">
+                    <span class="flex items-center gap-3"><i class="fa-solid fa-people-carry-box"></i> Empresas Representantes</span>
+                    <span class="text-[9px] bg-neutral-800 text-slate-400 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Breve</span>
+                </div>
+                <div class="px-4 py-2 bg-neutral-900 rounded-lg flex items-center justify-between text-slate-400 border border-neutral-800">
+                    <span class="flex items-center gap-3"><i class="fa-solid fa-boxes-packing"></i> Empresas Distribuidoras</span>
+                    <span class="text-[9px] bg-neutral-800 text-slate-400 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Breve</span>
+                </div>
+                <div class="px-4 py-2 bg-neutral-900 rounded-lg flex items-center justify-between text-slate-400 border border-neutral-800">
+                    <span class="flex items-center gap-3"><i class="fa-solid fa-user-tie"></i> Clientes CPF</span>
+                    <span class="text-[9px] bg-neutral-800 text-slate-400 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Breve</span>
+                </div>
             </div>
         </div>
         
-        <!-- Sidebar Footer / Badges -->
-        <div class="mt-auto pt-6 border-t border-primary-800 space-y-3">
-            <a href="/h2-console" target="_blank" class="w-full text-center py-2.5 bg-primary-950/40 hover:bg-primary-950/80 border border-primary-700/30 text-sm rounded-lg text-primary-100 flex items-center justify-center gap-2 transition font-semibold">
-                <i class="fa-solid fa-database text-primary-400"></i> Abrir H2 Console
-            </a>
-            <div class="flex items-center justify-between text-xs text-primary-300">
-                <span class="bg-primary-950/70 px-3 py-1.5 rounded-full font-semibold border border-primary-800 flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Sistema Ativo
+        <!-- Sidebar Footer -->
+        <div class="mt-auto pt-4 border-t border-neutral-800 space-y-3">
+            <div class="flex items-center justify-between text-xs text-slate-400">
+                <span class="bg-neutral-900 px-3 py-1.5 rounded-full font-semibold border border-neutral-800 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> SQLite Ativo
                 </span>
                 <span>v0.0.1-SNAPSHOT</span>
             </div>
@@ -86,8 +93,8 @@
 
         <!-- Title for Main Content Area -->
         <div class="mb-6">
-            <h2 class="text-2xl font-extrabold text-gray-900 tracking-tight">Painel de Monitoramento</h2>
-            <p class="text-sm text-gray-500 mt-1">Análise de risco, conformidade e homologação de parceiros.</p>
+            <h2 id="main-panel-title" class="text-2xl font-extrabold text-gray-900 tracking-tight">Painel de Fornecedores</h2>
+            <p id="main-panel-subtitle" class="text-sm text-gray-500 mt-1">Análise de risco, conformidade e localização.</p>
         </div>
 
         <!-- KPI / Stats Cards -->
@@ -166,11 +173,11 @@
             </div>
         </div>
 
-        <!-- Suppliers List (Table Container) -->
+        <!-- Suppliers/Buyers List (Table Container) -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex-grow flex flex-col min-h-[400px]">
             <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                 <h3 class="font-bold text-gray-900 flex items-center gap-2">
-                    <i class="fa-solid fa-list text-primary-500"></i> Fornecedores Cadastrados
+                    <i id="table-icon" class="fa-solid fa-list text-sky-500"></i> <span id="table-title">Fornecedores Cadastrados</span>
                 </h3>
                 <span id="table-count" class="text-xs bg-gray-200 text-gray-700 font-bold px-2.5 py-1 rounded-full">0 itens</span>
             </div>
@@ -180,19 +187,21 @@
                     <thead>
                         <tr class="bg-gray-100/50 text-xs font-semibold uppercase tracking-wider text-gray-500 border-b border-gray-100">
                             <th class="py-3 px-6 w-16">ID</th>
-                            <th class="py-3 px-6">Nome / Razão Social</th>
+                            <th class="py-3 px-6">Empresa / Razão Social</th>
                             <th class="py-3 px-6">CNPJ</th>
                             <th class="py-3 px-6 w-44">Status</th>
                             <th class="py-3 px-6 w-48">Pontuação de Risco</th>
+                            <th class="py-3 px-6">Localização (Mapa)</th>
+                            <th class="py-3 px-6 w-32 text-center">Ações</th>
                         </tr>
                     </thead>
-                    <tbody id="fornecedores-tbody" class="divide-y divide-gray-100 text-sm">
+                    <tbody id="dados-tbody" class="divide-y divide-gray-100 text-sm">
                         <!-- Dynamic items -->
                         <tr>
-                            <td colspan="5" class="py-12 text-center text-gray-400">
+                            <td colspan="7" class="py-12 text-center text-gray-400">
                                 <div class="flex flex-col items-center justify-center space-y-2">
-                                    <i class="fa-solid fa-circle-notch fa-spin text-3xl text-primary-500"></i>
-                                    <p class="font-medium">Carregando fornecedores...</p>
+                                    <i class="fa-solid fa-circle-notch fa-spin text-3xl text-sky-500"></i>
+                                    <p class="font-medium">Carregando dados...</p>
                                 </div>
                             </td>
                         </tr>
@@ -202,8 +211,8 @@
         </div>
 
         <!-- Footer -->
-        <footer class="border-t border-gray-200 py-6 mt-8 text-center text-xs text-gray-500">
-            <p>© 2026 Radar Fornecedor. Todos os direitos reservados. • Desenvolvido com Spring Boot & Tailwind CSS</p>
+        <footer class="border-t border-gray-200/50 py-6 mt-8 text-center text-xs text-gray-500">
+            <p>© 2026 Radar Parceiros. Todos os direitos reservados. • Desenvolvido com Spring Boot, SQLite & Tailwind CSS</p>
         </footer>
     </main>
 

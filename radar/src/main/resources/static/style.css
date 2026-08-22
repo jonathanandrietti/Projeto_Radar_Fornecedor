@@ -1,0 +1,66 @@
+/* Estilos personalizados para o Radar de Parceiros */
+
+/* Barra de rolagem elegante */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #e2e8f0;
+}
+::-webkit-scrollbar-thumb {
+    background: #94a3b8;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* Fundo Prata no corpo da página */
+body {
+    background: radial-gradient(circle at top right, #f1f5f9, #cbd5e1) !important;
+    background-color: #cbd5e1 !important;
+}
+
+/* Fundo Preto no menu lateral */
+aside {
+    background: linear-gradient(180deg, #000000 0%, #0c0c0e 100%) !important;
+    background-color: #000000 !important;
+    border-right: 1px solid #1f1f23 !important;
+}
+
+/* Ajustes nos botões ativos e inativos da sidebar */
+.btn-sidebar-active {
+    background-color: #1e1e24 !important;
+    color: #38bdf8 !important; /* text-primary-400 */
+    border: 1px solid #2e2e38 !important;
+}
+
+.btn-sidebar-inactive {
+    background-color: transparent !important;
+    color: #94a3b8 !important; /* text-slate-400 */
+}
+
+.btn-sidebar-inactive:hover {
+    background-color: #0f0f12 !important;
+    color: #ffffff !important;
+}
+
+/* Card KPI hover */
+.kpi-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Botões de ação */
+.btn-primary-action {
+    background-color: #0284c7 !important; /* sky-600 */
+    transition: all 0.2s ease-in-out;
+}
+.btn-primary-action:hover {
+    background-color: #0369a1 !important; /* sky-700 */
+    transform: scale(1.02);
+}

@@ -5,8 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
 @Entity
-@Table(name = "Fornecedores")
-public class Fornecedor {
+@Table(name = "Compradores")
+public class Comprador {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,9 +56,9 @@ public class Fornecedor {
     @Column(name = "longitude")
     private Double longitude;
 
-    public Fornecedor() {}
+    public Comprador() {}
 
-    public Fornecedor(Long id, String nome, String cnpj, String status, Double pontuacaoRisco) {
+    public Comprador(Long id, String nome, String cnpj, String status, Double pontuacaoRisco) {
         this.id = id;
         this.nome = nome;
         this.cnpj = cnpj;
