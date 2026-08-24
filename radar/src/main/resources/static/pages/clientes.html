@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes | Radar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body data-entidade="clientes" data-singular="Cliente" data-plural="Clientes">
+<div class="flex min-h-screen bg-slate-100">
+    <!-- Menu Lateral -->
+    <aside class="w-64 bg-slate-950 text-white shadow-lg hidden md:block fixed h-full">
+        <div class="p-6">
+            <div class="flex items-center justify-center mb-8">
+                <img src="/imagem/Logo.png" alt="Logo Radar" class="w-64 h-64 object-contain rounded-full shadow-md">
+            </div>
+            
+            <nav class="space-y-2">
+                <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 text-center">Acesso</p>
+                <a href="/pages/fornecedores.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-building"></i> Fornecedores
+                </a>
+                <a href="/pages/compradores.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-hand-holding-dollar"></i> Compradoras
+                </a>
+                <a href="/pages/admin.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-user-gear"></i> Admin
+                </a>
+                <a href="/pages/representantes.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-truck-medical"></i> Representantes
+                </a>
+                <a href="/pages/clientes.html" class="flex items-center justify-center gap-3 rounded-lg bg-sky-600 px-4 py-3 font-semibold hover:bg-sky-700 transition">
+                    <i class="fa-solid fa-users"></i> Clientes
+                </a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Conteúdo Principal -->
+    <div class="flex-1 flex flex-col md:ml-64">
+        <header class="bg-slate-950 text-white shadow-lg">
+            <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-5">
+                <a href="/pages/clientes.html" class="flex items-center gap-3 font-black text-lg md:hidden">
+                    <i class="fa-solid fa-satellite-dish text-sky-400"></i> RADAR
+                </a>
+                <div class="flex items-center gap-4 text-sm font-semibold">
+                    <div id="user-info" class="flex items-center gap-3 border-l border-slate-800 pl-4"></div>
+                </div>
+            </div>
+        </header>
+        <main class="mx-auto max-w-7xl px-6 py-8 flex-1">
+            <h1 class="text-4xl font-black text-slate-900 mb-6">Clientes</h1>
+            <p class="text-lg text-slate-600">Página de gerenciamento de clientes em breve.</p>
+        </main>
+    </div>
+</div>
+<script src="/script.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOMContentLoaded - clientes');
+    const usuarioJson = localStorage.getItem('usuario');
+    if (!usuarioJson) {
+        console.log('Usuário não está logado, redirecionando para login...');
+        window.location.href = '/login.html';
+        return;
+    }
+});
+</script>
+</body>
+</html>

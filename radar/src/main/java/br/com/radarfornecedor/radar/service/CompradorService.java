@@ -68,6 +68,7 @@ public class CompradorService {
         existente.setEstado(dadosNovos.getEstado());
         existente.setLatitude(dadosNovos.getLatitude());
         existente.setLongitude(dadosNovos.getLongitude());
+        existente.setCodCidade(dadosNovos.getCodCidade());
 
         return compradorRepository.save(existente);
     }

@@ -22,6 +22,35 @@ body {
     background-color: #cbd5e1 !important;
 }
 
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #475569;
+}
+
+.campo input, .campo select {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5rem;
+    background: #fff;
+    padding: 0.6rem 0.75rem;
+    color: #0f172a;
+    font-size: 0.875rem;
+    font-weight: 400;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+.campo input:focus, .campo select:focus {
+    outline: 2px solid #38bdf8;
+    outline-offset: 1px;
+}
+
 /* Fundo Preto no menu lateral */
 aside {
     background: linear-gradient(180deg, #000000 0%, #0c0c0e 100%) !important;

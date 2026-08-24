@@ -68,6 +68,7 @@ public class FornecedorService {
         existente.setEstado(dadosNovos.getEstado());
         existente.setLatitude(dadosNovos.getLatitude());
         existente.setLongitude(dadosNovos.getLongitude());
+        existente.setCodCidade(dadosNovos.getCodCidade());
 
         return fornecedorRepository.save(existente);
     }

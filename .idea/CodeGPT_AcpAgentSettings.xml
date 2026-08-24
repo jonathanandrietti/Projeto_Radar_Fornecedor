@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CodeGPT_AcpAgentSettings">
+    <option name="enabledAgentIds">
+      <list>
+        <option value="codex" />
+        <option value="opencode" />
+        <option value="claude-code" />
+        <option value="agentpool" />
+        <option value="auggie" />
+        <option value="blackbox-ai" />
+        <option value="claude-agent" />
+        <option value="cline" />
+        <option value="code-assistant" />
+        <option value="cursor" />
+        <option value="docker-cagent" />
+        <option value="factory-droid" />
+        <option value="fast-agent" />
+        <option value="gemini-cli" />
+        <option value="github-copilot" />
+        <option value="goose" />
+        <option value="junie" />
+        <option value="kimi-cli" />
+        <option value="kiro-cli" />
+        <option value="minion-code" />
+        <option value="mistral-vibe" />
+        <option value="openclaw" />
+        <option value="openhands" />
+        <option value="pi" />
+        <option value="qoder-cli" />
+        <option value="qwen-code" />
+        <option value="stakpak" />
+        <option value="vt-code" />
+      </list>
+    </option>
+  </component>
+</project>

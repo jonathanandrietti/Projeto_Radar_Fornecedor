@@ -1,450 +1,225 @@
-// Global state
-let currentMode = 'fornecedores'; // 'fornecedores' or 'compradores'
-let currentDataList = [];
-let editingId = null; // Control ID for editing
+console.log('script.js carregado!');
+const configuracao = document.body.dataset;
+const endpoint = `/api/${configuracao.entidade}`;
+let registros = [];
 
-// On document load
+// Configuração de inatividade (2 minutos em milissegundos - reduzido para testes)
+const INATIVIDADE_TIMEOUT_MS = 2 * 60 * 1000;
+let tempoInatividade;
+let ultimaAtividade = Date.now();
+
+// Função para resetar o timer de inatividade
+function resetarTimerInatividade() {
+    const agora = Date.now();
+    const tempoDecorrido = agora - ultimaAtividade;
+    ultimaAtividade = agora;
+    
+    // Só limpa se já existir timeout pendente
+    if (tempoInatividade) {
+        clearTimeout(tempoInatividade);
+    }
+    
+    // Define o novo timeout
+    tempoInatividade = setTimeout(() => {
+        logarAutomaticamente("Você ficou inativo por mais de 30 minutos.");
+    }, INATIVIDADE_TIMEOUT_MS);
+}
+
+// Função para logout automático
+async function logarAutomaticamente(mensagem) {
+    try {
+        await fetch('/api/login/logout', { method: 'POST' });
+    } catch (e) {
+        console.error('Erro ao encerrar sessão:', e);
+    } finally {
+        localStorage.removeItem('usuario');
+        console.log(mensagem);
+        alert(mensagem + ' Faça login novamente.');
+        window.location.href = '/login.html';
+    }
+}
+
+// Monitoramento de atividades do usuário
+function monitorarAtividade() {
+    resetarTimerInatividade();
+}
+
+// Adicionar listeners para diferentes tipos de interação
+document.addEventListener('mousemove', monitorarAtividade);
+document.addEventListener('keydown', monitorarAtividade);
+document.addEventListener('click', monitorarAtividade);
+document.addEventListener('touchstart', monitorarAtividade);
+document.addEventListener('scroll', monitorarAtividade);
+
+async function logout() {
+    try {
+        // Limpa o timeout se existir
+        if (tempoInatividade) {
+            clearTimeout(tempoInatividade);
+        }
+        await fetch('/api/login/logout', { method: 'POST' });
+    } catch (e) {
+        console.error('Erro ao encerrar sessão:', e);
+    } finally {
+        localStorage.removeItem('usuario');
+        window.location.href = '/login.html';
+    }
+}
+
+function exibirInfoUsuario() {
+    const usuarioJson = localStorage.getItem('usuario');
+    const container = document.getElementById('user-info');
+    console.log('exibirInfoUsuario - usuarioJson:', usuarioJson);
+    if (usuarioJson && container) {
+        try {
+            const user = JSON.parse(usuarioJson);
+            console.log('User object:', user);
+            container.innerHTML = `
+                <span class="text-xs text-slate-400">Olá, <strong class="text-white">${user.nome || user.username}</strong> (${user.tipo || 'Usuário'})</span>
+                <button onclick="logout()" class="rounded-lg bg-rose-600/20 px-3 py-1.5 text-xs font-bold text-rose-300 hover:bg-rose-600 hover:text-white transition" title="Sair / Trocar Acesso">
+                    <i class="fa-solid fa-right-from-bracket mr-1"></i> Sair
+                </button>
+            `;
+        } catch (e) {
+            console.error('Erro ao parsear usuário:', e);
+        }
+    } else {
+        console.log('Container não encontrado ou usuário não está no localStorage');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    mudarModo('fornecedores');
+    console.log('DOMContentLoaded disparado');
+    console.log('container user-info:', document.getElementById('user-info'));
+    carregar();
+    exibirInfoUsuario();
 });
 
-// Toggle active visual state in menu and refresh content
-function mudarModo(mode) {
-    currentMode = mode;
-    editingId = null;
-    const menuFornecedores = document.getElementById('menu-fornecedores');
-    const menuCompradores = document.getElementById('menu-compradores');
-    
-    // Adjust visual classes of sidebar buttons using our custom CSS classes
-    if (mode === 'fornecedores') {
-        menuFornecedores.className = "w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 transition font-semibold btn-sidebar-active";
-        menuCompradores.className = "w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 transition font-semibold btn-sidebar-inactive";
-        
-        // Adjust panels text
-        document.getElementById('main-panel-title').innerText = "Painel de Monitoramento: Fornecedores";
-        document.getElementById('main-panel-subtitle').innerText = "Análise de risco, conformidade e localização de empresas fornecedoras.";
-        document.getElementById('kpi-label-total').innerText = "Total de Fornecedores";
-        document.getElementById('kpi-icon-total').className = "fa-solid fa-truck-field text-2xl";
-        document.getElementById('btn-novo-registro').innerHTML = `<i class="fa-solid fa-plus text-base"></i> Novo Fornecedor`;
-        document.getElementById('table-title').innerText = "Fornecedores Cadastrados";
-        document.getElementById('table-icon').className = "fa-solid fa-list text-primary-500";
-    } else {
-        menuFornecedores.className = "w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 transition font-semibold btn-sidebar-inactive";
-        menuCompradores.className = "w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 transition font-semibold btn-sidebar-active";
-        
-        // Adjust panels text
-        document.getElementById('main-panel-title').innerText = "Painel de Monitoramento: Compradores";
-        document.getElementById('main-panel-subtitle').innerText = "Análise de risco, conformidade e localização de empresas compradoras.";
-        document.getElementById('kpi-label-total').innerText = "Total de Compradores";
-        document.getElementById('kpi-icon-total').className = "fa-solid fa-cart-shopping text-2xl";
-        document.getElementById('btn-novo-registro').innerHTML = `<i class="fa-solid fa-plus text-base"></i> Novo Comprador`;
-        document.getElementById('table-title').innerText = "Compradores Cadastrados";
-        document.getElementById('table-icon').className = "fa-solid fa-cart-shopping text-primary-500";
-    }
-
-    carregarDados();
-}
-
-// Fetch API dynamic loader
-function getApiUrl() {
-    return currentMode === 'fornecedores' ? '/api/fornecedores' : '/api/compradores';
-}
-
-// Load data dynamically
-async function carregarDados() {
-    const tbody = document.getElementById('dados-tbody');
-    mostrarLoading(tbody);
-
+async function carregar() {
     try {
-        const url = getApiUrl();
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error('Falha ao se comunicar com o servidor.');
-        }
-        currentDataList = await response.json();
-        renderizarTabela(currentDataList);
-        atualizarPainelKPIs(currentDataList);
-    } catch (error) {
-        console.error(error);
-        mostrarAlerta('Erro', 'Não foi possível carregar os dados: ' + error.message, 'error');
-        mostrarErroTabela(tbody, error.message);
-    }
+        const resposta = await fetch(endpoint);
+        if (!resposta.ok) throw new Error('Não foi possível carregar os dados.');
+        registros = await resposta.json();
+        filtrar();
+        atualizarIndicadores();
+    } catch (erro) { mostrarAlerta(erro.message, true); }
 }
 
-// Fetch address from ViaCEP API
-async function buscarCep() {
-    const cepInput = document.getElementById('form-cep');
-    const cep = cepInput.value.replace(/\D/g, '');
+function filtrar() {
+    const termo = (document.getElementById('busca').value || '').toLowerCase();
+    const exibidos = registros.filter(item => [item.nome, item.cnpj, item.status, item.cidade, item.estado]
+        .some(valor => String(valor || '').toLowerCase().includes(termo)));
+    const linhas = document.getElementById('linhas');
+    linhas.innerHTML = exibidos.length ? exibidos.map(linha).join('') : '<tr><td colspan="7" class="p-10 text-center text-slate-500">Nenhum cadastro encontrado.</td></tr>';
+}
+
+function linha(item) {
+    const endereco = [item.logradouro, item.numero].filter(Boolean).join(', ');
+    const cidade = [item.cidade, item.estado].filter(Boolean).join('/');
+    return `<tr class="hover:bg-slate-50"><td class="p-4 font-medium">${item.id}</td><td class="p-4 font-semibold">${escapar(item.nome)}</td><td class="p-4">${formatarCnpj(item.cnpj)}</td><td class="p-4"><span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold">${formatarStatus(item.status)}</span></td><td class="p-4">${Number(item.pontuacaoRisco || 0).toLocaleString('pt-BR', {minimumFractionDigits: 1})}</td><td class="p-4 text-slate-600">${escapar(endereco || 'Não informado')}<br><span class="text-xs">${escapar(cidade)}</span></td><td class="p-4 text-center"><button onclick="editar(${item.id})" class="mr-2 text-sky-700" title="Editar"><i class="fa-solid fa-pen"></i></button><button onclick="excluirRegistro(${item.id})" class="text-rose-700" title="Excluir"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+}
+
+function atualizarIndicadores() {
+    const total = registros.length;
+    const media = total ? registros.reduce((s, i) => s + Number(i.pontuacaoRisco || 0), 0) / total : 0;
+    document.getElementById('total').textContent = total;
+    document.getElementById('analise').textContent = registros.filter(i => i.status === 'EM_ANALISE').length;
+    document.getElementById('media').textContent = media.toLocaleString('pt-BR', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+    document.getElementById('criticos').textContent = registros.filter(i => Number(i.pontuacaoRisco || 0) >= 7).length;
+}
+
+function abrirFormulario() {
+    document.getElementById('formulario').reset(); document.getElementById('id').value = '';
+    document.getElementById('titulo-form').textContent = `Cadastrar ${configuracao.singular.toLowerCase()}`;
+    document.getElementById('modal').classList.remove('hidden');
+}
+function fecharFormulario() { document.getElementById('modal').classList.add('hidden'); }
+function editar(id) {
+    const item = registros.find(i => i.id === id); if (!item) return;
+    ['id','codCidade','nome','status','cep','logradouro','numero','complemento','bairro','cidade','estado'].forEach(campo => document.getElementById(campo).value = item[campo] || '');
+    document.getElementById('cnpj').value = formatarCnpj(item.cnpj); document.getElementById('pontuacao').value = item.pontuacaoRisco || 0;
+    document.getElementById('titulo-form').textContent = `Editar ${configuracao.singular.toLowerCase()}`;
+    document.getElementById('modal').classList.remove('hidden');
+}
+async function salvar(evento) {
+    evento.preventDefault();
+    const id = document.getElementById('id').value;
+    const dados = Object.fromEntries(['nome','status','cep','logradouro','numero','complemento','bairro','cidade','estado','latitude','longitude'].map(campo => [campo, document.getElementById(campo).value.trim()]));
+    dados.codCidade = document.getElementById('codCidade').value || null;
+    dados.cnpj = document.getElementById('cnpj').value.replace(/\D/g, ''); dados.pontuacaoRisco = Number(document.getElementById('pontuacao').value || 0);
+    try {
+        const resposta = await fetch(id ? `${endpoint}/${id}` : endpoint, {method: id ? 'PUT' : 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(dados)});
+        if (!resposta.ok) throw new Error('Não foi possível salvar. Verifique se o CNPJ é válido e não está duplicado.');
+        fecharFormulario(); mostrarAlerta(`${configuracao.singular} salvo com sucesso.`); carregar();
+    } catch (erro) { mostrarAlerta(erro.message, true); }
+}
+async function excluirRegistro(id) {
+    if (!confirm(`Excluir este ${configuracao.singular.toLowerCase()}? Esta ação não pode ser desfeita.`)) return;
+    try { const resposta = await fetch(`${endpoint}/${id}`, {method:'DELETE'}); if (!resposta.ok) throw new Error('Não foi possível excluir o cadastro.'); mostrarAlerta('Cadastro excluído.'); carregar(); } catch (erro) { mostrarAlerta(erro.message, true); }
+}
+async function consultarCep() {
+    const cep = document.getElementById('cep').value.replace(/\D/g, ''); 
     if (cep.length !== 8) {
-        mostrarAlerta('Aviso', 'Digite um CEP com 8 dígitos para buscar.', 'warning');
+        console.warn('CEP deve ter 8 dígitos');
         return;
     }
-    try {
-        mostrarAlerta('Buscando', 'Consultando CEP...', 'info');
-        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-        if (!response.ok) throw new Error();
-        const data = await response.json();
-        if (data.erro) {
-            mostrarAlerta('Erro', 'CEP não localizado.', 'error');
-            return;
-        }
-        document.getElementById('form-logradouro').value = data.logradouro || '';
-        document.getElementById('form-bairro').value = data.bairro || '';
-        document.getElementById('form-cidade').value = data.localidade || '';
-        document.getElementById('form-estado').value = data.uf || '';
-        mostrarAlerta('Sucesso', 'Endereço carregado automaticamente via CEP!', 'success');
-    } catch (e) {
-        mostrarAlerta('Erro', 'Não foi possível buscar o CEP. Digite manualmente.', 'error');
-    }
-}
-
-// Search direct by CNPJ using backend API
-async function buscarCnpjDireto() {
-    const inputCnpj = document.getElementById('search-cnpj-direct');
-    const cnpjLimpo = inputCnpj.value.replace(/\D/g, '');
-
-    if (!cnpjLimpo) {
-        mostrarAlerta('Aviso', 'Digite um CNPJ para buscar.', 'warning');
-        return;
-    }
-
-    if (cnpjLimpo.length !== 14) {
-        mostrarAlerta('Erro de Validação', 'O CNPJ deve conter exatamente 14 dígitos.', 'error');
-        return;
-    }
-
-    const tbody = document.getElementById('dados-tbody');
-    mostrarLoading(tbody);
-
-    try {
-        const url = getApiUrl();
-        const response = await fetch(`${url}/cnpj/${cnpjLimpo}`);
-        if (response.status === 404) {
-            mostrarAlerta('Não Encontrado', `Nenhuma empresa encontrada com o CNPJ informado nesta categoria.`, 'warning');
-            renderizarTabela([]);
-            return;
-        }
-        if (!response.ok) {
-            throw new Error('Falha na resposta do servidor.');
-        }
-        const entidade = await response.json();
-        renderizarTabela([entidade]);
-        mostrarAlerta('Sucesso', 'Empresa localizada com sucesso via CNPJ!', 'success');
-    } catch (error) {
-        console.error(error);
-        mostrarAlerta('Erro', 'Não foi possível buscar o CNPJ: ' + error.message, 'error');
-        mostrarErroTabela(tbody, error.message);
-    }
-}
-
-// Handle Create/Update form submission
-async function enviarDados(event) {
-    event.preventDefault();
-
-    const nomeInput = document.getElementById('form-nome').value.trim();
-    const cnpjInput = document.getElementById('form-cnpj').value;
-    const statusInput = document.getElementById('form-status').value;
-    const riscoInput = parseFloat(document.getElementById('form-risco').value) || 0.0;
-
-    const cep = document.getElementById('form-cep').value.replace(/\D/g, '');
-    const logradouro = document.getElementById('form-logradouro').value.trim();
-    const numero = document.getElementById('form-numero').value.trim();
-    const complemento = document.getElementById('form-complemento').value.trim();
-    const bairro = document.getElementById('form-bairro').value.trim();
-    const cidade = document.getElementById('form-cidade').value.trim();
-    const estado = document.getElementById('form-estado').value.trim().toUpperCase();
-    const latVal = document.getElementById('form-latitude').value;
-    const lngVal = document.getElementById('form-longitude').value;
-    const latitude = latVal !== "" ? parseFloat(latVal) : null;
-    const longitude = lngVal !== "" ? parseFloat(lngVal) : null;
-
-    const cnpjLimpo = cnpjInput.replace(/\D/g, '');
-
-    if (!nomeInput) {
-        mostrarAlerta('Validação', 'Por favor, preencha o Nome da Empresa.', 'warning');
-        return;
-    }
-
-    if (cnpjLimpo.length !== 14) {
-        mostrarAlerta('Validação', 'O CNPJ deve conter exatamente 14 dígitos numéricos.', 'warning');
-        return;
-    }
-
-    const payload = {
-        nome: nomeInput,
-        cnpj: cnpjLimpo,
-        status: statusInput,
-        pontuacaoRisco: riscoInput,
-        cep, logradouro, numero, complemento, bairro, cidade, estado, latitude, longitude
-    };
-
-    const btnSubmit = document.getElementById('btn-submit');
-    const originalBtnHtml = btnSubmit.innerHTML;
-    btnSubmit.disabled = true;
-    btnSubmit.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1.5"></i> Gravando...`;
-
-    try {
-        const url = getApiUrl() + (editingId ? `/${editingId}` : '');
-        const method = editingId ? 'PUT' : 'POST';
-
-        const response = await fetch(url, {
-            method: method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        if (response.status === 400) {
-            const errData = await response.json();
-            const msg = (errData.errors && errData.errors[0]?.defaultMessage) || errData.message || 'Dados inválidos.';
-            throw new Error(msg);
-        }
-
-        if (!response.ok) {
-            const text = await response.text();
-            throw new Error(JSON.parse(text).message || 'Erro ao salvar no servidor.');
-        }
-
-        const entidade = await response.json();
-        mostrarAlerta('Sucesso', `Cadastro de "${entidade.nome}" ${editingId ? 'atualizado' : 'realizado'} com sucesso!`, 'success');
-        closeModal();
-        carregarDados();
-    } catch (error) {
-        console.error(error);
-        mostrarAlerta('Erro ao Salvar', error.message, 'error');
-    } finally {
-        btnSubmit.disabled = false;
-        btnSubmit.innerHTML = originalBtnHtml;
-    }
-}
-
-// Handle Delete operation
-async function excluirItem(id) {
-    if (!confirm('Você tem certeza que deseja excluir este item? Esta ação é irreversível.')) {
-        return;
-    }
-
-    try {
-        const url = `${getApiUrl()}/${id}`;
-        const response = await fetch(url, { method: 'DELETE' });
-
-        if (!response.ok) {
-            throw new Error('Falha ao excluir o item.');
+    
+    try { 
+        console.log('Consultando CEP:', cep);
+        const respostaViaCep = await fetch(`https://viacep.com.br/ws/${cep}/json/`); 
+        const dadosViaCep = await respostaViaCep.json(); 
+        
+        if (dadosViaCep.erro) {
+            throw new Error('CEP não encontrado.');
         }
         
-        mostrarAlerta('Sucesso', 'Item excluído com sucesso!', 'success');
-        carregarDados();
-    } catch (error) {
-        console.error(error);
-        mostrarAlerta('Erro', `Não foi possível excluir: ${error.message}`, 'error');
-    }
-}
-
-// Render data list into the table
-function renderizarTabela(dados) {
-    const tbody = document.getElementById('dados-tbody');
-    const countBadge = document.getElementById('table-count');
-    
-    tbody.innerHTML = '';
-    countBadge.innerText = `${dados.length} ${dados.length === 1 ? 'item' : 'itens'}`;
-
-    if (dados.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="py-12 text-center text-gray-400"><div class="flex flex-col items-center justify-center space-y-2"><i class="fa-solid fa-folder-open text-3xl text-gray-300"></i><p class="font-medium">Nenhum registro encontrado.</p></div></td></tr>`;
-        return;
-    }
-
-    dados.forEach(f => {
-        const tr = document.createElement('tr');
-        tr.className = "hover:bg-gray-100/40 transition duration-150 border-b border-gray-200/50 last:border-none";
+        console.log('Dados do ViaCEP:', dadosViaCep);
         
-        const cnpjFormatado = formatarCNPJ(f.cnpj);
-        const { badgeClass, statusNome } = getStatusBadge(f.status);
-        const { riscoColor, riscoBg, riscoTexto, riscoClass, percentRisco } = getRiscoVisuals(f.pontuacaoRisco);
-        const mapButton = getMapButton(f);
-
-        tr.innerHTML = `
-            <td class="py-3 px-5 font-semibold text-gray-500">${f.id}</td>
-            <td class="py-3 px-5 font-bold text-gray-900">${f.nome}</td>
-            <td class="py-3 px-5 font-mono text-gray-600">${cnpjFormatado}</td>
-            <td class="py-3 px-5">
-                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${badgeClass}">
-                    <span class="w-1.5 h-1.5 rounded-full mr-1.5 bg-current"></span>${statusNome}
-                </span>
-            </td>
-            <td class="py-3 px-5">
-                <div class="flex items-center space-x-3">
-                    <div class="w-full bg-gray-200 rounded-full h-2 max-w-[100px]"><div class="${riscoColor} h-2 rounded-full" style="width: ${percentRisco}%"></div></div>
-                    <span class="text-xs font-bold ${riscoTexto} px-2 py-0.5 rounded ${riscoBg}">${(f.pontuacaoRisco || 0).toFixed(1)} (${riscoClass})</span>
-                </div>
-            </td>
-            <td class="py-3 px-5">${mapButton}</td>
-            <td class="py-3 px-5 text-center">
-                <button onclick="abrirModalEdicao(${f.id})" class="text-sky-600 hover:text-sky-800 transition p-1" title="Editar"><i class="fa-solid fa-pencil"></i></button>
-                <button onclick="excluirItem(${f.id})" class="text-rose-500 hover:text-rose-700 transition p-1 ml-2" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
-// Update KPIs dashboard
-function atualizarPainelKPIs(dados) {
-    const total = dados.length;
-    const analise = dados.filter(f => f.status === 'EM_ANALISE').length;
-    
-    let somaRisco = 0, criticos = 0;
-    dados.forEach(f => {
-        const risco = f.pontuacaoRisco || 0;
-        somaRisco += risco;
-        if (risco >= 7.0) criticos++;
-    });
-
-    document.getElementById('stat-total').innerText = total;
-    document.getElementById('stat-analise').innerText = analise;
-    document.getElementById('stat-risco').innerText = total > 0 ? (somaRisco / total).toFixed(1) : '0.0';
-    document.getElementById('stat-criticos').innerText = criticos;
-}
-
-// Client-side quick filter
-function filterTable() {
-    const query = document.getElementById('search-input').value.toLowerCase().trim();
-    const filtrados = !query ? currentDataList : currentDataList.filter(f => 
-        (f.nome || '').toLowerCase().includes(query) || (f.cnpj || '').toLowerCase().includes(query)
-    );
-    renderizarTabela(filtrados);
-}
-
-// UTILITY HELPERS
-function formatarCNPJ(cnpj) {
-    const limpo = (cnpj || '').replace(/\D/g, '');
-    return limpo.length === 14 ? limpo.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5") : cnpj;
-}
-
-function aplicarMascaraCNPJ(input) {
-    let v = input.value.replace(/\D/g, '').slice(0, 14);
-    v = v.replace(/^(\d{2})(\d)/, "$1.$2").replace(/^(\d{2}\.\d{3})(\d)/, "$1.$2").replace(/(\d{3}\.)(\d{3})(\d)/, "$1$2/$3").replace(/(\d{4}\/)(\d{2})$/, "$1$2");
-    input.value = v;
-}
-
-function getStatusBadge(status) {
-    const badges = {
-        'APROVADO': { class: "bg-emerald-100 text-emerald-800 border-emerald-200", name: "Aprovado" },
-        'EM_ANALISE': { class: "bg-amber-100 text-amber-800 border-amber-200", name: "Em Análise" },
-        'REJEITADO': { class: "bg-rose-100 text-rose-800 border-rose-200", name: "Rejeitado" },
-        'SUSPENSO': { class: "bg-gray-100 text-gray-800 border-gray-300", name: "Suspenso" }
-    };
-    const fallback = badges['EM_ANALISE'];
-    const config = badges[status] || fallback;
-    return { badgeClass: config.class, statusNome: config.name };
-}
-
-function getRiscoVisuals(risco) {
-    risco = risco || 0;
-    let config = { color: "bg-emerald-500", bg: "bg-emerald-50", texto: "text-emerald-700", class: "Baixo" };
-    if (risco >= 7.0) config = { color: "bg-rose-500", bg: "bg-rose-50", texto: "text-rose-700", class: "Alto" };
-    else if (risco >= 3.0) config = { color: "bg-amber-500", bg: "bg-amber-50", texto: "text-amber-700", class: "Médio" };
-    return { ...config, percentRisco: Math.min(100, (risco / 10) * 100) };
-}
-
-function getMapButton(f) {
-    let localSpan = "", localLink = "";
-    if (f.cidade && f.estado) {
-        localSpan = `${f.cidade}/${f.estado}`;
-        let query = `${f.logradouro || ''}, ${f.numero || ''} - ${f.bairro || ''}, ${f.cidade} - ${f.estado}`;
-        localLink = f.latitude && f.longitude ? `https://www.google.com/maps/search/?api=1&query=${f.latitude},${f.longitude}` : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
-    } else if (f.logradouro) {
-        localSpan = f.logradouro;
-        localLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(f.logradouro)}`;
+        document.getElementById('cep').value = `${cep.slice(0,5)}-${cep.slice(5)}`;
+        document.getElementById('logradouro').value = dadosViaCep.logradouro || '';
+        document.getElementById('bairro').value = dadosViaCep.bairro || '';
+        document.getElementById('cidade').value = dadosViaCep.localidade || '';
+        document.getElementById('estado').value = dadosViaCep.uf || '';
+        
+        // Buscar geolocalização usando Nominatim (API gratuita do OpenStreetMap)
+        const enderecoCompleto = `${dadosViaCep.logradouro}, ${dadosViaCep.localidade}, ${dadosViaCep.uf}, Brasil`;
+        try {
+            console.log('Consultando geolocalização:', enderecoCompleto);
+            const respostaGeo = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(enderecoCompleto)}`);
+            const dadosGeo = await respostaGeo.json();
+            
+            if (dadosGeo && dadosGeo.length > 0) {
+                const latitude = parseFloat(dadosGeo[0].lat);
+                const longitude = parseFloat(dadosGeo[0].lon);
+                
+                document.getElementById('latitude').value = latitude;
+                document.getElementById('longitude').value = longitude;
+                console.log('Geolocalização salva:', latitude, longitude);
+            }
+        } catch (geoError) {
+            console.warn('Não foi possível obter geolocalização:', geoError);
+            // O CEP ainda pode ser salvo sem geolocalização
+        }
+        
+        // Buscar código da cidade no banco
+        const cidade = await fetch(`/api/cidades/ibge/${dadosViaCep.ibge}`);
+        if (cidade.ok) {
+            const cidadeData = await cidade.json();
+            document.getElementById('codCidade').value = cidadeData.codCidade || '';
+        }
+        
+    } catch (erro) { 
+        console.error('Erro ao consultar CEP:', erro);
+        mostrarAlerta('Não foi possível consultar o CEP.', true); 
     }
-    return localLink ? `<div class="flex flex-col"><span class="font-semibold text-gray-800">${localSpan}</span><a href="${localLink}" target="_blank" class="text-xs text-primary-600 hover:text-primary-800 flex items-center gap-1 font-semibold mt-0.5 transition"><i class="fa-solid fa-map-pin text-primary-500"></i> Ver no Mapa</a></div>` : `<span class="text-xs text-gray-400 italic flex items-center gap-1"><i class="fa-solid fa-location-dot"></i> Não cadastrado</span>`;
 }
 
-// MODAL & ALERT HELPERS
-function mostrarLoading(element) {
-    element.innerHTML = `<tr><td colspan="7" class="py-12 text-center text-gray-400"><div class="flex flex-col items-center justify-center space-y-2"><i class="fa-solid fa-circle-notch fa-spin text-3xl text-sky-500"></i><p class="font-medium">Carregando dados...</p></div></td></tr>`;
+function mascaraCep(input) {
+    let valor = input.value.replace(/\D/g, '').slice(0, 8);
+    input.value = valor.replace(/^(\d{5})(\d)/, '$1-$2');
 }
-
-function mostrarErroTabela(element, mensagem) {
-    element.innerHTML = `<tr><td colspan="7" class="py-12 text-center text-rose-500 bg-rose-50/30"><div class="flex flex-col items-center justify-center space-y-2"><i class="fa-solid fa-triangle-exclamation text-3xl"></i><p class="font-bold">Erro ao carregar tabela</p><p class="text-xs max-w-md">${mensagem}</p></div></td></tr>`;
-}
-
-function mostrarAlerta(titulo, mensagem, tipo = 'success') {
-    const container = document.getElementById('alert-container');
-    const box = document.getElementById('alert-box');
-    const icon = document.getElementById('alert-icon');
-    const title = document.getElementById('alert-title');
-    const message = document.getElementById('alert-message');
-
-    container.classList.remove('hidden');
-    box.className = "p-4 rounded-lg flex items-start space-x-3 shadow border";
-    
-    const types = {
-        success: { class: 'bg-emerald-50 text-emerald-800 border-emerald-200', icon: 'fa-circle-check' },
-        error: { class: 'bg-rose-50 text-rose-800 border-rose-200', icon: 'fa-circle-exclamation' },
-        warning: { class: 'bg-amber-50 text-amber-800 border-amber-200', icon: 'fa-triangle-exclamation' },
-        info: { class: 'bg-blue-50 text-blue-800 border-blue-200', icon: 'fa-circle-info' }
-    };
-    const config = types[tipo] || types['info'];
-
-    box.classList.add(...config.class.split(' '));
-    icon.innerHTML = `<i class="fa-solid ${config.icon} text-${config.class.split(' ')[1].split('-')[0]}-500"></i>`;
-    title.innerText = titulo;
-    message.innerText = mensagem;
-
-    if (window.alertTimeout) clearTimeout(window.alertTimeout);
-    window.alertTimeout = setTimeout(dismissAlert, 6000);
-}
-
-function dismissAlert() {
-    document.getElementById('alert-container').classList.add('hidden');
-}
-
-function abrirModalEdicao(id) {
-    const item = currentDataList.find(i => i.id === id);
-    if (!item) return;
-
-    editingId = id;
-    openModal(true);
-
-    // Populate form
-    document.getElementById('form-nome').value = item.nome;
-    document.getElementById('form-cnpj').value = formatarCNPJ(item.cnpj);
-    document.getElementById('form-status').value = item.status || 'EM_ANALISE';
-    document.getElementById('form-risco').value = item.pontuacaoRisco || 0.0;
-    document.getElementById('form-cep').value = item.cep || '';
-    document.getElementById('form-logradouro').value = item.logradouro || '';
-    document.getElementById('form-numero').value = item.numero || '';
-    document.getElementById('form-complemento').value = item.complemento || '';
-    document.getElementById('form-bairro').value = item.bairro || '';
-    document.getElementById('form-cidade').value = item.cidade || '';
-    document.getElementById('form-estado').value = item.estado || '';
-    document.getElementById('form-latitude').value = item.latitude || '';
-    document.getElementById('form-longitude').value = item.longitude || '';
-}
-
-function openModal(isEditing = false) {
-    editingId = isEditing ? editingId : null;
-    const modal = document.getElementById('register-modal');
-    const title = document.getElementById('modal-title-text');
-    const btnText = document.getElementById('btn-submit-text');
-    const type = currentMode === 'fornecedores' ? 'Fornecedor' : 'Comprador';
-    const icon = currentMode === 'fornecedores' ? 'fa-truck-ramp-box' : 'fa-cart-shopping';
-
-    title.innerHTML = `<i class="fa-solid ${icon}"></i> ${isEditing ? 'Editar' : 'Cadastrar'} ${type}`;
-    btnText.innerText = isEditing ? `Salvar Alterações` : `Gravar ${type}`;
-
-    if (!isEditing) document.getElementById('cadastro-form').reset();
-    
-    modal.classList.remove('hidden');
-    setTimeout(() => {
-        modal.classList.remove('opacity-0');
-        modal.querySelector('.bg-white').classList.remove('scale-95');
-    }, 50);
-}
-
-function closeModal() {
-    editingId = null;
-    const modal = document.getElementById('register-modal');
-    modal.classList.add('opacity-0');
-    modal.querySelector('.bg-white').classList.add('scale-95');
-    setTimeout(() => modal.classList.add('hidden'), 300);
-}
+function mascaraCnpj(input) { let valor = input.value.replace(/\D/g, '').slice(0,14); input.value = valor.replace(/^(\d{2})(\d)/,'$1.$2').replace(/^(\d{2}\.\d{3})(\d)/,'$1.$2').replace(/(\d{3}\.)(\d{3})(\d)/,'$1$2/$3').replace(/(\d{4}\/)(\d{2})$/,'$1$2'); }
+function formatarCnpj(valor) { const cnpj = String(valor || '').replace(/\D/g,''); return cnpj.length === 14 ? cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5') : valor || ''; }
+function formatarStatus(status) { return ({EM_ANALISE:'Em análise', APROVADO:'Aprovado', REJEITADO:'Rejeitado', SUSPENSO:'Suspenso'})[status] || status || 'Em análise'; }
+function escapar(valor) { const elemento = document.createElement('span'); elemento.textContent = valor || ''; return elemento.innerHTML; }
+function mostrarAlerta(mensagem, erro = false) { const alerta = document.getElementById('alerta'); alerta.textContent = mensagem; alerta.className = `mb-5 rounded-lg border px-4 py-3 text-sm ${erro ? 'border-rose-200 bg-rose-50 text-rose-800' : 'border-emerald-200 bg-emerald-50 text-emerald-800'}`; alerta.classList.remove('hidden'); }

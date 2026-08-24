@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compradoras | Radar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body data-entidade="compradores" data-singular="Compradora" data-plural="Compradoras">
+<div class="flex min-h-screen bg-slate-100">
+    <!-- Menu Lateral -->
+    <aside class="w-64 bg-slate-950 text-white shadow-lg hidden md:block fixed h-full">
+        <div class="p-6">
+            <div class="flex items-center justify-center mb-8">
+                <img src="/imagem/Logo.png" alt="Logo Radar" class="w-64 h-64 object-contain rounded-full shadow-md">
+            </div>
+            
+            <nav class="space-y-2">
+                <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 text-center">Acesso</p>
+                <a href="/pages/fornecedores.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-building"></i> Fornecedores
+                </a>
+                <a href="/pages/compradores.html" class="flex items-center justify-center gap-3 rounded-lg bg-sky-600 px-4 py-3 font-semibold hover:bg-sky-700 transition">
+                    <i class="fa-solid fa-hand-holding-dollar"></i> Compradoras
+                </a>
+                <a href="/pages/admin.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-user-gear"></i> Admin
+                </a>
+                <a href="/pages/representantes.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-truck-medical"></i> Representantes
+                </a>
+                <a href="/pages/clientes.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-users"></i> Clientes
+                </a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Conteúdo Principal -->
+    <div class="flex-1 flex flex-col md:ml-64">
+        <!-- Header -->
+        <header class="bg-slate-950 text-white shadow-lg">
+            <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-5">
+                <a href="/pages/compradores.html" class="flex items-center gap-3 font-black text-lg md:hidden">
+                    <i class="fa-solid fa-satellite-dish text-sky-400"></i> RADAR
+                </a>
+                <div class="flex items-center gap-4 text-sm font-semibold">
+                    <div id="user-info" class="flex items-center gap-3 border-l border-slate-800 pl-4"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Corpo Principal -->
+        <main class="mx-auto max-w-7xl px-6 py-8 flex-1">
+            <div id="alerta" class="mb-5 hidden rounded-lg border px-4 py-3 text-sm"></div>
+            <div class="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+                <div>
+                    <p class="text-sm font-bold uppercase tracking-widest text-sky-700">Cadastro</p>
+                    <h1 class="text-3xl font-black text-slate-900">Empresas Compradoras</h1>
+                    <p class="mt-1 text-slate-600">Gerencie cadastros e informações das compradoras.</p>
+                </div>
+                <button onclick="abrirFormulario()" class="rounded-lg bg-sky-600 px-5 py-3 font-bold text-white shadow hover:bg-sky-700">
+                    <i class="fa-solid fa-plus mr-2"></i>Cadastrar compradora
+                </button>
+            </div>
+
+            <!-- Indicadores -->
+            <section class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-4">
+                <div class="rounded-xl bg-white p-5 shadow-sm">
+                    <p class="text-xs font-bold uppercase text-slate-500">Total</p>
+                    <p id="total" class="mt-1 text-3xl font-black">0</p>
+                </div>
+                <div class="rounded-xl bg-white p-5 shadow-sm">
+                    <p class="text-xs font-bold uppercase text-slate-500">Em análise</p>
+                    <p id="analise" class="mt-1 text-3xl font-black text-amber-600">0</p>
+                </div>
+                <div class="rounded-xl bg-white p-5 shadow-sm">
+                    <p class="text-xs font-bold uppercase text-slate-500">Pontuação média</p>
+                    <p id="media" class="mt-1 text-3xl font-black text-sky-700">0,0</p>
+                </div>
+                <div class="rounded-xl bg-white p-5 shadow-sm">
+                    <p class="text-xs font-bold uppercase text-slate-500">Risco alto</p>
+                    <p id="criticos" class="mt-1 text-3xl font-black text-rose-600">0</p>
+                </div>
+            </section>
+
+            <!-- Tabela -->
+            <section class="overflow-hidden rounded-xl bg-white shadow-sm">
+                <div class="flex flex-col gap-3 border-b p-4 sm:flex-row">
+                    <input id="busca" oninput="filtrar()" class="w-full rounded-lg border px-4 py-2" placeholder="Buscar por empresa, CNPJ, cidade ou status">
+                    <button onclick="carregar()" class="rounded-lg border px-4 py-2 font-semibold text-slate-700">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 text-xs uppercase text-slate-500">
+                            <tr>
+                                <th class="p-4">ID</th>
+                                <th class="p-4">Empresa</th>
+                                <th class="p-4">CNPJ</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4">Pontuação</th>
+                                <th class="p-4">Localização</th>
+                                <th class="p-4 text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="linhas" class="divide-y"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="fixed inset-0 z-10 hidden overflow-y-auto bg-slate-950/50 p-4">
+    <div class="mx-auto my-8 max-w-3xl rounded-xl bg-white shadow-2xl">
+        <div class="flex items-center justify-between border-b px-6 py-4">
+            <h2 id="titulo-form" class="text-xl font-black">Cadastrar compradora</h2>
+            <button onclick="fecharFormulario()" class="text-xl text-slate-500">&times;</button>
+        </div>
+        <form id="formulario" class="space-y-5 p-6" onsubmit="salvar(event)">
+            <input id="id" type="hidden">
+            <input id="codCidade" type="hidden">
+            <div class="grid gap-4 md:grid-cols-2">
+                <label class="campo md:col-span-2">Empresa / Razão Social
+                    <input id="nome" required maxlength="100">
+                </label>
+                <label class="campo">CNPJ
+                    <input id="cnpj" required maxlength="18" placeholder="00.000.000/0000-00" oninput="mascaraCnpj(this)">
+                </label>
+                <label class="campo">Status
+                    <select id="status">
+                        <option value="EM_ANALISE">Em análise</option>
+                        <option value="APROVADO">Aprovado</option>
+                        <option value="REJEITADO">Rejeitado</option>
+                        <option value="SUSPENSO">Suspenso</option>
+                    </select>
+                </label>
+                <label class="campo">Pontuação (0 a 10)
+                    <input id="pontuacao" type="number" min="0" max="10" step="0.1" value="0">
+                </label>
+                <label class="campo">CEP
+                    <input id="cep" maxlength="9" placeholder="00000-000" oninput="mascaraCep(this)" onblur="consultarCep()">
+                </label>
+            </div>
+            <fieldset class="rounded-lg border p-4">
+                <legend class="px-2 text-sm font-bold text-slate-700">Endereço</legend>
+                <p class="mb-4 text-xs text-slate-500">Informe o CEP para preencher logradouro, bairro, cidade, estado e geolocalização.</p>
+                <div class="grid gap-4 md:grid-cols-2">
+                    <label class="campo md:col-span-2">Logradouro
+                        <input id="logradouro">
+                    </label>
+                    <label class="campo">Número
+                        <input id="numero">
+                    </label>
+                    <label class="campo">Complemento
+                        <input id="complemento">
+                    </label>
+                    <label class="campo">Bairro
+                        <input id="bairro">
+                    </label>
+                    <label class="campo">Cidade
+                        <input id="cidade" readonly>
+                    </label>
+                    <label class="campo">UF
+                        <input id="estado" maxlength="2" readonly>
+                    </label>
+                    <label class="campo">Latitude (auto)
+                        <input id="latitude" type="number" step="0.000001" readonly>
+                    </label>
+                    <label class="campo">Longitude (auto)
+                        <input id="longitude" type="number" step="0.000001" readonly>
+                    </label>
+                </div>
+            </fieldset>
+            <div class="flex justify-end gap-3">
+                <button type="button" onclick="fecharFormulario()" class="rounded-lg border px-4 py-2 font-semibold">Cancelar</button>
+                <button class="rounded-lg bg-sky-600 px-4 py-2 font-bold text-white hover:bg-sky-700">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+console.log('compradores.js carregado!');
+const configuracao = document.body.dataset;
+const endpoint = `/api/${configuracao.entidade}`;
+let registros = [];
+
+function abrirFormulario() {
+    document.getElementById('formulario').reset(); document.getElementById('id').value = '';
+    document.getElementById('titulo-form').textContent = `Cadastrar ${configuracao.singular.toLowerCase()}`;
+    document.getElementById('modal').classList.remove('hidden');
+}
+function fecharFormulario() { document.getElementById('modal').classList.add('hidden'); }
+function editar(id) {
+    const item = registros.find(i => i.id === id); if (!item) return;
+    ['id','codCidade','nome','status','cep','logradouro','numero','complemento','bairro','cidade','estado','latitude','longitude'].forEach(campo => document.getElementById(campo).value = item[campo] || '');
+    document.getElementById('cnpj').value = formatarCnpj(item.cnpj); document.getElementById('pontuacao').value = item.pontuacaoRisco || 0;
+    document.getElementById('titulo-form').textContent = `Editar ${configuracao.singular.toLowerCase()}`;
+    document.getElementById('modal').classList.remove('hidden');
+}
+async function salvar(evento) {
+    evento.preventDefault();
+    const id = document.getElementById('id').value;
+    const dados = Object.fromEntries(['nome','status','cep','logradouro','numero','complemento','bairro','cidade','estado','latitude','longitude'].map(campo => [campo, document.getElementById(campo).value.trim()]));
+    dados.codCidade = document.getElementById('codCidade').value || null;
+    dados.cnpj = document.getElementById('cnpj').value.replace(/\D/g, ''); dados.pontuacaoRisco = Number(document.getElementById('pontuacao').value || 0);
+    try {
+        const resposta = await fetch(id ? `${endpoint}/${id}` : endpoint, {method: id ? 'PUT' : 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(dados)});
+        if (!resposta.ok) throw new Error('Não foi possível salvar. Verifique se o CNPJ é válido e não está duplicado.');
+        fecharFormulario(); mostrarAlerta(`${configuracao.singular} salvo com sucesso.`); carregar();
+    } catch (erro) { mostrarAlerta(erro.message, true); }
+}
+async function excluirRegistro(id) {
+    if (!confirm(`Excluir este ${configuracao.singular.toLowerCase()}? Esta ação não pode ser desfeita.`)) return;
+    try { const resposta = await fetch(`${endpoint}/${id}`, {method:'DELETE'}); if (!resposta.ok) throw new Error('Não foi possível excluir o cadastro.'); mostrarAlerta('Cadastro excluído.'); carregar(); } catch (erro) { mostrarAlerta(erro.message, true); }
+}
+async function carregar() {
+    try {
+        const resposta = await fetch(endpoint);
+        if (!resposta.ok) throw new Error('Não foi possível carregar os dados.');
+        registros = await resposta.json();
+        filtrar();
+        atualizarIndicadores();
+    } catch (erro) { mostrarAlerta(erro.message, true); }
+}
+function filtrar() {
+    const termo = (document.getElementById('busca').value || '').toLowerCase();
+    const exibidos = registros.filter(item => [item.nome, item.cnpj, item.status, item.cidade, item.estado]
+        .some(valor => String(valor || '').toLowerCase().includes(termo)));
+    const linhas = document.getElementById('linhas');
+    linhas.innerHTML = exibidos.length ? exibidos.map(linha).join('') : '<tr><td colspan="7" class="p-10 text-center text-slate-500">Nenhum cadastro encontrado.</td></tr>';
+}
+function linha(item) {
+    const endereco = [item.logradouro, item.numero].filter(Boolean).join(', ');
+    const cidade = [item.cidade, item.estado].filter(Boolean).join('/');
+    return `<tr class="hover:bg-slate-50"><td class="p-4 font-medium">${item.id}</td><td class="p-4 font-semibold">${escapar(item.nome)}</td><td class="p-4">${formatarCnpj(item.cnpj)}</td><td class="p-4"><span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold">${formatarStatus(item.status)}</span></td><td class="p-4">${Number(item.pontuacaoRisco || 0).toLocaleString('pt-BR', {minimumFractionDigits: 1})}</td><td class="p-4 text-slate-600">${escapar(endereco || 'Não informado')}<br><span class="text-xs">${escapar(cidade)}</span></td><td class="p-4 text-center"><button onclick="editar(${item.id})" class="mr-2 text-sky-700" title="Editar"><i class="fa-solid fa-pen"></i></button><button onclick="excluirRegistro(${item.id})" class="text-rose-700" title="Excluir"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+}
+function atualizarIndicadores() {
+    const total = registros.length;
+    const media = total ? registros.reduce((s, i) => s + Number(i.pontuacaoRisco || 0), 0) / total : 0;
+    document.getElementById('total').textContent = total;
+    document.getElementById('analise').textContent = registros.filter(i => i.status === 'EM_ANALISE').length;
+    document.getElementById('media').textContent = media.toLocaleString('pt-BR', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+    document.getElementById('criticos').textContent = registros.filter(i => Number(i.pontuacaoRisco || 0) >= 7).length;
+}
+function mascaraCnpj(input) { let valor = input.value.replace(/\D/g, '').slice(0,14); input.value = valor.replace(/^(\d{2})(\d)/,'$1.$2').replace(/^(\d{2}\.\d{3})(\d)/,'$1.$2').replace(/(\d{3}\.)(\d{3})(\d)/,'$1$2/$3').replace(/(\d{4}\/)(\d{2})$/,'$1$2'); }
+function formatarCnpj(valor) { const cnpj = String(valor || '').replace(/\D/g,''); return cnpj.length === 14 ? cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5') : valor || ''; }
+function formatarStatus(status) { return ({EM_ANALISE:'Em análise', APROVADO:'Aprovado', REJEITADO:'Rejeitado', SUSPENSO:'Suspenso'})[status] || status || 'Em análise'; }
+function escapar(valor) { const elemento = document.createElement('span'); elemento.textContent = valor || ''; return elemento.innerHTML; }
+function mostrarAlerta(mensagem, erro = false) { const alerta = document.getElementById('alerta'); alerta.textContent = mensagem; alerta.className = `mb-5 rounded-lg border px-4 py-3 text-sm ${erro ? 'border-rose-200 bg-rose-50 text-rose-800' : 'border-emerald-200 bg-emerald-50 text-emerald-800'}`; alerta.classList.remove('hidden'); }
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOMContentLoaded - compradores');
+    const usuarioJson = localStorage.getItem('usuario');
+    if (!usuarioJson) {
+        console.log('Usuário não está logado, redirecionando para login...');
+        window.location.href = '/login.html';
+        return;
+    }
+    carregar();
+});
+</script>
+</body>
+</html>

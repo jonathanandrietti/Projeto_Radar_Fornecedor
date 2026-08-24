@@ -1,0 +1,79 @@
+[2026-08-23 22:21:22] [INFO] Skiko renderApi=DIRECT3D (os=windows 11, arch=amd64, override=null) [init fast-path 0,4ms]
+[2026-08-23 22:21:22] [INFO] Skiko Library class source=unknown
+[2026-08-23 22:21:22] [INFO] Skiko [timing]   - read native resource (skiko-windows-x64.dll, 17315328 bytes): 157,3ms
+[2026-08-23 22:21:22] [INFO] Skiko [timing]   - write native file (skiko-windows-x64-overcode-0.8.18-p18568.dll): 51,0ms
+[2026-08-23 22:21:22] [INFO] Skiko Runtime.load0(Library.class) OK: C:\Users\NOTEBO~1\AppData\Local\Temp\overcode-skiko-0.8.18\skiko-windows-x64-overcode-0.8.18-p18568.dll
+[2026-08-23 22:21:22] [INFO] Skiko [timing]   - Runtime.load0 native: 54,1ms
+[2026-08-23 22:21:22] [INFO] Skiko extracted sibling resource: C:\Users\NOTEBO~1\AppData\Local\Temp\overcode-skiko-0.8.18\icudtl.dat
+[2026-08-23 22:21:22] [INFO] Skiko Library.loaded marked true
+[2026-08-23 22:21:22] [INFO] Skiko plugin native loaded: C:\Users\NOTEBO~1\AppData\Local\Temp\overcode-skiko-0.8.18\skiko-windows-x64-overcode-0.8.18-p18568.dll
+[2026-08-23 22:21:22] [INFO] Skiko [timing] preload native library: 377,5ms
+[2026-08-23 22:21:22] [INFO] Skiko Direct3DSwingRedrawer source=?
+[2026-08-23 22:21:22] [INFO] Skiko [timing] DIRECT3D probe: 35,7ms (ok=true)
+[2026-08-23 22:21:22] [INFO] Skiko DIRECT3D native probe OK (plugin DLL linked)
+[2026-08-23 22:21:22] [INFO] Skiko [timing] async init TOTAL: 413,9ms
+[2026-08-23 22:21:27] [INFO] Skills 启动: 开始初始化...
+[2026-08-23 22:21:29] [INFO] 内置 Skill 已拷贝: code-review
+[2026-08-23 22:21:29] [INFO] 内置 Skill 已拷贝: unit-test-gen
+[2026-08-23 22:21:29] [INFO] 内置 Skill 已拷贝: refactor
+[2026-08-23 22:21:29] [INFO] 内置 Skill 已拷贝: bug-fix
+[2026-08-23 22:21:29] [INFO] 内置 Skill 已拷贝: commit-msg
+[2026-08-23 22:21:29] [INFO] I18nManager: 已加载语言包 en (362 条)
+[2026-08-23 22:21:29] [INFO] I18nManager: 已加载语言包 zh_CN (362 条)
+[2026-08-23 22:21:29] [INFO] I18nManager: 已加载语言包 ja_JP (362 条)
+[2026-08-23 22:21:29] [INFO] I18nManager: 初始化完成，当前语言 = en (保存的偏好 = null)
+[2026-08-23 22:21:29] [INFO] Skills 刷新完成: 磁盘 5 个, 数据库 0 个
+[2026-08-23 22:21:29] [INFO] Skills 启动: 初始化完成
+[2026-08-23 22:31:55] [INFO] Skiko [timing] awaitInit: already done, 0ms wait
+[2026-08-23 22:31:56] [INFO] WebpResourceLoader: 成功加载 WebP 资源 image/idle.webp，大小 3606856 bytes
+[2026-08-23 22:31:56] [INFO] WebpResourceLoader: 成功加载 WebP 资源 image/thinking.webp，大小 1801410 bytes
+[2026-08-23 22:31:56] [INFO] WebpResourceLoader: 成功加载 WebP 资源 image/searching.webp，大小 1958904 bytes
+[2026-08-23 22:31:56] [INFO] WebpResourceLoader: 成功加载 WebP 资源 image/editing.webp，大小 922868 bytes
+[2026-08-23 22:32:12] [INFO] WebpResourceLoader: image/idle.webp 全帧解码完成，共 210 帧
+[2026-08-23 22:32:13] [INFO] WebpResourceLoader: image/idle.webp 全帧解码完成，共 210 帧
+[2026-08-23 22:32:25] [INFO] Skiko renderApi=DIRECT3D (os=windows 11, arch=amd64, override=null) [init fast-path 0,4ms]
+[2026-08-23 22:32:25] [INFO] Skiko Library class source=unknown
+[2026-08-23 22:32:26] [INFO] Skiko [timing]   - read native resource (skiko-windows-x64.dll, 17315328 bytes): 152,8ms
+[2026-08-23 22:32:26] [INFO] Skiko [timing]   - write native file (skiko-windows-x64-overcode-0.8.18-p15028.dll): 79,5ms
+[2026-08-23 22:32:26] [INFO] Skiko Runtime.load0(Library.class) OK: C:\Users\NOTEBO~1\AppData\Local\Temp\overcode-skiko-0.8.18\skiko-windows-x64-overcode-0.8.18-p15028.dll
+[2026-08-23 22:32:26] [INFO] Skiko [timing]   - Runtime.load0 native: 165,5ms
+[2026-08-23 22:32:26] [INFO] Skiko extracted sibling resource: C:\Users\NOTEBO~1\AppData\Local\Temp\overcode-skiko-0.8.18\icudtl.dat
+[2026-08-23 22:32:26] [INFO] Skiko Library.loaded marked true
+[2026-08-23 22:32:26] [INFO] Skiko plugin native loaded: C:\Users\NOTEBO~1\AppData\Local\Temp\overcode-skiko-0.8.18\skiko-windows-x64-overcode-0.8.18-p15028.dll
+[2026-08-23 22:32:26] [INFO] Skiko [timing] preload native library: 570,6ms
+[2026-08-23 22:32:26] [INFO] Skiko Direct3DSwingRedrawer source=?
+[2026-08-23 22:32:26] [INFO] Skiko [timing] DIRECT3D probe: 100,2ms (ok=true)
+[2026-08-23 22:32:26] [INFO] Skiko DIRECT3D native probe OK (plugin DLL linked)
+[2026-08-23 22:32:26] [INFO] Skiko [timing] async init TOTAL: 671,4ms
+[2026-08-23 22:32:27] [INFO] Skiko [timing] awaitInit: already done, 0ms wait
+[2026-08-23 22:32:28] [INFO] WebpResourceLoader: 成功加载 WebP 资源 image/idle.webp，大小 3606856 bytes
+[2026-08-23 22:32:29] [INFO] WebpResourceLoader: 成功加载 WebP 资源 image/thinking.webp，大小 1801410 bytes
+[2026-08-23 22:32:29] [INFO] WebpResourceLoader: 成功加载 WebP 资源 image/searching.webp，大小 1958904 bytes
+[2026-08-23 22:32:29] [INFO] WebpResourceLoader: 成功加载 WebP 资源 image/editing.webp，大小 922868 bytes
+[2026-08-23 22:32:47] [INFO] WebpResourceLoader: image/idle.webp 全帧解码完成，共 210 帧
+[2026-08-23 22:32:48] [INFO] Skills 启动: 开始初始化...
+[2026-08-23 22:32:48] [INFO] I18nManager: 已加载语言包 en (362 条)
+[2026-08-23 22:32:48] [INFO] I18nManager: 已加载语言包 zh_CN (362 条)
+[2026-08-23 22:32:48] [INFO] I18nManager: 已加载语言包 ja_JP (362 条)
+[2026-08-23 22:32:48] [INFO] I18nManager: 初始化完成，当前语言 = en (保存的偏好 = null)
+[2026-08-23 22:32:48] [INFO] Skills 刷新完成: 磁盘 5 个, 数据库 5 个
+[2026-08-23 22:32:48] [INFO] Skills 启动: 初始化完成
+[2026-08-23 22:33:12] [INFO] WebpResourceLoader: image/idle.webp 全帧解码完成，共 210 帧
+[2026-08-23 22:33:16] [INFO] [MCP-Manager] getAllTools() returns empty: MCP globally disabled
+[2026-08-23 22:33:17] [INFO] AnimationOverlay: 开始播放 THINKING
+[2026-08-23 22:33:17] [ERROR] LLM 调用产生异常
+com.github.bboygf.over_code.llm.LLMException: 未配置模型，请先在设置中配置并激活一个模型
+	at com.github.bboygf.over_code.llm.LLMService.chatStream(LLMService.kt:113)
+	at com.github.bboygf.over_code.ui.home.ChatTurnEngine.processChatTurn(ChatTurnEngine.kt:105)
+	at com.github.bboygf.over_code.ui.home.ChatTurnEngine$processChatTurn$1.invokeSuspend(ChatTurnEngine.kt)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.internal.SoftLimitedDispatcher$Worker.run(SoftLimitedDispatcher.kt:130)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:610)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:1188)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:775)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:762)
+
+[2026-08-23 22:33:17] [INFO] AnimationOverlay: 立即停止可打断动画 THINKING
+[2026-08-23 22:33:40] [INFO] Skiko [timing] awaitInit: already done, 0ms wait

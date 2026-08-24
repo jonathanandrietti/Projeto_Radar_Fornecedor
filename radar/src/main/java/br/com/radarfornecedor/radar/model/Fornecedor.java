@@ -56,6 +56,9 @@ public class Fornecedor {
     @Column(name = "longitude")
     private Double longitude;
 
+    @Column(name = "CodCidade")
+    private Long codCidade;
+
     public Fornecedor() {}
 
     public Fornecedor(Long id, String nome, String cnpj, String status, Double pontuacaoRisco) {
@@ -108,4 +111,7 @@ public class Fornecedor {
 
     public Double getLongitude() { return longitude; }
     public void setLongitude(Double longitude) { this.longitude = longitude; }
+
+    public Long getCodCidade() { return codCidade; }
+    public void setCodCidade(Long codCidade) { this.codCidade = codCidade; }
 }
