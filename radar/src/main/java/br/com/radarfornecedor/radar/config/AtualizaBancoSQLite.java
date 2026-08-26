@@ -106,6 +106,70 @@ public class AtualizaBancoSQLite implements ApplicationRunner {
             executarSql("INSERT OR IGNORE INTO Usuarios (Username, Senha, Tipo) VALUES ('admin', 'admin', 'ADMIN')");
         });
 
+        aplicarAtualizacao(22, "Adiciona coluna Ativo a Usuarios", () -> {
+            adicionarColunaSeNaoExistir("Usuarios", "Ativo", "INTEGER DEFAULT 1");
+        });
+
+        aplicarAtualizacao(23, "Adiciona colunas booleanas de tipos a Usuarios", () -> {
+            adicionarColunaSeNaoExistir("Usuarios", "Fornecedor", "INTEGER DEFAULT 0");
+            adicionarColunaSeNaoExistir("Usuarios", "Comprador", "INTEGER DEFAULT 0");
+            adicionarColunaSeNaoExistir("Usuarios", "Representante", "INTEGER DEFAULT 0");
+            adicionarColunaSeNaoExistir("Usuarios", "Cliente", "INTEGER DEFAULT 0");
+            
+            // Inicializar dados existentes
+            executarSql("UPDATE Usuarios SET Fornecedor = 1 WHERE Tipo = 'FORNECEDOR'");
+            executarSql("UPDATE Usuarios SET Comprador = 1 WHERE Tipo = 'COMPRADOR'");
+            executarSql("UPDATE Usuarios SET Representante = 1 WHERE Tipo = 'REPRESENTANTE'");
+            executarSql("UPDATE Usuarios SET Cliente = 1 WHERE Tipo = 'CLIENTE'");
+        });
+
+        aplicarAtualizacao(24, "Adiciona colunas AceitaCPF e CNPJ em Fornecedores e Representantes", () -> {
+            adicionarColunaSeNaoExistir("Fornecedores", "AceitaCPF", "INTEGER DEFAULT 0");
+            adicionarColunaSeNaoExistir("Representantes", "Cnpj", "TEXT");
+            adicionarColunaSeNaoExistir("Representantes", "CnpjFornecedor", "TEXT");
+        });
+
+        aplicarAtualizacao(25, "Adiciona CpfCnpj e TipoPessoa em Clientes, e CodEmpresa em Representantes", () -> {
+            adicionarColunaSeNaoExistir("Clientes", "CpfCnpj", "TEXT");
+            adicionarColunaSeNaoExistir("Clientes", "TipoPessoa", "TEXT"); // 'PF' ou 'PJ'
+            adicionarColunaSeNaoExistir("Representantes", "CodEmpresa", "INTEGER");
+        });
+
+        aplicarAtualizacao(26, "Carga inicial de Clientes e Representantes para teste", () -> {
+            executarSql("INSERT OR IGNORE INTO Clientes (Nome, status, cpf_cnpj, tipo_pessoa) VALUES ('João da Silva (PF)', 'ATIVO', '12345678901', 'PF')");
+            executarSql("INSERT OR IGNORE INTO Clientes (Nome, status, cpf_cnpj, tipo_pessoa) VALUES ('Empresa Alfa (PJ)', 'ATIVO', '12345678000199', 'PJ')");
+            executarSql("INSERT OR IGNORE INTO Clientes (Nome, status, cpf_cnpj, tipo_pessoa) VALUES ('Maria Souza (PF)', 'ATIVO', '98765432100', 'PF')");
+            executarSql("INSERT OR IGNORE INTO Clientes (Nome, status, cpf_cnpj, tipo_pessoa) VALUES ('Empresa Beta (PJ)', 'ATIVO', '98765432000188', 'PJ')");
+            
+            // Fornecedor que aceita CPF
+            executarSql("INSERT OR IGNORE INTO Fornecedores (ID, Empresa, CNPJ, status, pontuacao_risco, AceitaCPF) VALUES (1, 'Fornecedor de Teste CPF', '12345678000100', 'APROVADO', 5.0, 1)");
+            // Fornecedor que não aceita CPF
+            executarSql("INSERT OR IGNORE INTO Fornecedores (ID, Empresa, CNPJ, status, pontuacao_risco, AceitaCPF) VALUES (2, 'Fornecedor Sem CPF', '98765432000100', 'APROVADO', 3.0, 0)");
+
+            // Associar representantes aos fornecedores
+            executarSql("INSERT OR IGNORE INTO Representantes (Nome, status, Cnpj, cnpj_fornecedor, cod_empresa) VALUES ('Representante Alfa', 'ATIVO', '11122233344', '12345678000100', 1)");
+            executarSql("INSERT OR IGNORE INTO Representantes (Nome, status, Cnpj, cnpj_fornecedor, cod_empresa) VALUES ('Representante Beta', 'ATIVO', '55566677788', '98765432000100', 2)");
+            
+            // Criar Compradores para teste
+            executarSql("INSERT OR IGNORE INTO Compradores (ID, Empresa, CNPJ, status, pontuacao_risco) VALUES (1, 'Comprador de Teste 1', '11223344000199', 'APROVADO', 4.5)");
+            executarSql("INSERT OR IGNORE INTO Compradores (ID, Empresa, CNPJ, status, pontuacao_risco) VALUES (2, 'Comprador de Teste 2', '55667788000199', 'APROVADO', 2.0)");
+
+            // Criar Usuários vinculados a esses Fornecedores (com o username sendo o CNPJ ou o nome)
+            executarSql("INSERT OR IGNORE INTO Usuarios (Username, Senha, Tipo, Fornecedor) VALUES ('12345678000100', '123', 'FORNECEDOR', 1)");
+            executarSql("INSERT OR IGNORE INTO Usuarios (Username, Senha, Tipo, Fornecedor) VALUES ('98765432000100', '123', 'FORNECEDOR', 1)");
+            
+            // Criar Usuário vinculado ao Comprador (com o username sendo o CNPJ)
+            executarSql("INSERT OR IGNORE INTO Usuarios (Username, Senha, Tipo, Comprador) VALUES ('11223344000199', '123', 'COMPRADOR', 1)");
+
+            // Criar Usuários vinculados aos Representantes (com o username sendo o CNPJ do representante)
+            executarSql("INSERT OR IGNORE INTO Usuarios (Username, Senha, Tipo, Representante) VALUES ('11122233344', '123', 'REPRESENTANTE', 1)");
+            executarSql("INSERT OR IGNORE INTO Usuarios (Username, Senha, Tipo, Representante) VALUES ('55566677788', '123', 'REPRESENTANTE', 1)");
+
+            // Criar Usuários vinculados aos Clientes (com o username sendo o CPF do cliente)
+            executarSql("INSERT OR IGNORE INTO Usuarios (Username, Senha, Tipo, Cliente) VALUES ('12345678901', '123', 'CLIENTE', 1)");
+            executarSql("INSERT OR IGNORE INTO Usuarios (Username, Senha, Tipo, Cliente) VALUES ('98765432100', '123', 'CLIENTE', 1)");
+        });
+
         // --- CRIAR TABELA -----------------------------------------------------
         // Descomente, ajuste e use sempre uma nova versão.
         // aplicarAtualizacao(1, "Cria tabela Mercadorias", () ->

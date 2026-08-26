@@ -26,8 +26,8 @@ public class CompradorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Comprador>> listarTodos() {
-        List<Comprador> lista = compradorService.listarTodos();
+    public ResponseEntity<List<Comprador>> listarTodos(jakarta.servlet.http.HttpSession session) {
+        List<Comprador> lista = compradorService.listarTodos(session);
         return ResponseEntity.ok(lista);
     }
 

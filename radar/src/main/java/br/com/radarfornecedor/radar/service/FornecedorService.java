@@ -1,7 +1,9 @@
 package br.com.radarfornecedor.radar.service;
 
 import br.com.radarfornecedor.radar.model.Fornecedor;
+import br.com.radarfornecedor.radar.model.Representante;
 import br.com.radarfornecedor.radar.repository.FornecedorRepository;
+import br.com.radarfornecedor.radar.repository.RepresentanteRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,9 +13,11 @@ import java.util.Optional;
 public class FornecedorService {
 
     private final FornecedorRepository fornecedorRepository;
+    private final RepresentanteRepository representanteRepository;
 
-    public FornecedorService(FornecedorRepository fornecedorRepository) {
+    public FornecedorService(FornecedorRepository fornecedorRepository, RepresentanteRepository representanteRepository) {
         this.fornecedorRepository = fornecedorRepository;
+        this.representanteRepository = representanteRepository;
     }
 
     public Fornecedor cadastrar(Fornecedor fornecedor) {
@@ -36,6 +40,59 @@ public class FornecedorService {
         return fornecedorRepository.findAll();
     }
 
+    public List<Fornecedor> listarTodos(jakarta.servlet.http.HttpSession session) {
+        br.com.radarfornecedor.radar.model.Usuario usuario = (br.com.radarfornecedor.radar.model.Usuario) session.getAttribute("usuario");
+        if (usuario != null) {
+            if (usuario.getTipo() == br.com.radarfornecedor.radar.model.TipoUsuario.FORNECEDOR) {
+                String cnpjClean = usuario.getUsername().replaceAll("\\D", "");
+                Optional<Fornecedor> fornecedorOpt = fornecedorRepository.findByCnpj(cnpjClean);
+                
+                // Fallback for default 'fornecedor' login
+                if (fornecedorOpt.isEmpty()) {
+                    fornecedorOpt = fornecedorRepository.findAll().stream().findFirst();
+                }
+
+                if (fornecedorOpt.isPresent()) {
+                    return List.of(fornecedorOpt.get());
+                } else {
+                    return List.of();
+                }
+            } else if (usuario.getTipo() == br.com.radarfornecedor.radar.model.TipoUsuario.REPRESENTANTE) {
+                String cnpjClean = usuario.getUsername().replaceAll("\\D", "");
+                // Find Representative matching CNPJ
+                Optional<Representante> repOpt = representanteRepository.findAll().stream()
+                        .filter(r -> r.getCnpj() != null && r.getCnpj().replaceAll("\\D", "").equals(cnpjClean))
+                        .findFirst();
+                
+                // Fallback for default 'representante' login
+                if (repOpt.isEmpty()) {
+                    repOpt = representanteRepository.findAll().stream().findFirst();
+                }
+
+                if (repOpt.isPresent()) {
+                    Representante rep = repOpt.get();
+                    String cnpjFornecedor = rep.getCnpjFornecedor();
+                    if (cnpjFornecedor != null) {
+                        Optional<Fornecedor> fornecedorOpt = fornecedorRepository.findByCnpj(cnpjFornecedor.replaceAll("\\D", ""));
+                        if (fornecedorOpt.isPresent()) {
+                            return List.of(fornecedorOpt.get());
+                        }
+                    }
+                    // Fallback to first Supplier if represented supplier is not found or null
+                    return fornecedorRepository.findAll().stream().findFirst().map(List::of).orElse(List.of());
+                } else {
+                    return List.of();
+                }
+            } else if (usuario.getTipo() == br.com.radarfornecedor.radar.model.TipoUsuario.CLIENTE) {
+                // Return only suppliers who accept CPF
+                return fornecedorRepository.findAll().stream()
+                        .filter(f -> Boolean.TRUE.equals(f.getAceitaCpf()))
+                        .toList();
+            }
+        }
+        return fornecedorRepository.findAll();
+    }
+
     public Optional<Fornecedor> buscarPorId(Long id) {
         return fornecedorRepository.findById(id);
     }
@@ -44,9 +101,27 @@ public class FornecedorService {
         return fornecedorRepository.findByCnpj(cnpj);
     }
 
-    public Fornecedor atualizar(Long id, Fornecedor dadosNovos) {
+    public Fornecedor atualizar(Long id, Fornecedor dadosNovos, jakarta.servlet.http.HttpSession session) {
         Fornecedor existente = fornecedorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Fornecedor não encontrado com o ID: " + id));
+
+        br.com.radarfornecedor.radar.model.Usuario usuario = (br.com.radarfornecedor.radar.model.Usuario) session.getAttribute("usuario");
+        if (usuario != null && usuario.getTipo() == br.com.radarfornecedor.radar.model.TipoUsuario.FORNECEDOR) {
+            String cnpjClean = usuario.getUsername().replaceAll("\\D", "");
+            Optional<Fornecedor> fornecedorOpt = fornecedorRepository.findByCnpj(cnpjClean);
+            
+            // Fallback for default 'fornecedor' login
+            if (fornecedorOpt.isEmpty()) {
+                fornecedorOpt = fornecedorRepository.findAll().stream().findFirst();
+            }
+
+            if (fornecedorOpt.isPresent()) {
+                Fornecedor fornecedor = fornecedorOpt.get();
+                if (!fornecedor.getId().equals(id)) {
+                    throw new RuntimeException("Você só tem permissão para editar o seu próprio cadastro de fornecedor.");
+                }
+            }
+        }
 
         Optional<Fornecedor> comMesmoCnpj = fornecedorRepository.findByCnpj(dadosNovos.getCnpj());
         if (comMesmoCnpj.isPresent() && !comMesmoCnpj.get().getId().equals(id)) {
@@ -74,9 +149,9 @@ public class FornecedorService {
     }
 
     public void excluir(Long id) {
-        if (!fornecedorRepository.existsById(id)) {
-            throw new RuntimeException("Fornecedor não encontrado com o ID: " + id);
-        }
-        fornecedorRepository.deleteById(id);
+        Fornecedor existente = fornecedorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Fornecedor não encontrado com o ID: " + id));
+        existente.setStatus("INATIVO");
+        fornecedorRepository.save(existente);
     }
 }

@@ -26,6 +26,21 @@ public class Usuario {
     @Column(name = "Tipo", nullable = false)
     private TipoUsuario tipo;
 
+    @Column(name = "Ativo", nullable = false)
+    private Boolean ativo = true;
+
+    @Column(name = "Fornecedor")
+    private Boolean fornecedor = false;
+
+    @Column(name = "Comprador")
+    private Boolean comprador = false;
+
+    @Column(name = "Representante")
+    private Boolean representante = false;
+
+    @Column(name = "Cliente")
+    private Boolean cliente = false;
+
     public Usuario() {}
 
     public Usuario(String username, String senha, TipoUsuario tipo) {
@@ -45,4 +60,19 @@ public class Usuario {
 
     public TipoUsuario getTipo() { return tipo; }
     public void setTipo(TipoUsuario tipo) { this.tipo = tipo; }
+
+    public Boolean getAtivo() { return ativo; }
+    public void setAtivo(Boolean ativo) { this.ativo = ativo; }
+
+    public Boolean getFornecedor() { return fornecedor; }
+    public void setFornecedor(Boolean fornecedor) { this.fornecedor = fornecedor; }
+
+    public Boolean getComprador() { return comprador; }
+    public void setComprador(Boolean comprador) { this.comprador = comprador; }
+
+    public Boolean getRepresentante() { return representante; }
+    public void setRepresentante(Boolean representante) { this.representante = representante; }
+
+    public Boolean getCliente() { return cliente; }
+    public void setCliente(Boolean cliente) { this.cliente = cliente; }
 }

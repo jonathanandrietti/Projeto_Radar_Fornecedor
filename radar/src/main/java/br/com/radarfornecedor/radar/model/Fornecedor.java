@@ -58,6 +58,9 @@ public class Fornecedor {
 
     @Column(name = "CodCidade")
     private Long codCidade;
+    
+    @Column(name = "AceitaCPF")
+    private Boolean aceitaCpf;
 
     public Fornecedor() {}
 
@@ -114,4 +117,7 @@ public class Fornecedor {
 
     public Long getCodCidade() { return codCidade; }
     public void setCodCidade(Long codCidade) { this.codCidade = codCidade; }
+
+    public Boolean getAceitaCpf() { return aceitaCpf; }
+    public void setAceitaCpf(Boolean aceitaCpf) { this.aceitaCpf = aceitaCpf; }
 }

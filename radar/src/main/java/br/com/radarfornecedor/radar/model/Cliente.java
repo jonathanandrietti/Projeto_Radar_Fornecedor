@@ -19,12 +19,26 @@ public class Cliente {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "CpfCnpj")
+    private String cpfCnpj;
+
+    @Column(name = "TipoPessoa")
+    private String tipoPessoa;
+
     public Cliente() {}
 
     public Cliente(Long id, String nome, String status) {
         this.id = id;
         this.nome = nome;
         this.status = status;
+    }
+
+    public Cliente(Long id, String nome, String status, String cpfCnpj, String tipoPessoa) {
+        this.id = id;
+        this.nome = nome;
+        this.status = status;
+        this.cpfCnpj = cpfCnpj;
+        this.tipoPessoa = tipoPessoa;
     }
 
     public Long getId() { return id; }
@@ -35,4 +49,10 @@ public class Cliente {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getCpfCnpj() { return cpfCnpj; }
+    public void setCpfCnpj(String cpfCnpj) { this.cpfCnpj = cpfCnpj; }
+
+    public String getTipoPessoa() { return tipoPessoa; }
+    public void setTipoPessoa(String tipoPessoa) { this.tipoPessoa = tipoPessoa; }
 }

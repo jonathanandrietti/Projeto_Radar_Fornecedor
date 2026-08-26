@@ -1,4 +1,10 @@
 console.log('script.js carregado!');
+
+// Oculta o nome do arquivo HTML e caminhos adicionais na barra de endereço para manter a URL limpa
+if (window.location.pathname !== '/' && window.location.pathname !== '/login.html') {
+    window.history.replaceState({}, '', '/');
+}
+
 const configuracao = document.body.dataset;
 const endpoint = `/api/${configuracao.entidade}`;
 let registros = [];
@@ -21,7 +27,7 @@ function resetarTimerInatividade() {
     
     // Define o novo timeout
     tempoInatividade = setTimeout(() => {
-        logarAutomaticamente("Você ficou inativo por mais de 30 minutos.");
+        logarAutomaticamente("Você ficou inativo por mais de 2 minutos.");
     }, INATIVIDADE_TIMEOUT_MS);
 }
 
@@ -88,11 +94,64 @@ function exibirInfoUsuario() {
     }
 }
 
+function aplicarControlesDeAcesso() {
+    try {
+        const usuarioJson = localStorage.getItem('usuario');
+        if (!usuarioJson) return;
+
+        const user = JSON.parse(usuarioJson);
+        const tipo = user.tipo;
+
+        // 1. Controlar links na Sidebar
+        const links = document.querySelectorAll('aside nav a');
+        links.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href) {
+                if (href.includes('admin.html') && tipo !== 'ADMIN') {
+                    link.style.display = 'none';
+                }
+                if (href.includes('clientes.html') && tipo === 'COMPRADOR') {
+                    link.style.display = 'none';
+                }
+                if (href.includes('compradores.html') && tipo === 'CLIENTE') {
+                    link.style.display = 'none';
+                }
+            }
+        });
+
+        // 2. Controlar Botão "Cadastrar" na página
+        const botoesCadastrar = document.querySelectorAll('button[onclick="abrirFormulario()"]');
+        botoesCadastrar.forEach(botao => {
+            let permitir = false;
+            if (tipo === 'ADMIN' || tipo === 'EDICAO') {
+                permitir = true;
+            } else if (tipo === 'FORNECEDOR' && configuracao.entidade === 'representantes') {
+                permitir = true;
+            }
+
+            if (!permitir) {
+                botao.style.display = 'none';
+            } else {
+                botao.style.display = 'inline-flex';
+            }
+        });
+    } catch (e) {
+        console.error('Erro ao aplicar controles de acesso:', e);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOMContentLoaded disparado');
     console.log('container user-info:', document.getElementById('user-info'));
     carregar();
     exibirInfoUsuario();
+    aplicarControlesDeAcesso();
+    
+    // Bind CNPJ blur listener dynamically
+    const cnpjEl = document.getElementById('cnpj');
+    if (cnpjEl) {
+        cnpjEl.addEventListener('blur', consultarCnpj);
+    }
 });
 
 async function carregar() {
@@ -114,18 +173,115 @@ function filtrar() {
 }
 
 function linha(item) {
+    // Obter tipo de usuário logado para verificar permissões de edição
+    let tipo = '';
+    try {
+        const usuarioJson = localStorage.getItem('usuario');
+        if (usuarioJson) {
+            tipo = JSON.parse(usuarioJson).tipo;
+        }
+    } catch (e) {
+        console.error('Erro ao verificar tipo de usuário logado:', e);
+    }
+
+    // Regras de botões de ação na tabela conforme o tipo de usuário e página atual
+    let botoesAcao = '';
+    const isRepresentantesPage = configuracao.entidade === 'representantes';
+    const isFornecedoresPage = configuracao.entidade === 'fornecedores';
+    const isCompradoresPage = configuracao.entidade === 'compradores';
+    const isClientesPage = configuracao.entidade === 'clientes';
+
+    if (tipo === 'ADMIN') {
+        botoesAcao = `
+            <button onclick="editar(${item.id})" class="mr-2 text-sky-700 hover:text-sky-900 transition" title="Editar"><i class="fa-solid fa-pen"></i></button>
+            <button onclick="excluirRegistro(${item.id})" class="text-rose-700 hover:text-rose-900 transition" title="Inativar"><i class="fa-solid fa-ban"></i></button>
+        `;
+    } else if (tipo === 'EDICAO' || tipo === 'MANUTENCAO') {
+        botoesAcao = `
+            <button onclick="editar(${item.id})" class="mr-2 text-sky-700 hover:text-sky-900 transition" title="Editar"><i class="fa-solid fa-pen"></i></button>
+        `;
+    } else if (tipo === 'FORNECEDOR') {
+        if (isRepresentantesPage) {
+            botoesAcao = `
+                <button onclick="editar(${item.id})" class="mr-2 text-sky-700 hover:text-sky-900 transition" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                <button onclick="excluirRegistro(${item.id})" class="text-rose-700 hover:text-rose-900 transition" title="Inativar"><i class="fa-solid fa-ban"></i></button>
+            `;
+        } else if (isFornecedoresPage) {
+            botoesAcao = `
+                <button onclick="editar(${item.id})" class="mr-2 text-sky-700 hover:text-sky-900 transition" title="Editar"><i class="fa-solid fa-pen"></i></button>
+            `;
+        } else {
+            botoesAcao = `<span class="text-xs text-slate-400 italic">Apenas visualização</span>`;
+        }
+    } else if (tipo === 'COMPRADOR' && isCompradoresPage) {
+        botoesAcao = `
+            <button onclick="editar(${item.id})" class="mr-2 text-sky-700 hover:text-sky-900 transition" title="Editar"><i class="fa-solid fa-pen"></i></button>
+        `;
+    } else if (tipo === 'CLIENTE' && isClientesPage) {
+        botoesAcao = `
+            <button onclick="editar(${item.id})" class="mr-2 text-sky-700 hover:text-sky-900 transition" title="Editar"><i class="fa-solid fa-pen"></i></button>
+        `;
+    } else if (tipo === 'REPRESENTANTE' && isRepresentantesPage) {
+        botoesAcao = `
+            <button onclick="editar(${item.id})" class="mr-2 text-sky-700 hover:text-sky-900 transition" title="Editar"><i class="fa-solid fa-pen"></i></button>
+        `;
+    } else {
+        botoesAcao = `<span class="text-xs text-slate-400 italic">Apenas visualização</span>`;
+    }
+
+    if (configuracao.entidade === 'representantes') {
+        return `<tr class="hover:bg-slate-50">
+            <td class="p-4 font-medium">${item.id}</td>
+            <td class="p-4 font-semibold">${escapar(item.nome)}</td>
+            <td class="p-4">${formatarCnpj(item.cnpj)}</td>
+            <td class="p-4">${formatarCnpj(item.cnpjFornecedor)}</td>
+            <td class="p-4">${item.codEmpresa || 'Não informado'}</td>
+            <td class="p-4"><span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold">${formatarStatus(item.status)}</span></td>
+            <td class="p-4 text-center">${botoesAcao}</td>
+        </tr>`;
+    }
+
+    if (configuracao.entidade === 'clientes') {
+        const docFormatado = item.cpfCnpj ? (item.cpfCnpj.length === 11 ? item.cpfCnpj.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4') : formatarCnpj(item.cpfCnpj)) : 'Não informado';
+        return `<tr class="hover:bg-slate-50">
+            <td class="p-4 font-medium">${item.id}</td>
+            <td class="p-4 font-semibold">${escapar(item.nome)}</td>
+            <td class="p-4">${docFormatado}</td>
+            <td class="p-4"><span class="rounded-full px-2 py-1 text-xs font-bold ${item.tipoPessoa === 'PF' ? 'bg-teal-100 text-teal-800' : 'bg-indigo-100 text-indigo-800'}">${item.tipoPessoa || 'N/A'}</span></td>
+            <td class="p-4"><span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold">${formatarStatus(item.status)}</span></td>
+            <td class="p-4 text-center">${botoesAcao}</td>
+        </tr>`;
+    }
+
     const endereco = [item.logradouro, item.numero].filter(Boolean).join(', ');
     const cidade = [item.cidade, item.estado].filter(Boolean).join('/');
-    return `<tr class="hover:bg-slate-50"><td class="p-4 font-medium">${item.id}</td><td class="p-4 font-semibold">${escapar(item.nome)}</td><td class="p-4">${formatarCnpj(item.cnpj)}</td><td class="p-4"><span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold">${formatarStatus(item.status)}</span></td><td class="p-4">${Number(item.pontuacaoRisco || 0).toLocaleString('pt-BR', {minimumFractionDigits: 1})}</td><td class="p-4 text-slate-600">${escapar(endereco || 'Não informado')}<br><span class="text-xs">${escapar(cidade)}</span></td><td class="p-4 text-center"><button onclick="editar(${item.id})" class="mr-2 text-sky-700" title="Editar"><i class="fa-solid fa-pen"></i></button><button onclick="excluirRegistro(${item.id})" class="text-rose-700" title="Excluir"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+
+    return `<tr class="hover:bg-slate-50">
+        <td class="p-4 font-medium">${item.id}</td>
+        <td class="p-4 font-semibold">${escapar(item.nome)}</td>
+        <td class="p-4">${formatarCnpj(item.cnpj)}</td>
+        <td class="p-4"><span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold">${formatarStatus(item.status)}</span></td>
+        <td class="p-4">${Number(item.pontuacaoRisco || 0).toLocaleString('pt-BR', {minimumFractionDigits: 1})}</td>
+        <td class="p-4 text-slate-600">${escapar(endereco || 'Não informado')}<br><span class="text-xs">${escapar(cidade)}</span></td>
+        <td class="p-4 text-center">${botoesAcao}</td>
+    </tr>`;
 }
 
 function atualizarIndicadores() {
     const total = registros.length;
     const media = total ? registros.reduce((s, i) => s + Number(i.pontuacaoRisco || 0), 0) / total : 0;
-    document.getElementById('total').textContent = total;
-    document.getElementById('analise').textContent = registros.filter(i => i.status === 'EM_ANALISE').length;
-    document.getElementById('media').textContent = media.toLocaleString('pt-BR', {minimumFractionDigits: 1, maximumFractionDigits: 1});
-    document.getElementById('criticos').textContent = registros.filter(i => Number(i.pontuacaoRisco || 0) >= 7).length;
+    
+    const totalEl = document.getElementById('total');
+    if (totalEl) totalEl.textContent = total;
+    
+    const analiseEl = document.getElementById('analise');
+    if (analiseEl) analiseEl.textContent = registros.filter(i => i.status === 'EM_ANALISE').length;
+    
+    const mediaEl = document.getElementById('media');
+    if (mediaEl) mediaEl.textContent = media.toLocaleString('pt-BR', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+    
+    const criticosEl = document.getElementById('criticos');
+    if (criticosEl) criticosEl.textContent = registros.filter(i => Number(i.pontuacaoRisco || 0) >= 7).length;
 }
 
 function abrirFormulario() {
@@ -136,26 +292,59 @@ function abrirFormulario() {
 function fecharFormulario() { document.getElementById('modal').classList.add('hidden'); }
 function editar(id) {
     const item = registros.find(i => i.id === id); if (!item) return;
-    ['id','codCidade','nome','status','cep','logradouro','numero','complemento','bairro','cidade','estado'].forEach(campo => document.getElementById(campo).value = item[campo] || '');
-    document.getElementById('cnpj').value = formatarCnpj(item.cnpj); document.getElementById('pontuacao').value = item.pontuacaoRisco || 0;
+    
+    ['id','codCidade','nome','status','cep','logradouro','numero','complemento','bairro','cidade','estado','cnpj','cnpjFornecedor','codEmpresa','cpfCnpj','tipoPessoa'].forEach(campo => {
+        const el = document.getElementById(campo);
+        if (el) el.value = item[campo] || '';
+    });
+    
+    const pontuacao = document.getElementById('pontuacao');
+    if (pontuacao) pontuacao.value = item.pontuacaoRisco || 0;
+    
+    const cnpjEl = document.getElementById('cnpj');
+    if (cnpjEl && item.cnpj) cnpjEl.value = formatarCnpj(item.cnpj);
+    
+    const cnpjFornecedorEl = document.getElementById('cnpjFornecedor');
+    if (cnpjFornecedorEl && item.cnpjFornecedor) cnpjFornecedorEl.value = formatarCnpj(item.cnpjFornecedor);
+    
     document.getElementById('titulo-form').textContent = `Editar ${configuracao.singular.toLowerCase()}`;
     document.getElementById('modal').classList.remove('hidden');
 }
 async function salvar(evento) {
     evento.preventDefault();
     const id = document.getElementById('id').value;
-    const dados = Object.fromEntries(['nome','status','cep','logradouro','numero','complemento','bairro','cidade','estado','latitude','longitude'].map(campo => [campo, document.getElementById(campo).value.trim()]));
-    dados.codCidade = document.getElementById('codCidade').value || null;
-    dados.cnpj = document.getElementById('cnpj').value.replace(/\D/g, ''); dados.pontuacaoRisco = Number(document.getElementById('pontuacao').value || 0);
+    
+    let dados = {};
+    if (configuracao.entidade === 'representantes') {
+        dados = {
+            nome: document.getElementById('nome').value.trim(),
+            status: document.getElementById('status').value,
+            cnpj: document.getElementById('cnpj').value.replace(/\D/g, ''),
+            cnpjFornecedor: document.getElementById('cnpjFornecedor').value.replace(/\D/g, ''),
+            codEmpresa: document.getElementById('codEmpresa').value ? Number(document.getElementById('codEmpresa').value) : null
+        };
+    } else if (configuracao.entidade === 'clientes') {
+        dados = {
+            nome: document.getElementById('nome').value.trim(),
+            status: document.getElementById('status').value,
+            cpfCnpj: document.getElementById('cpfCnpj').value.replace(/\D/g, ''),
+            tipoPessoa: document.getElementById('tipoPessoa').value
+        };
+    } else {
+        dados = Object.fromEntries(['nome','status','cep','logradouro','numero','complemento','bairro','cidade','estado','latitude','longitude'].map(campo => [campo, document.getElementById(campo).value.trim()]));
+        dados.codCidade = document.getElementById('codCidade').value || null;
+        dados.cnpj = document.getElementById('cnpj').value.replace(/\D/g, ''); dados.pontuacaoRisco = Number(document.getElementById('pontuacao').value || 0);
+    }
+
     try {
         const resposta = await fetch(id ? `${endpoint}/${id}` : endpoint, {method: id ? 'PUT' : 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(dados)});
-        if (!resposta.ok) throw new Error('Não foi possível salvar. Verifique se o CNPJ é válido e não está duplicado.');
+        if (!resposta.ok) throw new Error('Não foi possível salvar. Verifique se os dados são válidos.');
         fecharFormulario(); mostrarAlerta(`${configuracao.singular} salvo com sucesso.`); carregar();
     } catch (erro) { mostrarAlerta(erro.message, true); }
 }
 async function excluirRegistro(id) {
-    if (!confirm(`Excluir este ${configuracao.singular.toLowerCase()}? Esta ação não pode ser desfeita.`)) return;
-    try { const resposta = await fetch(`${endpoint}/${id}`, {method:'DELETE'}); if (!resposta.ok) throw new Error('Não foi possível excluir o cadastro.'); mostrarAlerta('Cadastro excluído.'); carregar(); } catch (erro) { mostrarAlerta(erro.message, true); }
+    if (!confirm(`Inativar este ${configuracao.singular.toLowerCase()}? O registro será marcado como INATIVO.`)) return;
+    try { const resposta = await fetch(`${endpoint}/${id}`, {method:'DELETE'}); if (!resposta.ok) throw new Error('Não foi possível inativar o cadastro.'); mostrarAlerta('Cadastro inativado com sucesso.'); carregar(); } catch (erro) { mostrarAlerta(erro.message, true); }
 }
 async function consultarCep() {
     const cep = document.getElementById('cep').value.replace(/\D/g, ''); 
@@ -211,6 +400,77 @@ async function consultarCep() {
     } catch (erro) { 
         console.error('Erro ao consultar CEP:', erro);
         mostrarAlerta('Não foi possível consultar o CEP.', true); 
+    }
+}
+
+async function consultarCnpj() {
+    const cnpjEl = document.getElementById('cnpj');
+    if (!cnpjEl) return;
+    
+    const cnpj = cnpjEl.value.replace(/\D/g, '');
+    if (cnpj.length !== 14) {
+        return;
+    }
+    
+    try {
+        console.log('Consultando CNPJ na API pública:', cnpj);
+        mostrarAlerta('Consultando informações do CNPJ...', false);
+        
+        const resposta = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
+        if (!resposta.ok) {
+            throw new Error('CNPJ não encontrado ou erro na API pública.');
+        }
+        
+        const dados = await resposta.json();
+        console.log('Dados do CNPJ obtidos:', dados);
+        
+        // Preencher Nome (Razão Social ou Nome Fantasia)
+        const nomeEl = document.getElementById('nome');
+        if (nomeEl && !nomeEl.value.trim()) {
+            nomeEl.value = dados.razao_social || dados.nome_fantasia || '';
+        }
+        
+        // Preencher CEP
+        const cepEl = document.getElementById('cep');
+        if (cepEl) {
+            cepEl.value = dados.cep || '';
+            // Disparar consulta de CEP para obter latitude, longitude e codCidade!
+            if (dados.cep) {
+                await consultarCep();
+            }
+        }
+        
+        // Fallback para preencher demais campos se o CEP falhar ou vier vazio
+        const logradouroEl = document.getElementById('logradouro');
+        if (logradouroEl && !logradouroEl.value.trim() && dados.logradouro) {
+            logradouroEl.value = dados.logradouro;
+        }
+        const numeroEl = document.getElementById('numero');
+        if (numeroEl && !numeroEl.value.trim() && dados.numero) {
+            numeroEl.value = dados.numero;
+        }
+        const complementoEl = document.getElementById('complemento');
+        if (complementoEl && !complementoEl.value.trim() && dados.complemento) {
+            complementoEl.value = dados.complemento;
+        }
+        const bairroEl = document.getElementById('bairro');
+        if (bairroEl && !bairroEl.value.trim() && dados.bairro) {
+            bairroEl.value = dados.bairro;
+        }
+        const cidadeEl = document.getElementById('cidade');
+        if (cidadeEl && !cidadeEl.value.trim() && dados.municipio) {
+            cidadeEl.value = dados.municipio;
+        }
+        const estadoEl = document.getElementById('estado');
+        if (estadoEl && !estadoEl.value.trim() && dados.uf) {
+            estadoEl.value = dados.uf;
+        }
+        
+        mostrarAlerta('Informações do CNPJ preenchidas automaticamente.');
+        
+    } catch (erro) {
+        console.error('Erro ao consultar CNPJ:', erro);
+        mostrarAlerta('Não foi possível obter dados do CNPJ da API pública. Preencha os campos manualmente.', true);
     }
 }
 

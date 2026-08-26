@@ -5,5 +5,7 @@ public enum TipoUsuario {
     COMPRADOR,
     REPRESENTANTE,
     CLIENTE,
-    ADMIN
+    ADMIN,
+    MANUTENCAO,
+    EDICAO
 }

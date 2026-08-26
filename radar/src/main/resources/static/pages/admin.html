@@ -3,36 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | Radar</title>
+    <title>Painel de Administração | Radar</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
 </head>
-<body data-entidade="admin" data-singular="Admin" data-plural="Admins">
+<body class="bg-slate-100 min-h-screen">
 <div class="flex min-h-screen bg-slate-100">
     <!-- Menu Lateral -->
     <aside class="w-64 bg-slate-950 text-white shadow-lg hidden md:block fixed h-full">
-        <div class="p-6">
+        <div class="p-6 flex flex-col h-full">
             <div class="flex items-center justify-center mb-8">
-                <img src="/imagem/Logo.png" alt="Logo Radar" class="w-64 h-64 object-contain rounded-full shadow-md">
+                <img src="/imagem/Logo.png" alt="Logo Radar" class="w-48 h-48 object-contain rounded-full shadow-md">
             </div>
             
-            <nav class="space-y-2">
+            <nav class="space-y-2 flex-1">
                 <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 text-center">Acesso</p>
-                <a href="/pages/fornecedores.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-building"></i> Fornecedores
+                <a href="/pages/fornecedores.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-building w-5 text-center"></i> Fornecedores
                 </a>
-                <a href="/pages/compradores.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-hand-holding-dollar"></i> Compradoras
+                <a href="/pages/compradores.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-hand-holding-dollar w-5 text-center"></i> Compradores
                 </a>
-                <a href="/pages/admin.html" class="flex items-center justify-center gap-3 rounded-lg bg-sky-600 px-4 py-3 font-semibold hover:bg-sky-700 transition">
-                    <i class="fa-solid fa-user-gear"></i> Admin
+                <a href="/pages/admin.html" class="flex items-center justify-start gap-3 rounded-lg bg-sky-600 px-4 py-3 font-semibold text-white hover:bg-sky-700 transition">
+                    <i class="fa-solid fa-user-gear w-5 text-center"></i> Admin
                 </a>
-                <a href="/pages/representantes.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-truck-medical"></i> Representantes
+                <a href="/pages/representantes.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-truck-medical w-5 text-center"></i> Representantes
                 </a>
-                <a href="/pages/clientes.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-users"></i> Clientes
+                <a href="/pages/clientes.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-users w-5 text-center"></i> Clientes
                 </a>
             </nav>
         </div>
@@ -40,33 +40,606 @@
 
     <!-- Conteúdo Principal -->
     <div class="flex-1 flex flex-col md:ml-64">
+        <!-- Header -->
         <header class="bg-slate-950 text-white shadow-lg">
             <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-5">
                 <a href="/pages/admin.html" class="flex items-center gap-3 font-black text-lg md:hidden">
                     <i class="fa-solid fa-satellite-dish text-sky-400"></i> RADAR
                 </a>
-                <div class="flex items-center gap-4 text-sm font-semibold">
+                <div class="flex items-center gap-4 text-sm font-semibold ml-auto">
                     <div id="user-info" class="flex items-center gap-3 border-l border-slate-800 pl-4"></div>
                 </div>
             </div>
         </header>
-        <main class="mx-auto max-w-7xl px-6 py-8 flex-1">
-            <h1 class="text-4xl font-black text-slate-900 mb-6">Admin</h1>
-            <p class="text-lg text-slate-600">Página de administração em breve.</p>
+
+        <!-- Corpo Principal -->
+        <main class="mx-auto w-full max-w-7xl px-6 py-8 flex-1">
+            <!-- Alerta/Toast -->
+            <div id="alerta" class="mb-5 hidden rounded-lg border px-4 py-3 text-sm"></div>
+
+            <!-- Título e botão superior -->
+            <div class="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+                <div>
+                    <p class="text-sm font-bold uppercase tracking-widest text-sky-700">Painel Geral</p>
+                    <h1 class="text-3xl font-black text-slate-900">Gerenciamento de Usuários</h1>
+                    <p class="mt-1 text-slate-600">Consulte, cadastre, altere senhas e gerencie a ativação de usuários do sistema.</p>
+                </div>
+                <button onclick="abrirModalUsuario()" class="rounded-lg bg-sky-600 px-5 py-3 font-bold text-white shadow hover:bg-sky-700 transition flex items-center gap-2">
+                    <i class="fa-solid fa-user-plus"></i> Cadastrar Usuário
+                </button>
+            </div>
+
+            <!-- Indicadores -->
+            <section class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="rounded-xl bg-white p-5 shadow-sm border border-slate-100 kpi-card">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs font-bold uppercase text-slate-500">Total de Usuários</p>
+                        <i class="fa-solid fa-users text-slate-400 text-lg"></i>
+                    </div>
+                    <p id="total-usuarios" class="mt-2 text-3xl font-black text-slate-800">0</p>
+                </div>
+                <div class="rounded-xl bg-white p-5 shadow-sm border border-slate-100 kpi-card">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs font-bold uppercase text-slate-500">Usuários Ativos</p>
+                        <i class="fa-solid fa-user-check text-emerald-500 text-lg"></i>
+                    </div>
+                    <p id="usuarios-ativos" class="mt-2 text-3xl font-black text-emerald-600">0</p>
+                </div>
+                <div class="rounded-xl bg-white p-5 shadow-sm border border-slate-100 kpi-card">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs font-bold uppercase text-slate-500">Usuários Inativos</p>
+                        <i class="fa-solid fa-user-slash text-rose-500 text-lg"></i>
+                    </div>
+                    <p id="usuarios-inativos" class="mt-2 text-3xl font-black text-rose-600">0</p>
+                </div>
+                <div class="rounded-xl bg-white p-5 shadow-sm border border-slate-100 kpi-card">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs font-bold uppercase text-slate-500">Administradores</p>
+                        <i class="fa-solid fa-user-shield text-sky-500 text-lg"></i>
+                    </div>
+                    <p id="total-admins" class="mt-2 text-3xl font-black text-sky-600">0</p>
+                </div>
+            </section>
+
+            <!-- Tabela de Usuários -->
+            <section class="overflow-hidden rounded-xl bg-white shadow-sm border border-slate-100">
+                <div class="flex flex-col gap-3 border-b p-4 sm:flex-row bg-slate-50">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400"></i>
+                        <input id="busca" oninput="filtrarUsuarios()" class="w-full rounded-lg border border-slate-200 pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-sky-500" placeholder="Buscar por usuário ou tipo...">
+                    </div>
+                    <button onclick="carregarUsuarios()" class="rounded-lg border bg-white px-4 py-2 font-semibold text-slate-700 hover:bg-slate-50 transition" title="Atualizar tabela">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-100 text-xs uppercase text-slate-500 font-bold border-b">
+                            <tr>
+                                <th class="p-4">ID</th>
+                                <th class="p-4">Usuário</th>
+                                <th class="p-4">Tipo</th>
+                                <th class="p-4">Senha (Recuperação)</th>
+                                <th class="p-4 text-center">Status</th>
+                                <th class="p-4 text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="linhas-usuarios" class="divide-y divide-slate-100 text-slate-700">
+                            <!-- Inserido dinamicamente via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         </main>
     </div>
 </div>
-<script src="/script.js"></script>
+
+<!-- Modal de Usuário (Cadastro e Edição) -->
+<div id="modal-usuario" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-950/60 flex items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-xl bg-white shadow-2xl overflow-hidden transform transition-all">
+        <div class="flex items-center justify-between border-b px-6 py-4 bg-slate-50">
+            <h2 id="titulo-modal" class="text-lg font-black text-slate-800">Cadastrar Usuário</h2>
+            <button onclick="fecharModalUsuario()" class="text-2xl text-slate-400 hover:text-slate-600 transition">&times;</button>
+        </div>
+        <form id="form-usuario" class="p-6 space-y-5" onsubmit="salvarUsuario(event)">
+            <input id="usuario-id" type="hidden">
+            
+            <label class="campo">
+                Nome de Usuário (Username)
+                <input id="usuario-username" required maxlength="50" placeholder="Ex: joao.silva">
+            </label>
+
+            <label class="campo">
+                Senha (Password)
+                <div class="relative">
+                    <input id="usuario-senha" type="text" required placeholder="Digite a senha">
+                </div>
+            </label>
+
+            <label class="campo">
+                Tipo de Acesso (Perfil)
+                <select id="usuario-tipo" required>
+                    <option value="ADMIN">ADMINISTRADOR</option>
+                    <option value="MANUTENCAO">MANUTENÇÃO</option>
+                    <option value="EDICAO">EDIÇÃO</option>
+                </select>
+                <p id="hint-tipo" class="text-[10px] text-slate-400 mt-1 italic">Conforme regras do sistema, novos cadastros são restritos a perfis administrativos, edição e manutenção.</p>
+            </label>
+
+            <!-- Checkboxes de Classificação de Empresa/Vínculo -->
+            <div class="campo">
+                <span class="text-xs font-bold uppercase text-slate-500 tracking-wider mb-2">Classificação de Empresa/Vínculo</span>
+                <div class="grid grid-cols-2 gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                    <label class="flex items-center gap-2 font-semibold text-slate-700 cursor-pointer text-xs">
+                        <input id="usuario-fornecedor" type="checkbox" class="rounded text-sky-600 focus:ring-sky-500 w-4 h-4">
+                        Fornecedora
+                    </label>
+                    <label class="flex items-center gap-2 font-semibold text-slate-700 cursor-pointer text-xs">
+                        <input id="usuario-comprador" type="checkbox" class="rounded text-sky-600 focus:ring-sky-500 w-4 h-4">
+                        Compradora
+                    </label>
+                    <label class="flex items-center gap-2 font-semibold text-slate-700 cursor-pointer text-xs">
+                        <input id="usuario-representante" type="checkbox" class="rounded text-sky-600 focus:ring-sky-500 w-4 h-4">
+                        Representante
+                    </label>
+                    <label class="flex items-center gap-2 font-semibold text-slate-700 cursor-pointer text-xs">
+                        <input id="usuario-cliente" type="checkbox" class="rounded text-sky-600 focus:ring-sky-500 w-4 h-4">
+                        Cliente
+                    </label>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                <button type="button" onclick="fecharModalUsuario()" class="rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
+                    Cancelar
+                </button>
+                <button type="submit" class="rounded-lg bg-sky-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-sky-700 shadow transition flex items-center gap-2">
+                    <i class="fa-solid fa-save"></i> Salvar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal de Conflito de Usuário Existente -->
+<div id="modal-conflito" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-950/70 flex items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-xl bg-white shadow-2xl overflow-hidden p-6 space-y-4">
+        <div class="flex items-start gap-4">
+            <div class="p-3 bg-amber-100 rounded-full text-amber-600 text-xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-black text-slate-900">Usuário Já Cadastrado!</h3>
+                <p id="msg-conflito" class="text-sm text-slate-600 mt-1"></p>
+            </div>
+        </div>
+        <div class="flex flex-col gap-2 pt-2">
+            <button id="btn-conflito-gravar" class="w-full rounded-lg bg-emerald-600 text-white font-bold py-2.5 hover:bg-emerald-700 transition text-sm">
+                Gravar Ambas (Adicionar nova opção)
+            </button>
+            <button id="btn-conflito-mudar" class="w-full rounded-lg bg-sky-600 text-white font-bold py-2.5 hover:bg-sky-700 transition text-sm">
+                Mudar Opção (Substituir pela nova opção)
+            </button>
+            <button onclick="fecharModalConflito()" class="w-full rounded-lg border border-slate-200 text-slate-600 font-semibold py-2.5 hover:bg-slate-50 transition text-sm">
+                Cancelar e Editar
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOMContentLoaded - admin');
-    const usuarioJson = localStorage.getItem('usuario');
-    if (!usuarioJson) {
-        console.log('Usuário não está logado, redirecionando para login...');
-        window.location.href = '/login.html';
-        return;
+    // Oculta a URL com o nome do arquivo após a barra
+    if (window.location.pathname !== '/' && window.location.pathname !== '/login.html') {
+        window.history.replaceState({}, '', '/');
     }
-});
+
+    let usuariosList = [];
+
+    // Carregar informações do usuário logado e verificar se é admin
+    function verificarPermissaoAdmin() {
+        const usuarioJson = localStorage.getItem('usuario');
+        if (!usuarioJson) {
+            window.location.href = '/login.html';
+            return;
+        }
+
+        try {
+            const user = JSON.parse(usuarioJson);
+            if (user.tipo !== 'ADMIN') {
+                alert('Acesso negado: apenas administradores do sistema podem acessar esta tela.');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            // Exibir cabeçalho de boas-vindas
+            const container = document.getElementById('user-info');
+            if (container) {
+                container.innerHTML = `
+                    <span class="text-xs text-slate-400">Olá, <strong class="text-white">${user.nome || user.username}</strong> (${user.tipo})</span>
+                    <button onclick="logout()" class="rounded-lg bg-rose-600/20 px-3 py-1.5 text-xs font-bold text-rose-300 hover:bg-rose-600 hover:text-white transition" title="Sair / Trocar Acesso">
+                        <i class="fa-solid fa-right-from-bracket mr-1"></i> Sair
+                    </button>
+                `;
+            }
+        } catch (e) {
+            console.error('Erro ao processar usuário logado:', e);
+            window.location.href = '/login.html';
+        }
+    }
+
+    async function logout() {
+        try {
+            await fetch('/api/login/logout', { method: 'POST' });
+        } catch (e) {
+            console.error('Erro ao efetuar logout:', e);
+        } finally {
+            localStorage.removeItem('usuario');
+            window.location.href = '/login.html';
+        }
+    }
+
+    // Buscar todos os usuários do backend
+    async function carregarUsuarios() {
+        try {
+            const resposta = await fetch('/api/usuarios');
+            if (!resposta.ok) {
+                if (resposta.status === 403) {
+                    alert('Acesso negado ao buscar usuários.');
+                    window.location.href = '/login.html';
+                    return;
+                }
+                throw new Error('Não foi possível carregar a lista de usuários.');
+            }
+            usuariosList = await resposta.json();
+            filtrarUsuarios();
+            atualizarIndicadores();
+        } catch (erro) {
+            mostrarAlerta(erro.message, true);
+        }
+    }
+
+    // Atualizar os cards KPI superiores
+    function atualizarIndicadores() {
+        const total = usuariosList.length;
+        const ativos = usuariosList.filter(u => u.ativo === null || u.ativo === true).length;
+        const inativos = total - ativos;
+        const admins = usuariosList.filter(u => u.tipo === 'ADMIN').length;
+
+        document.getElementById('total-usuarios').textContent = total;
+        document.getElementById('usuarios-ativos').textContent = ativos;
+        document.getElementById('usuarios-inativos').textContent = inativos;
+        document.getElementById('total-admins').textContent = admins;
+    }
+
+    // Filtrar e renderizar os usuários na tabela
+    function filtrarUsuarios() {
+        const termo = (document.getElementById('busca').value || '').toLowerCase();
+        
+        const filtrados = usuariosList.filter(u => {
+            return u.username.toLowerCase().includes(termo) || 
+                   u.tipo.toLowerCase().includes(termo);
+        });
+
+        const tbody = document.getElementById('linhas-usuarios');
+        if (filtrados.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="p-10 text-center text-slate-500">
+                        <i class="fa-solid fa-circle-info text-2xl mb-2 text-slate-300 block"></i>
+                        Nenhum usuário encontrado.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = filtrados.map(usuario => {
+            const isAtivo = usuario.ativo === null || usuario.ativo === true;
+            const statusBadge = isAtivo 
+                ? `<span class="inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-800"><i class="fa-solid fa-circle text-[6px] mr-1.5 self-center"></i> Ativo</span>`
+                : `<span class="inline-flex rounded-full bg-rose-100 px-2.5 py-1 text-xs font-bold text-rose-800"><i class="fa-solid fa-circle text-[6px] mr-1.5 self-center"></i> Inativo</span>`;
+            
+            let tipoBadgeColor = 'bg-slate-100 text-slate-800 border border-slate-200';
+            if (usuario.tipo === 'ADMIN') tipoBadgeColor = 'bg-sky-100 text-sky-800 border border-sky-200';
+            else if (usuario.tipo === 'EDICAO') tipoBadgeColor = 'bg-amber-100 text-amber-800 border border-amber-200';
+            else if (usuario.tipo === 'MANUTENCAO') tipoBadgeColor = 'bg-emerald-100 text-emerald-800 border border-emerald-200';
+
+            const tipoBadge = `<span class="rounded px-2 py-1 text-xs font-bold ${tipoBadgeColor}">${usuario.tipo}</span>`;
+
+            // Micro-badges para classificação de negócio/vínculo
+            const listTiposEmpreendimento = [];
+            if (usuario.fornecedor) listTiposEmpreendimento.push(`<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded px-1.5 py-0.5 text-[10px] font-bold"><i class="fa-solid fa-building"></i> Fornecedora</span>`);
+            if (usuario.comprador) listTiposEmpreendimento.push(`<span class="inline-flex items-center gap-1 bg-sky-50 text-sky-700 border border-sky-100 rounded px-1.5 py-0.5 text-[10px] font-bold"><i class="fa-solid fa-hand-holding-dollar"></i> Compradora</span>`);
+            if (usuario.representante) listTiposEmpreendimento.push(`<span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 border border-amber-100 rounded px-1.5 py-0.5 text-[10px] font-bold"><i class="fa-solid fa-truck-medical"></i> Representante</span>`);
+            if (usuario.cliente) listTiposEmpreendimento.push(`<span class="inline-flex items-center gap-1 bg-purple-50 text-purple-700 border border-purple-100 rounded px-1.5 py-0.5 text-[10px] font-bold"><i class="fa-solid fa-users"></i> Cliente</span>`);
+            
+            const tiposEmpreendimentoStr = listTiposEmpreendimento.length 
+                ? `<div class="flex flex-wrap gap-1 mt-1.5">${listTiposEmpreendimento.join('')}</div>`
+                : `<span class="text-slate-400 text-[10px] italic block mt-1">Sem classificação comercial</span>`;
+
+            const isAdmin = usuario.tipo === 'ADMIN';
+
+            // O botão de ativar/inativar fica desabilitado para ADMINISTRADOR para cumprir a regra: "Pode inativar usuários exceto o Administrador."
+            const toggleButton = isAtivo
+                ? `<button onclick="alternarStatus(${usuario.id}, true, '${usuario.tipo}')" class="text-rose-600 hover:text-rose-900 font-bold text-xs bg-rose-50 px-2 py-1 rounded border border-rose-200 transition ${isAdmin ? 'opacity-50 cursor-not-allowed' : ''}" ${isAdmin ? 'disabled title="Não é permitido inativar Administradores"' : 'title="Inativar Usuário"'}>
+                    <i class="fa-solid fa-user-slash"></i> Inativar
+                   </button>`
+                : `<button onclick="alternarStatus(${usuario.id}, false, '${usuario.tipo}')" class="text-emerald-600 hover:text-emerald-900 font-bold text-xs bg-emerald-50 px-2 py-1 rounded border border-emerald-200 transition" title="Ativar Usuário">
+                    <i class="fa-solid fa-user-check"></i> Ativar
+                   </button>`;
+
+            const deleteButton = `<button onclick="excluir(${usuario.id}, '${usuario.tipo}')" class="text-rose-700 hover:text-rose-900 transition ${isAdmin ? 'opacity-50 cursor-not-allowed' : ''}" ${isAdmin ? 'disabled title="Não é permitido excluir Administradores"' : 'title="Excluir Usuário"'}>
+                <i class="fa-solid fa-trash-can text-base"></i>
+               </button>`;
+
+            return `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="p-4 font-semibold text-slate-400">${usuario.id}</td>
+                    <td class="p-4">
+                        <div class="font-bold text-slate-800">${escapar(usuario.username)}</div>
+                        ${tiposEmpreendimentoStr}
+                    </td>
+                    <td class="p-4">${tipoBadge}</td>
+                    <td class="p-4 font-mono text-slate-600">${escapar(usuario.senha)}</td>
+                    <td class="p-4 text-center">${statusBadge}</td>
+                    <td class="p-4 text-center">
+                        <div class="flex items-center justify-center gap-3">
+                            <button onclick="editarUsuario(${usuario.id})" class="text-sky-700 hover:text-sky-900 transition" title="Editar / Recuperar Senha">
+                                <i class="fa-solid fa-user-pen text-base"></i>
+                            </button>
+                            ${toggleButton}
+                            ${deleteButton}
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    // Abrir o Modal de Cadastro / Edição
+    function abrirModalUsuario(id = null) {
+        const form = document.getElementById('form-usuario');
+        form.reset();
+        
+        const selectTipo = document.getElementById('usuario-tipo');
+        selectTipo.disabled = false; // Permitir mudar tipo
+
+        // Resetar os checkboxes
+        document.getElementById('usuario-fornecedor').checked = false;
+        document.getElementById('usuario-comprador').checked = false;
+        document.getElementById('usuario-representante').checked = false;
+        document.getElementById('usuario-cliente').checked = false;
+
+        if (id) {
+            const usuario = usuariosList.find(u => u.id === id);
+            if (!usuario) return;
+
+            document.getElementById('titulo-modal').textContent = 'Editar Usuário / Recuperar Senha';
+            document.getElementById('usuario-id').value = usuario.id;
+            document.getElementById('usuario-username').value = usuario.username;
+            document.getElementById('usuario-senha').value = usuario.senha;
+            document.getElementById('usuario-tipo').value = usuario.tipo;
+
+            // Carregar checkboxes do usuário
+            document.getElementById('usuario-fornecedor').checked = usuario.fornecedor === true;
+            document.getElementById('usuario-comprador').checked = usuario.comprador === true;
+            document.getElementById('usuario-representante').checked = usuario.representante === true;
+            document.getElementById('usuario-cliente').checked = usuario.cliente === true;
+        } else {
+            document.getElementById('titulo-modal').textContent = 'Cadastrar Novo Usuário';
+            document.getElementById('usuario-id').value = '';
+        }
+
+        document.getElementById('modal-usuario').classList.remove('hidden');
+    }
+
+    function fecharModalUsuario() {
+        document.getElementById('modal-usuario').classList.add('hidden');
+    }
+
+    // Salvar Usuário (com verificação inteligente de duplicidade e opções de mesclagem/mudança)
+    async function salvarUsuario(event) {
+        event.preventDefault();
+        
+        const id = document.getElementById('usuario-id').value;
+        const username = document.getElementById('usuario-username').value.trim();
+        const senha = document.getElementById('usuario-senha').value.trim();
+        const tipo = document.getElementById('usuario-tipo').value;
+
+        const fornecedor = document.getElementById('usuario-fornecedor').checked;
+        const comprador = document.getElementById('usuario-comprador').checked;
+        const representante = document.getElementById('usuario-representante').checked;
+        const cliente = document.getElementById('usuario-cliente').checked;
+
+        const dados = { username, senha, tipo, fornecedor, comprador, representante, cliente };
+
+        // Se for NOVO cadastro, verifica se já existe conflito de usuário
+        if (!id) {
+            const existente = usuariosList.find(u => u.username.toLowerCase() === username.toLowerCase());
+            if (existente) {
+                // Checar se as classificações marcadas são diferentes das que já existem no usuário cadastrado
+                const extFornecedor = existente.fornecedor === true;
+                const extComprador = existente.comprador === true;
+                const extRepresentante = existente.representante === true;
+                const extCliente = existente.cliente === true;
+
+                const diferiu = (fornecedor !== extFornecedor) || 
+                                (comprador !== extComprador) || 
+                                (representante !== extRepresentante) || 
+                                (cliente !== extCliente);
+
+                if (diferiu) {
+                    // Exibir modal de tratamento de conflito interativo
+                    abrirModalConflito(existente, dados);
+                    return;
+                }
+            }
+        }
+
+        enviarDadosUsuario(id, dados);
+    }
+
+    // Realiza a requisição fetch efetiva para salvar os dados
+    async function enviarDadosUsuario(id, dados) {
+        try {
+            const url = id ? `/api/usuarios/${id}` : '/api/usuarios';
+            const metodo = id ? 'PUT' : 'POST';
+
+            const resposta = await fetch(url, {
+                method: metodo,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            });
+
+            if (!resposta.ok) {
+                const erroTexto = await resposta.text();
+                throw new Error(erroTexto || 'Erro ao salvar o usuário.');
+            }
+
+            fecharModalUsuario();
+            mostrarAlerta(id ? 'Usuário atualizado com sucesso!' : 'Novo usuário cadastrado com sucesso!');
+            carregarUsuarios();
+        } catch (erro) {
+            mostrarAlerta(erro.message, true);
+        }
+    }
+
+    // Modal de resolução interativa de conflitos
+    function abrirModalConflito(existente, dadosNovos) {
+        const msg = document.getElementById('msg-conflito');
+        
+        const tiposAntigos = [];
+        if (existente.fornecedor) tiposAntigos.push("Fornecedora");
+        if (existente.comprador) tiposAntigos.push("Compradora");
+        if (existente.representante) tiposAntigos.push("Representante");
+        if (existente.cliente) tiposAntigos.push("Cliente");
+
+        const tiposNovos = [];
+        if (dadosNovos.fornecedor) tiposNovos.push("Fornecedora");
+        if (dadosNovos.comprador) tiposNovos.push("Compradora");
+        if (dadosNovos.representante) tiposNovos.push("Representante");
+        if (dadosNovos.cliente) tiposNovos.push("Cliente");
+
+        msg.innerHTML = `O usuário <strong>${existente.username}</strong> já existe no sistema cadastrado como: <span class="text-rose-600 font-bold">${tiposAntigos.join(', ') || 'Nenhum'}</span>.<br><br>Você marcou: <span class="text-emerald-600 font-bold">${tiposNovos.join(', ') || 'Nenhum'}</span>.`;
+
+        // Botão Gravar Ambas: une as marcações anteriores com as novas (OR lógico)
+        document.getElementById('btn-conflito-gravar').onclick = () => {
+            const dadosUnidos = {
+                ...dadosNovos,
+                fornecedor: existente.fornecedor || dadosNovos.fornecedor,
+                comprador: existente.comprador || dadosNovos.comprador,
+                representante: existente.representante || dadosNovos.representante,
+                cliente: existente.cliente || dadosNovos.cliente
+            };
+            fecharModalConflito();
+            fecharModalUsuario();
+            enviarDadosUsuario(existente.id, dadosUnidos);
+        };
+
+        // Botão Mudar Opção: substitui completamente pelas novas marcações
+        document.getElementById('btn-conflito-mudar').onclick = () => {
+            fecharModalConflito();
+            fecharModalUsuario();
+            enviarDadosUsuario(existente.id, dadosNovos);
+        };
+
+        document.getElementById('modal-conflito').classList.remove('hidden');
+    }
+
+    function fecharModalConflito() {
+        document.getElementById('modal-conflito').classList.add('hidden');
+    }
+
+    // Alternar o status Ativo/Inativo do usuário
+    async function alternarStatus(id, ativoAtual, tipo) {
+        if (tipo === 'ADMIN') {
+            mostrarAlerta('Não é permitido inativar administradores do sistema.', true);
+            return;
+        }
+
+        try {
+            const resposta = await fetch(`/api/usuarios/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ativo: !ativoAtual })
+            });
+
+            if (!resposta.ok) {
+                const erroTexto = await resposta.text();
+                throw new Error(erroTexto || 'Não foi possível alterar o status do usuário.');
+            }
+
+            mostrarAlerta('Status do usuário atualizado!');
+            carregarUsuarios();
+        } catch (erro) {
+            mostrarAlerta(erro.message, true);
+        }
+    }
+
+    // Excluir usuário do sistema
+    async function excluir(id, tipo) {
+        if (tipo === 'ADMIN') {
+            mostrarAlerta('Não é permitido excluir administradores do sistema.', true);
+            return;
+        }
+
+        if (!confirm('Deseja realmente excluir este usuário permanentemente? Esta ação é irreversível.')) {
+            return;
+        }
+
+        try {
+            const resposta = await fetch(`/api/usuarios/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (!resposta.ok) {
+                const erroTexto = await resposta.text();
+                throw new Error(erroTexto || 'Não foi possível excluir o usuário.');
+            }
+
+            mostrarAlerta('Usuário excluído com sucesso!');
+            carregarUsuarios();
+        } catch (erro) {
+            mostrarAlerta(erro.message, true);
+        }
+    }
+
+    function editarUsuario(id) {
+        abrirModalUsuario(id);
+    }
+
+    // Utilitários auxiliares
+    function escapar(valor) {
+        const elemento = document.createElement('span');
+        elemento.textContent = valor || '';
+        return elemento.innerHTML;
+    }
+
+    function mostrarAlerta(mensagem, erro = false) {
+        const alerta = document.getElementById('alerta');
+        if (!alerta) return;
+        
+        alerta.textContent = mensagem;
+        alerta.className = `mb-5 rounded-lg border px-4 py-3 text-sm ${
+            erro 
+                ? 'border-rose-200 bg-rose-50 text-rose-800' 
+                : 'border-emerald-200 bg-emerald-50 text-emerald-800'
+        }`;
+        alerta.classList.remove('hidden');
+
+        // Sumir alerta depois de 5 segundos se não for erro
+        if (!erro) {
+            setTimeout(() => {
+                alerta.classList.add('hidden');
+            }, 5000);
+        }
+    }
+
+    // Rodar na inicialização
+    document.addEventListener('DOMContentLoaded', () => {
+        verificarPermissaoAdmin();
+        carregarUsuarios();
+    });
 </script>
 </body>
 </html>

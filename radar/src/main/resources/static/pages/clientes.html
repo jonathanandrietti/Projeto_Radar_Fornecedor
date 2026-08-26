@@ -7,32 +7,33 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
+    <script src="/script.js" defer></script>
 </head>
 <body data-entidade="clientes" data-singular="Cliente" data-plural="Clientes">
 <div class="flex min-h-screen bg-slate-100">
     <!-- Menu Lateral -->
     <aside class="w-64 bg-slate-950 text-white shadow-lg hidden md:block fixed h-full">
-        <div class="p-6">
+        <div class="p-6 flex flex-col h-full">
             <div class="flex items-center justify-center mb-8">
-                <img src="/imagem/Logo.png" alt="Logo Radar" class="w-64 h-64 object-contain rounded-full shadow-md">
+                <img src="/imagem/Logo.png" alt="Logo Radar" class="w-48 h-48 object-contain rounded-full shadow-md">
             </div>
             
-            <nav class="space-y-2">
+            <nav class="space-y-2 flex-1">
                 <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 text-center">Acesso</p>
-                <a href="/pages/fornecedores.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-building"></i> Fornecedores
+                <a id="menu-fornecedores" href="/pages/fornecedores.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-building w-5 text-center"></i> Fornecedores
                 </a>
-                <a href="/pages/compradores.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-hand-holding-dollar"></i> Compradoras
+                <a id="menu-compradores" href="/pages/compradores.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-hand-holding-dollar w-5 text-center"></i> Compradores
                 </a>
-                <a href="/pages/admin.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-user-gear"></i> Admin
+                <a id="menu-admin" href="/pages/admin.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-user-gear w-5 text-center"></i> Admin
                 </a>
-                <a href="/pages/representantes.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-truck-medical"></i> Representantes
+                <a id="menu-representantes" href="/pages/representantes.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-truck-medical w-5 text-center"></i> Representantes
                 </a>
-                <a href="/pages/clientes.html" class="flex items-center justify-center gap-3 rounded-lg bg-sky-600 px-4 py-3 font-semibold hover:bg-sky-700 transition">
-                    <i class="fa-solid fa-users"></i> Clientes
+                <a id="menu-clientes" href="/pages/clientes.html" class="flex items-center justify-start gap-3 rounded-lg bg-sky-600 px-4 py-3 font-semibold text-white hover:bg-sky-700 transition">
+                    <i class="fa-solid fa-users w-5 text-center"></i> Clientes
                 </a>
             </nav>
         </div>
@@ -40,6 +41,7 @@
 
     <!-- Conteúdo Principal -->
     <div class="flex-1 flex flex-col md:ml-64">
+        <!-- Header -->
         <header class="bg-slate-950 text-white shadow-lg">
             <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-5">
                 <a href="/pages/clientes.html" class="flex items-center gap-3 font-black text-lg md:hidden">
@@ -50,23 +52,98 @@
                 </div>
             </div>
         </header>
+
+        <!-- Corpo Principal -->
         <main class="mx-auto max-w-7xl px-6 py-8 flex-1">
-            <h1 class="text-4xl font-black text-slate-900 mb-6">Clientes</h1>
-            <p class="text-lg text-slate-600">Página de gerenciamento de clientes em breve.</p>
+            <div id="alerta" class="mb-5 hidden rounded-lg border px-4 py-3 text-sm"></div>
+            <div class="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+                <div>
+                    <p class="text-sm font-bold uppercase tracking-widest text-sky-700">Cadastro</p>
+                    <h1 class="text-3xl font-black text-slate-900">Clientes</h1>
+                    <p class="mt-1 text-slate-600">Gerencie o cadastro de clientes corporativos (PJ) e individuais (PF).</p>
+                </div>
+                <button onclick="abrirFormulario()" class="rounded-lg bg-sky-600 px-5 py-3 font-bold text-white shadow hover:bg-sky-700">
+                    <i class="fa-solid fa-plus mr-2"></i>Cadastrar cliente
+                </button>
+            </div>
+
+            <!-- Indicadores -->
+            <section class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div class="rounded-xl bg-white p-5 shadow-sm">
+                    <p class="text-xs font-bold uppercase text-slate-500">Total de Clientes</p>
+                    <p id="total" class="mt-1 text-3xl font-black">0</p>
+                </div>
+                <div class="rounded-xl bg-white p-5 shadow-sm">
+                    <p class="text-xs font-bold uppercase text-slate-500">Clientes Ativos</p>
+                    <p id="analise" class="mt-1 text-3xl font-black text-emerald-600">0</p>
+                </div>
+            </section>
+
+            <!-- Tabela -->
+            <section class="overflow-hidden rounded-xl bg-white shadow-sm">
+                <div class="flex flex-col gap-3 border-b p-4 sm:flex-row">
+                    <input id="busca" oninput="filtrar()" class="w-full rounded-lg border px-4 py-2" placeholder="Buscar por cliente, CPF/CNPJ, tipo ou status">
+                    <button onclick="carregar()" class="rounded-lg border px-4 py-2 font-semibold text-slate-700">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 text-xs uppercase text-slate-500">
+                            <tr>
+                                <th class="p-4">ID</th>
+                                <th class="p-4">Cliente</th>
+                                <th class="p-4">CPF / CNPJ</th>
+                                <th class="p-4">Tipo</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="linhas" class="divide-y"></tbody>
+                    </table>
+                </div>
+            </section>
         </main>
     </div>
 </div>
-<script src="/script.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOMContentLoaded - clientes');
-    const usuarioJson = localStorage.getItem('usuario');
-    if (!usuarioJson) {
-        console.log('Usuário não está logado, redirecionando para login...');
-        window.location.href = '/login.html';
-        return;
-    }
-});
-</script>
+
+<!-- Modal -->
+<div id="modal" class="fixed inset-0 z-10 hidden overflow-y-auto bg-slate-950/50 p-4">
+    <div class="mx-auto my-8 max-w-xl rounded-xl bg-white shadow-2xl">
+        <div class="flex items-center justify-between border-b px-6 py-4">
+            <h2 id="titulo-form" class="text-xl font-black">Cadastrar cliente</h2>
+            <button onclick="fecharFormulario()" class="text-xl text-slate-500">&times;</button>
+        </div>
+        <form id="formulario" class="space-y-5 p-6" onsubmit="salvar(event)">
+            <input id="id" type="hidden">
+            <div class="grid gap-4">
+                <label class="campo">Nome / Razão Social
+                    <input id="nome" required class="w-full rounded-lg border px-3 py-2 mt-1" maxlength="100">
+                </label>
+                <label class="campo">CPF / CNPJ
+                    <input id="cpfCnpj" required class="w-full rounded-lg border px-3 py-2 mt-1" maxlength="18" placeholder="Digite apenas números">
+                </label>
+                <div class="grid grid-cols-2 gap-4">
+                    <label class="campo">Tipo de Pessoa
+                        <select id="tipoPessoa" required class="w-full rounded-lg border px-3 py-2 mt-1 bg-white">
+                            <option value="PF">Pessoa Física (CPF)</option>
+                            <option value="PJ">Pessoa Jurídica (CNPJ)</option>
+                        </select>
+                    </label>
+                    <label class="campo">Status
+                        <select id="status" class="w-full rounded-lg border px-3 py-2 mt-1 bg-white">
+                            <option value="ATIVO">Ativo</option>
+                            <option value="INATIVO">Inativo</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+            <div class="flex justify-end gap-3 border-t pt-4">
+                <button type="button" onclick="fecharFormulario()" class="rounded-lg border px-4 py-2 font-bold text-slate-700">Cancelar</button>
+                <button type="submit" class="rounded-lg bg-sky-600 px-5 py-2 font-bold text-white shadow hover:bg-sky-700">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
 </body>
 </html>

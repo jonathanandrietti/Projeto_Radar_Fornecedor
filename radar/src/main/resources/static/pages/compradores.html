@@ -3,36 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compradoras | Radar</title>
+    <title>Compradores | Radar</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
+    <script src="/script.js" defer></script>
 </head>
 <body data-entidade="compradores" data-singular="Compradora" data-plural="Compradoras">
 <div class="flex min-h-screen bg-slate-100">
     <!-- Menu Lateral -->
     <aside class="w-64 bg-slate-950 text-white shadow-lg hidden md:block fixed h-full">
-        <div class="p-6">
+        <div class="p-6 flex flex-col h-full">
             <div class="flex items-center justify-center mb-8">
-                <img src="/imagem/Logo.png" alt="Logo Radar" class="w-64 h-64 object-contain rounded-full shadow-md">
+                <img src="/imagem/Logo.png" alt="Logo Radar" class="w-48 h-48 object-contain rounded-full shadow-md">
             </div>
             
-            <nav class="space-y-2">
+            <nav class="space-y-2 flex-1">
                 <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 text-center">Acesso</p>
-                <a href="/pages/fornecedores.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-building"></i> Fornecedores
+                <a id="menu-fornecedores" href="/pages/fornecedores.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-building w-5 text-center"></i> Fornecedores
                 </a>
-                <a href="/pages/compradores.html" class="flex items-center justify-center gap-3 rounded-lg bg-sky-600 px-4 py-3 font-semibold hover:bg-sky-700 transition">
-                    <i class="fa-solid fa-hand-holding-dollar"></i> Compradoras
+                <a id="menu-compradores" href="/pages/compradores.html" class="flex items-center justify-start gap-3 rounded-lg bg-sky-600 px-4 py-3 font-semibold text-white hover:bg-sky-700 transition">
+                    <i class="fa-solid fa-hand-holding-dollar w-5 text-center"></i> Compradores
                 </a>
-                <a href="/pages/admin.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-user-gear"></i> Admin
+                <a id="menu-admin" href="/pages/admin.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-user-gear w-5 text-center"></i> Admin
                 </a>
-                <a href="/pages/representantes.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-truck-medical"></i> Representantes
+                <a id="menu-representantes" href="/pages/representantes.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-truck-medical w-5 text-center"></i> Representantes
                 </a>
-                <a href="/pages/clientes.html" class="flex items-center justify-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-users"></i> Clientes
+                <a id="menu-clientes" href="/pages/clientes.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-users w-5 text-center"></i> Clientes
                 </a>
             </nav>
         </div>
@@ -184,87 +185,5 @@
         </form>
     </div>
 </div>
-
-<script>
-console.log('compradores.js carregado!');
-const configuracao = document.body.dataset;
-const endpoint = `/api/${configuracao.entidade}`;
-let registros = [];
-
-function abrirFormulario() {
-    document.getElementById('formulario').reset(); document.getElementById('id').value = '';
-    document.getElementById('titulo-form').textContent = `Cadastrar ${configuracao.singular.toLowerCase()}`;
-    document.getElementById('modal').classList.remove('hidden');
-}
-function fecharFormulario() { document.getElementById('modal').classList.add('hidden'); }
-function editar(id) {
-    const item = registros.find(i => i.id === id); if (!item) return;
-    ['id','codCidade','nome','status','cep','logradouro','numero','complemento','bairro','cidade','estado','latitude','longitude'].forEach(campo => document.getElementById(campo).value = item[campo] || '');
-    document.getElementById('cnpj').value = formatarCnpj(item.cnpj); document.getElementById('pontuacao').value = item.pontuacaoRisco || 0;
-    document.getElementById('titulo-form').textContent = `Editar ${configuracao.singular.toLowerCase()}`;
-    document.getElementById('modal').classList.remove('hidden');
-}
-async function salvar(evento) {
-    evento.preventDefault();
-    const id = document.getElementById('id').value;
-    const dados = Object.fromEntries(['nome','status','cep','logradouro','numero','complemento','bairro','cidade','estado','latitude','longitude'].map(campo => [campo, document.getElementById(campo).value.trim()]));
-    dados.codCidade = document.getElementById('codCidade').value || null;
-    dados.cnpj = document.getElementById('cnpj').value.replace(/\D/g, ''); dados.pontuacaoRisco = Number(document.getElementById('pontuacao').value || 0);
-    try {
-        const resposta = await fetch(id ? `${endpoint}/${id}` : endpoint, {method: id ? 'PUT' : 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(dados)});
-        if (!resposta.ok) throw new Error('Não foi possível salvar. Verifique se o CNPJ é válido e não está duplicado.');
-        fecharFormulario(); mostrarAlerta(`${configuracao.singular} salvo com sucesso.`); carregar();
-    } catch (erro) { mostrarAlerta(erro.message, true); }
-}
-async function excluirRegistro(id) {
-    if (!confirm(`Excluir este ${configuracao.singular.toLowerCase()}? Esta ação não pode ser desfeita.`)) return;
-    try { const resposta = await fetch(`${endpoint}/${id}`, {method:'DELETE'}); if (!resposta.ok) throw new Error('Não foi possível excluir o cadastro.'); mostrarAlerta('Cadastro excluído.'); carregar(); } catch (erro) { mostrarAlerta(erro.message, true); }
-}
-async function carregar() {
-    try {
-        const resposta = await fetch(endpoint);
-        if (!resposta.ok) throw new Error('Não foi possível carregar os dados.');
-        registros = await resposta.json();
-        filtrar();
-        atualizarIndicadores();
-    } catch (erro) { mostrarAlerta(erro.message, true); }
-}
-function filtrar() {
-    const termo = (document.getElementById('busca').value || '').toLowerCase();
-    const exibidos = registros.filter(item => [item.nome, item.cnpj, item.status, item.cidade, item.estado]
-        .some(valor => String(valor || '').toLowerCase().includes(termo)));
-    const linhas = document.getElementById('linhas');
-    linhas.innerHTML = exibidos.length ? exibidos.map(linha).join('') : '<tr><td colspan="7" class="p-10 text-center text-slate-500">Nenhum cadastro encontrado.</td></tr>';
-}
-function linha(item) {
-    const endereco = [item.logradouro, item.numero].filter(Boolean).join(', ');
-    const cidade = [item.cidade, item.estado].filter(Boolean).join('/');
-    return `<tr class="hover:bg-slate-50"><td class="p-4 font-medium">${item.id}</td><td class="p-4 font-semibold">${escapar(item.nome)}</td><td class="p-4">${formatarCnpj(item.cnpj)}</td><td class="p-4"><span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold">${formatarStatus(item.status)}</span></td><td class="p-4">${Number(item.pontuacaoRisco || 0).toLocaleString('pt-BR', {minimumFractionDigits: 1})}</td><td class="p-4 text-slate-600">${escapar(endereco || 'Não informado')}<br><span class="text-xs">${escapar(cidade)}</span></td><td class="p-4 text-center"><button onclick="editar(${item.id})" class="mr-2 text-sky-700" title="Editar"><i class="fa-solid fa-pen"></i></button><button onclick="excluirRegistro(${item.id})" class="text-rose-700" title="Excluir"><i class="fa-solid fa-trash"></i></button></td></tr>`;
-}
-function atualizarIndicadores() {
-    const total = registros.length;
-    const media = total ? registros.reduce((s, i) => s + Number(i.pontuacaoRisco || 0), 0) / total : 0;
-    document.getElementById('total').textContent = total;
-    document.getElementById('analise').textContent = registros.filter(i => i.status === 'EM_ANALISE').length;
-    document.getElementById('media').textContent = media.toLocaleString('pt-BR', {minimumFractionDigits: 1, maximumFractionDigits: 1});
-    document.getElementById('criticos').textContent = registros.filter(i => Number(i.pontuacaoRisco || 0) >= 7).length;
-}
-function mascaraCnpj(input) { let valor = input.value.replace(/\D/g, '').slice(0,14); input.value = valor.replace(/^(\d{2})(\d)/,'$1.$2').replace(/^(\d{2}\.\d{3})(\d)/,'$1.$2').replace(/(\d{3}\.)(\d{3})(\d)/,'$1$2/$3').replace(/(\d{4}\/)(\d{2})$/,'$1$2'); }
-function formatarCnpj(valor) { const cnpj = String(valor || '').replace(/\D/g,''); return cnpj.length === 14 ? cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5') : valor || ''; }
-function formatarStatus(status) { return ({EM_ANALISE:'Em análise', APROVADO:'Aprovado', REJEITADO:'Rejeitado', SUSPENSO:'Suspenso'})[status] || status || 'Em análise'; }
-function escapar(valor) { const elemento = document.createElement('span'); elemento.textContent = valor || ''; return elemento.innerHTML; }
-function mostrarAlerta(mensagem, erro = false) { const alerta = document.getElementById('alerta'); alerta.textContent = mensagem; alerta.className = `mb-5 rounded-lg border px-4 py-3 text-sm ${erro ? 'border-rose-200 bg-rose-50 text-rose-800' : 'border-emerald-200 bg-emerald-50 text-emerald-800'}`; alerta.classList.remove('hidden'); }
-
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOMContentLoaded - compradores');
-    const usuarioJson = localStorage.getItem('usuario');
-    if (!usuarioJson) {
-        console.log('Usuário não está logado, redirecionando para login...');
-        window.location.href = '/login.html';
-        return;
-    }
-    carregar();
-});
-</script>
 </body>
 </html>

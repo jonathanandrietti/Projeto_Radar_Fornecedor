@@ -26,8 +26,8 @@ public class FornecedorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Fornecedor>> listarTodos() {
-        List<Fornecedor> lista = fornecedorService.listarTodos();
+    public ResponseEntity<List<Fornecedor>> listarTodos(jakarta.servlet.http.HttpSession session) {
+        List<Fornecedor> lista = fornecedorService.listarTodos(session);
         return ResponseEntity.ok(lista);
     }
 
@@ -46,9 +46,9 @@ public class FornecedorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Fornecedor> atualizar(@PathVariable Long id, @Valid @RequestBody Fornecedor fornecedor) {
+    public ResponseEntity<Fornecedor> atualizar(@PathVariable Long id, @Valid @RequestBody Fornecedor fornecedor, jakarta.servlet.http.HttpSession session) {
         try {
-            Fornecedor atualizado = fornecedorService.atualizar(id, fornecedor);
+            Fornecedor atualizado = fornecedorService.atualizar(id, fornecedor, session);
             return ResponseEntity.ok(atualizado);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();

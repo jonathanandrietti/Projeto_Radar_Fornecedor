@@ -36,6 +36,31 @@ public class CompradorService {
         return compradorRepository.findAll();
     }
 
+    public List<Comprador> listarTodos(jakarta.servlet.http.HttpSession session) {
+        br.com.radarfornecedor.radar.model.Usuario usuario = (br.com.radarfornecedor.radar.model.Usuario) session.getAttribute("usuario");
+        if (usuario != null) {
+            if (usuario.getTipo() == br.com.radarfornecedor.radar.model.TipoUsuario.CLIENTE) {
+                return java.util.Collections.emptyList();
+            }
+            if (usuario.getTipo() == br.com.radarfornecedor.radar.model.TipoUsuario.COMPRADOR) {
+                String cnpjClean = usuario.getUsername().replaceAll("\\D", "");
+                Optional<Comprador> compradorOpt = compradorRepository.findByCnpj(cnpjClean);
+                
+                // Fallback for default 'comprador' login
+                if (compradorOpt.isEmpty()) {
+                    compradorOpt = compradorRepository.findAll().stream().findFirst();
+                }
+
+                if (compradorOpt.isPresent()) {
+                    return List.of(compradorOpt.get());
+                } else {
+                    return List.of();
+                }
+            }
+        }
+        return compradorRepository.findAll();
+    }
+
     public Optional<Comprador> buscarPorId(Long id) {
         return compradorRepository.findById(id);
     }
@@ -74,9 +99,9 @@ public class CompradorService {
     }
 
     public void excluir(Long id) {
-        if (!compradorRepository.existsById(id)) {
-            throw new RuntimeException("Comprador não encontrado com o ID: " + id);
-        }
-        compradorRepository.deleteById(id);
+        Comprador existente = compradorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comprador não encontrado com o ID: " + id));
+        existente.setStatus("INATIVO");
+        compradorRepository.save(existente);
     }
 }
