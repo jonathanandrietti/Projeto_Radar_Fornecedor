@@ -19,20 +19,25 @@
             
             <nav class="space-y-2 flex-1">
                 <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 text-center">Acesso</p>
-                <a href="/pages/fornecedores.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-building w-5 text-center"></i> Fornecedores
+                <a href="/pages/fornecedores.html" class="group flex items-center justify-between gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <span>Fornecedores</span>
+                    <img src="/imagem/Fornecedor.png" alt="Fornecedores" class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-[3.0] origin-left">
                 </a>
-                <a href="/pages/compradores.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-hand-holding-dollar w-5 text-center"></i> Compradores
+                <a href="/pages/compradores.html" class="group flex items-center justify-between gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <span>Compradores</span>
+                    <img src="/imagem/Comprador.png" alt="Compradores" class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-[3.0] origin-left">
                 </a>
-                <a href="/pages/admin.html" class="flex items-center justify-start gap-3 rounded-lg bg-sky-600 px-4 py-3 font-semibold text-white hover:bg-sky-700 transition">
-                    <i class="fa-solid fa-user-gear w-5 text-center"></i> Admin
+                <a href="/pages/admin.html" class="group flex items-center justify-between gap-3 rounded-lg bg-sky-600 px-4 py-3 font-semibold text-white hover:bg-sky-700 transition">
+                    <span>Admin</span>
+                    <img src="/imagem/Admin.png" alt="Admin" class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-[3.0] origin-left">
                 </a>
-                <a href="/pages/representantes.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-truck-medical w-5 text-center"></i> Representantes
+                <a href="/pages/representantes.html" class="group flex items-center justify-between gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <span>Representantes</span>
+                    <img src="/imagem/Representante.png" alt="Representantes" class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-[3.0] origin-left">
                 </a>
-                <a href="/pages/clientes.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-users w-5 text-center"></i> Clientes
+                <a href="/pages/clientes.html" class="group flex items-center justify-between gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <span>Clientes</span>
+                    <img src="/imagem/Cliente.png" alt="Clientes" class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-[3.0] origin-left">
                 </a>
             </nav>
         </div>
@@ -348,10 +353,10 @@
 
             // Micro-badges para classificação de negócio/vínculo
             const listTiposEmpreendimento = [];
-            if (usuario.fornecedor) listTiposEmpreendimento.push(`<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded px-1.5 py-0.5 text-[10px] font-bold"><i class="fa-solid fa-building"></i> Fornecedora</span>`);
-            if (usuario.comprador) listTiposEmpreendimento.push(`<span class="inline-flex items-center gap-1 bg-sky-50 text-sky-700 border border-sky-100 rounded px-1.5 py-0.5 text-[10px] font-bold"><i class="fa-solid fa-hand-holding-dollar"></i> Compradora</span>`);
-            if (usuario.representante) listTiposEmpreendimento.push(`<span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 border border-amber-100 rounded px-1.5 py-0.5 text-[10px] font-bold"><i class="fa-solid fa-truck-medical"></i> Representante</span>`);
-            if (usuario.cliente) listTiposEmpreendimento.push(`<span class="inline-flex items-center gap-1 bg-purple-50 text-purple-700 border border-purple-100 rounded px-1.5 py-0.5 text-[10px] font-bold"><i class="fa-solid fa-users"></i> Cliente</span>`);
+            if (usuario.fornecedor) listTiposEmpreendimento.push(`<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded px-1.5 py-0.5 text-[10px] font-bold"><img src="/imagem/Fornecedor.png" alt="Fornecedora" class="w-7 h-7 object-contain"> Fornecedora</span>`);
+            if (usuario.comprador) listTiposEmpreendimento.push(`<span class="inline-flex items-center gap-1 bg-sky-50 text-sky-700 border border-sky-100 rounded px-1.5 py-0.5 text-[10px] font-bold"><img src="/imagem/Comprador.png" alt="Compradora" class="w-7 h-7 object-contain"> Compradora</span>`);
+            if (usuario.representante) listTiposEmpreendimento.push(`<span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 border border-amber-100 rounded px-1.5 py-0.5 text-[10px] font-bold"><img src="/imagem/Representante.png" alt="Representante" class="w-7 h-7 object-contain"> Representante</span>`);
+            if (usuario.cliente) listTiposEmpreendimento.push(`<span class="inline-flex items-center gap-1 bg-purple-50 text-purple-700 border border-purple-100 rounded px-1.5 py-0.5 text-[10px] font-bold"><img src="/imagem/Cliente.png" alt="Cliente" class="w-7 h-7 object-contain"> Cliente</span>`);
             
             const tiposEmpreendimentoStr = listTiposEmpreendimento.length 
                 ? `<div class="flex flex-wrap gap-1 mt-1.5">${listTiposEmpreendimento.join('')}</div>`

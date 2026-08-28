@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Representantes | Radar</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link class="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
     <script src="/script.js" defer></script>
 </head>
@@ -20,20 +20,25 @@
             
             <nav class="space-y-2 flex-1">
                 <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 text-center">Acesso</p>
-                <a id="menu-fornecedores" href="/pages/fornecedores.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-building w-5 text-center"></i> Fornecedores
+                <a id="menu-fornecedores" href="/pages/fornecedores.html" class="group flex items-center justify-between gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <span>Fornecedores</span>
+                    <img src="/imagem/Fornecedor.png" alt="Fornecedores" class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-[3.0] origin-left">
                 </a>
-                <a id="menu-compradores" href="/pages/compradores.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-hand-holding-dollar w-5 text-center"></i> Compradores
+                <a id="menu-compradores" href="/pages/compradores.html" class="group flex items-center justify-between gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <span>Compradores</span>
+                    <img src="/imagem/Comprador.png" alt="Compradores" class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-[3.0] origin-left">
                 </a>
-                <a id="menu-admin" href="/pages/admin.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-user-gear w-5 text-center"></i> Admin
+                <a id="menu-admin" href="/pages/admin.html" class="group flex items-center justify-between gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <span>Admin</span>
+                    <img src="/imagem/Admin.png" alt="Admin" class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-[3.0] origin-left">
                 </a>
-                <a id="menu-representantes" href="/pages/representantes.html" class="flex items-center justify-start gap-3 rounded-lg bg-sky-600 px-4 py-3 font-semibold text-white hover:bg-sky-700 transition">
-                    <i class="fa-solid fa-truck-medical w-5 text-center"></i> Representantes
+                <a id="menu-representantes" href="/pages/representantes.html" class="group flex items-center justify-between gap-3 rounded-lg bg-sky-600 px-4 py-3 font-semibold text-white hover:bg-sky-700 transition">
+                    <span>Representantes</span>
+                    <img src="/imagem/Representante.png" alt="Representantes" class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-[3.0] origin-left">
                 </a>
-                <a id="menu-clientes" href="/pages/clientes.html" class="flex items-center justify-start gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-users w-5 text-center"></i> Clientes
+                <a id="menu-clientes" href="/pages/clientes.html" class="group flex items-center justify-between gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                    <span>Clientes</span>
+                    <img src="/imagem/Cliente.png" alt="Clientes" class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-[3.0] origin-left">
                 </a>
             </nav>
         </div>
@@ -111,7 +116,7 @@
 <!-- Modal -->
 <div id="modal" class="fixed inset-0 z-10 hidden overflow-y-auto bg-slate-950/50 p-4">
     <div class="mx-auto my-8 max-w-xl rounded-xl bg-white shadow-2xl">
-        <div class="flex items-center justify-between border-b px-6 py-4">
+        <div class="group flex items-center justify-between border-b px-6 py-4">
             <h2 id="titulo-form" class="text-xl font-black">Cadastrar representante</h2>
             <button onclick="fecharFormulario()" class="text-xl text-slate-500">&times;</button>
         </div>
