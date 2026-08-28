@@ -39,7 +39,28 @@ public class RepresentanteService {
                 representante.setCnpjFornecedor(fornecedor.getCnpj());
                 representante.setCodEmpresa(fornecedor.getId());
             }
+        } else {
+            if (representante.getCnpjFornecedor() == null || representante.getCnpjFornecedor().isBlank()) {
+                throw new RuntimeException("O CNPJ do fornecedor é obrigatório.");
+            }
+            String cnpjFornecedorClean = representante.getCnpjFornecedor().replaceAll("\\D", "");
+            Optional<Fornecedor> fornecedorOpt = fornecedorRepository.findByCnpj(cnpjFornecedorClean);
+            if (fornecedorOpt.isEmpty()) {
+                throw new RuntimeException("O CNPJ do fornecedor informado não existe. É necessário que o mesmo seja cadastrado pela empresa fornecedora.");
+            }
+            Fornecedor fornecedor = fornecedorOpt.get();
+            representante.setCnpjFornecedor(fornecedor.getCnpj());
+            representante.setCodEmpresa(fornecedor.getId());
         }
+
+        // Standardize CNPJs to only digits before saving
+        if (representante.getCnpj() != null) {
+            representante.setCnpj(representante.getCnpj().replaceAll("\\D", ""));
+        }
+        if (representante.getCnpjFornecedor() != null) {
+            representante.setCnpjFornecedor(representante.getCnpjFornecedor().replaceAll("\\D", ""));
+        }
+
         return representanteRepository.save(representante);
     }
 
@@ -119,6 +140,26 @@ public class RepresentanteService {
                 dadosNovos.setCnpjFornecedor(fornecedor.getCnpj());
                 dadosNovos.setCodEmpresa(fornecedor.getId());
             }
+        } else {
+            if (dadosNovos.getCnpjFornecedor() == null || dadosNovos.getCnpjFornecedor().isBlank()) {
+                throw new RuntimeException("O CNPJ do fornecedor é obrigatório.");
+            }
+            String cnpjFornecedorClean = dadosNovos.getCnpjFornecedor().replaceAll("\\D", "");
+            Optional<Fornecedor> fornecedorOpt = fornecedorRepository.findByCnpj(cnpjFornecedorClean);
+            if (fornecedorOpt.isEmpty()) {
+                throw new RuntimeException("O CNPJ do fornecedor informado não existe. É necessário que o mesmo seja cadastrado pela empresa fornecedora.");
+            }
+            Fornecedor fornecedor = fornecedorOpt.get();
+            dadosNovos.setCnpjFornecedor(fornecedor.getCnpj());
+            dadosNovos.setCodEmpresa(fornecedor.getId());
+        }
+
+        // Standardize CNPJs to only digits before saving
+        if (dadosNovos.getCnpj() != null) {
+            dadosNovos.setCnpj(dadosNovos.getCnpj().replaceAll("\\D", ""));
+        }
+        if (dadosNovos.getCnpjFornecedor() != null) {
+            dadosNovos.setCnpjFornecedor(dadosNovos.getCnpjFornecedor().replaceAll("\\D", ""));
         }
 
         existente.setNome(dadosNovos.getNome());

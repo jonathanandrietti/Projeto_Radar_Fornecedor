@@ -8,6 +8,7 @@ if (window.location.pathname !== '/' && window.location.pathname !== '/login.htm
 const configuracao = document.body.dataset;
 const endpoint = `/api/${configuracao.entidade}`;
 let registros = [];
+let ultimoCnpjBuscado = '';
 
 // Configuração de inatividade (2 minutos em milissegundos - reduzido para testes)
 const INATIVIDADE_TIMEOUT_MS = 2 * 60 * 1000;
@@ -152,6 +153,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cnpjEl) {
         cnpjEl.addEventListener('blur', consultarCnpj);
     }
+    
+    // Bind CNPJ Fornecedor listener dynamically
+    const cnpjFornecedorEl = document.getElementById('cnpjFornecedor');
+    if (cnpjFornecedorEl) {
+        cnpjFornecedorEl.addEventListener('blur', buscarFornecedorPorCnpj);
+        cnpjFornecedorEl.addEventListener('input', () => {
+            const cnpj = cnpjFornecedorEl.value.replace(/\D/g, '');
+            if (cnpj.length === 14) {
+                buscarFornecedorPorCnpj();
+            }
+        });
+    }
 });
 
 async function carregar() {
@@ -285,7 +298,12 @@ function atualizarIndicadores() {
 }
 
 function abrirFormulario() {
+    ultimoCnpjBuscado = '';
     document.getElementById('formulario').reset(); document.getElementById('id').value = '';
+    const codEmpresaLabel = document.getElementById('codEmpresaLabel');
+    if (codEmpresaLabel) {
+        codEmpresaLabel.textContent = 'Automático';
+    }
     document.getElementById('titulo-form').textContent = `Cadastrar ${configuracao.singular.toLowerCase()}`;
     document.getElementById('modal').classList.remove('hidden');
 }
@@ -297,6 +315,12 @@ function editar(id) {
         const el = document.getElementById(campo);
         if (el) el.value = item[campo] || '';
     });
+
+    const codEmpresaEl = document.getElementById('codEmpresa');
+    const codEmpresaLabel = document.getElementById('codEmpresaLabel');
+    if (codEmpresaLabel) {
+        codEmpresaLabel.textContent = (codEmpresaEl && codEmpresaEl.value) ? codEmpresaEl.value : 'Automático';
+    }
     
     const pontuacao = document.getElementById('pontuacao');
     if (pontuacao) pontuacao.value = item.pontuacaoRisco || 0;
@@ -305,7 +329,12 @@ function editar(id) {
     if (cnpjEl && item.cnpj) cnpjEl.value = formatarCnpj(item.cnpj);
     
     const cnpjFornecedorEl = document.getElementById('cnpjFornecedor');
-    if (cnpjFornecedorEl && item.cnpjFornecedor) cnpjFornecedorEl.value = formatarCnpj(item.cnpjFornecedor);
+    if (cnpjFornecedorEl && item.cnpjFornecedor) {
+        cnpjFornecedorEl.value = formatarCnpj(item.cnpjFornecedor);
+        ultimoCnpjBuscado = item.cnpjFornecedor.replace(/\D/g, '');
+    } else {
+        ultimoCnpjBuscado = '';
+    }
     
     document.getElementById('titulo-form').textContent = `Editar ${configuracao.singular.toLowerCase()}`;
     document.getElementById('modal').classList.remove('hidden');
@@ -483,3 +512,54 @@ function formatarCnpj(valor) { const cnpj = String(valor || '').replace(/\D/g,''
 function formatarStatus(status) { return ({EM_ANALISE:'Em análise', APROVADO:'Aprovado', REJEITADO:'Rejeitado', SUSPENSO:'Suspenso'})[status] || status || 'Em análise'; }
 function escapar(valor) { const elemento = document.createElement('span'); elemento.textContent = valor || ''; return elemento.innerHTML; }
 function mostrarAlerta(mensagem, erro = false) { const alerta = document.getElementById('alerta'); alerta.textContent = mensagem; alerta.className = `mb-5 rounded-lg border px-4 py-3 text-sm ${erro ? 'border-rose-200 bg-rose-50 text-rose-800' : 'border-emerald-200 bg-emerald-50 text-emerald-800'}`; alerta.classList.remove('hidden'); }
+
+async function buscarFornecedorPorCnpj() {
+    const cnpjFornecedorEl = document.getElementById('cnpjFornecedor');
+    if (!cnpjFornecedorEl) return;
+
+    const cnpj = cnpjFornecedorEl.value.replace(/\D/g, '');
+    const codEmpresaLabel = document.getElementById('codEmpresaLabel');
+    if (cnpj.length !== 14) {
+        const codEmpresaEl = document.getElementById('codEmpresa');
+        if (codEmpresaEl) codEmpresaEl.value = '';
+        if (codEmpresaLabel) codEmpresaLabel.textContent = 'Automático';
+        ultimoCnpjBuscado = '';
+        return;
+    }
+
+    if (cnpj === ultimoCnpjBuscado) {
+        return;
+    }
+
+    try {
+        ultimoCnpjBuscado = cnpj;
+        console.log('Consultando fornecedor por CNPJ no banco de dados:', cnpj);
+        mostrarAlerta('Buscando fornecedor cadastrado pelo CNPJ...', false);
+        
+        const resposta = await fetch(`/api/fornecedores/cnpj/${cnpj}`);
+        if (resposta.ok) {
+            const fornecedor = await resposta.json();
+            const codEmpresaEl = document.getElementById('codEmpresa');
+            if (codEmpresaEl) {
+                codEmpresaEl.value = fornecedor.id;
+            }
+            if (codEmpresaLabel) {
+                codEmpresaLabel.textContent = fornecedor.id;
+            }
+            mostrarAlerta(`Fornecedor vinculado com sucesso: ${fornecedor.nome}`);
+        } else {
+            const codEmpresaEl = document.getElementById('codEmpresa');
+            if (codEmpresaEl) {
+                codEmpresaEl.value = '';
+            }
+            if (codEmpresaLabel) {
+                codEmpresaLabel.textContent = 'Automático';
+            }
+            alert('O CNPJ do fornecedor informado não existe. É necessário que o mesmo seja cadastrado pela empresa fornecedora.');
+            mostrarAlerta('O CNPJ do fornecedor informado não existe. É necessário que o mesmo seja cadastrado pela empresa fornecedora.', true);
+        }
+    } catch (erro) {
+        console.error('Erro ao buscar fornecedor pelo CNPJ:', erro);
+        mostrarAlerta('Erro ao verificar o CNPJ do fornecedor.', true);
+    }
+}

@@ -123,15 +123,16 @@
                 </label>
                 <div class="grid grid-cols-2 gap-4">
                     <label class="campo">CNPJ Representante
-                        <input id="cnpj" required class="w-full rounded-lg border px-3 py-2 mt-1" maxlength="18" placeholder="Digite apenas números">
+                        <input id="cnpj" required class="w-full rounded-lg border px-3 py-2 mt-1" maxlength="18" placeholder="00.000.000/0000-00" oninput="mascaraCnpj(this)">
                     </label>
                     <label class="campo">CNPJ Fornecedor Vinculado
-                        <input id="cnpjFornecedor" required class="w-full rounded-lg border px-3 py-2 mt-1" maxlength="18" placeholder="Digite apenas números">
+                        <input id="cnpjFornecedor" required class="w-full rounded-lg border px-3 py-2 mt-1" maxlength="18" placeholder="00.000.000/0000-00" oninput="mascaraCnpj(this)">
                     </label>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <label class="campo">Cód. Empresa (ID Fornecedor)
-                        <input id="codEmpresa" type="number" required class="w-full rounded-lg border px-3 py-2 mt-1">
+                        <span id="codEmpresaLabel" class="w-full rounded-lg border px-3 py-2.5 mt-1 bg-slate-100 text-slate-900 font-bold block min-h-[42px] flex items-center">Automático</span>
+                        <input id="codEmpresa" type="hidden">
                     </label>
                     <label class="campo">Status
                         <select id="status" class="w-full rounded-lg border px-3 py-2 mt-1 bg-white">
