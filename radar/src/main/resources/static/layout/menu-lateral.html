@@ -1,46 +1,46 @@
-<aside class="w-64 bg-slate-950 text-white shadow-lg hidden md:block fixed h-full">
-    <div class="p-6">
+<aside class="w-64 bg-slate-950 text-white shadow-lg hidden md:block fixed h-full overflow-y-auto max-h-screen">
+    <div class="p-6 pb-24">
         <div class="flex items-center justify-center mb-8">
-            <img src="/imagem/Logo.png" alt="Logo Radar" class="w-64 h-64 object-contain rounded-full shadow-md">
+            <img src="/imagem/Logo.png" alt="Logo Radar" class="w-48 h-48 object-contain rounded-full shadow-md">
         </div>
         
         <nav class="space-y-2">
             <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 text-center">Acesso</p>
-            <a href="/pages/fornecedores.html" class="group flex items-center justify-between gap-3 rounded-lg bg-sky-600 px-4 py-3 font-semibold hover:bg-sky-700 transition">
+            <a id="menu-fornecedores" href="/pages/fornecedores.html" class="group flex items-center justify-between gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
                 <span>Fornecedores</span>
                 <img src="/imagem/Fornecedor.png" alt="Fornecedores" class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-[3.0] origin-left">
             </a>
-            <a href="/pages/compradores.html" class="group flex items-center justify-between gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
-                <span>Compradoras</span>
-                <img src="/imagem/Comprador.png" alt="Compradoras" class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-[3.0] origin-left">
+            <a id="menu-compradores" href="/pages/compradores.html" class="group flex items-center justify-between gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+                <span>Compradores</span>
+                <img src="/imagem/Comprador.png" alt="Compradores" class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-[3.0] origin-left">
             </a>
-            <a href="/pages/admin.html" class="group flex items-center justify-between gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+            <a id="menu-admin" href="/pages/admin.html" class="group flex items-center justify-between gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
                 <span>Admin</span>
                 <img src="/imagem/Admin.png" alt="Admin" class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-[3.0] origin-left">
             </a>
-            <a href="/pages/representantes.html" class="group flex items-center justify-between gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
+            <a id="menu-representantes" href="/pages/representantes.html" class="group flex items-center justify-between gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">
                 <span>Representantes</span>
                 <img src="/imagem/Representante.png" alt="Representantes" class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-[3.0] origin-left">
             </a>
-            <a href="/pages/clientes.html" class="group flex items-center justify-between gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">   
+            <a id="menu-clientes" href="/pages/clientes.html" class="group flex items-center justify-between gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition">   
                 <span>Clientes</span>
                 <img src="/imagem/Cliente.png" alt="Clientes" class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-[3.0] origin-left">
             </a>
         </nav>
         
-        <div class="mt-8 hidden md:block">
+        <div class="mt-8">
             <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 text-center">Filtros</p>
             <div class="space-y-3">
                 <div class="group">
                     <label class="flex items-center gap-2 text-sm text-slate-300 px-2">
                         <i class="fa-solid fa-magnifying-glass text-slate-500"></i>
-                        <input type="text" class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" placeholder="Busca...">
+                        <input type="text" id="filtro-busca" oninput="filtrar()" class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" placeholder="Busca...">
                     </label>
                 </div>
                 <div class="group">
                     <label class="flex items-center gap-2 text-sm text-slate-300 px-2">
                         <i class="fa-solid fa-tag text-slate-500"></i>
-                        <select class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-white focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500">
+                        <select id="filtro-categoria" onchange="filtrar()" class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-white focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500">
                             <option value="">Por Categoria</option>
                         </select>
                     </label>
@@ -48,7 +48,7 @@
                 <div class="group">
                     <label class="flex items-center gap-2 text-sm text-slate-300 px-2">
                         <i class="fa-solid fa-city text-slate-500"></i>
-                        <select class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-white focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500">
+                        <select id="filtro-cidade" onchange="filtrar()" class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-white focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500">
                             <option value="">Por Cidades</option>
                         </select>
                     </label>
@@ -56,7 +56,7 @@
                 <div class="group">
                     <label class="flex items-center gap-2 text-sm text-slate-300 px-2">
                         <i class="fa-solid fa-flag text-slate-500"></i>
-                        <select class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-white focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500">
+                        <select id="filtro-uf" onchange="filtrar()" class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-white focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500">
                             <option value="">Por UF</option>
                         </select>
                     </label>
@@ -64,8 +64,10 @@
                 <div class="group">
                     <label class="flex items-center gap-2 text-sm text-slate-300 px-2">
                         <i class="fa-solid fa-id-card text-slate-500"></i>
-                        <select class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-white focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500">
+                        <select id="filtro-aceita-cpf" onchange="filtrar()" class="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-white focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500">
                             <option value="">Aceita CPF</option>
+                            <option value="sim">Sim</option>
+                            <option value="nao">Não</option>
                         </select>
                     </label>
                 </div>

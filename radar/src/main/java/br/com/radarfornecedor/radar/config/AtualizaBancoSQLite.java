@@ -123,8 +123,9 @@ public class AtualizaBancoSQLite implements ApplicationRunner {
             executarSql("UPDATE Usuarios SET Cliente = 1 WHERE Tipo = 'CLIENTE'");
         });
 
-        aplicarAtualizacao(24, "Adiciona colunas AceitaCPF e CNPJ em Fornecedores e Representantes", () -> {
+                aplicarAtualizacao(24, "Adiciona colunas AceitaCPF e CNPJ em Fornecedores e Representantes", () -> {
             adicionarColunaSeNaoExistir("Fornecedores", "AceitaCPF", "INTEGER DEFAULT 0");
+            adicionarColunaSeNaoExistir("Representantes", "AceitaCPF", "INTEGER DEFAULT 0");
             adicionarColunaSeNaoExistir("Representantes", "Cnpj", "TEXT");
             adicionarColunaSeNaoExistir("Representantes", "CnpjFornecedor", "TEXT");
         });
