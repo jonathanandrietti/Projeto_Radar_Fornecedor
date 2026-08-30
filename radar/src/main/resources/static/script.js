@@ -141,8 +141,24 @@ function aplicarControlesDeAcesso() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+async function carregarMenuLateral() {
+    try {
+        const resposta = await fetch('/layout/menu-lateral.html');
+        if (resposta.ok) {
+            const html = await resposta.text();
+            const aside = document.getElementById('menu-lateral');
+            if (aside) {
+                aside.outerHTML = html;
+            }
+        }
+    } catch (e) {
+        console.error('Erro ao carregar menu lateral universal:', e);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOMContentLoaded disparado');
+    await carregarMenuLateral();
     console.log('container user-info:', document.getElementById('user-info'));
     carregar();
     exibirInfoUsuario();

@@ -9,7 +9,7 @@
 [INFO] 
 [INFO] --- resources:3.5.0:resources (default-resources) @ radar ---
 [INFO] Copying 1 resource from src\main\resources to target\classes
-[INFO] Copying 24 resources from src\main\resources to target\classes
+[INFO] Copying 25 resources from src\main\resources to target\classes
 [INFO] 
 [INFO] --- compiler:3.15.0:compile (default-compile) @ radar ---
 [INFO] Nothing to compile - all classes are up to date.
@@ -35,21 +35,21 @@
 
  :: Spring Boot ::                (v4.1.0)
 
-2026-08-29T18:39:11.909-03:00  INFO 15476 --- [           main] b.c.r.radar.RadarApplication             : Starting RadarApplication using Java 21.0.8 with PID 15476 (C:\Visão_Futura\Projeto_Radar_Fornecedor\radar\target\classes started by Inceptor in C:\Visão_Futura\Projeto_Radar_Fornecedor\radar)
-2026-08-29T18:39:11.914-03:00  INFO 15476 --- [           main] b.c.r.radar.RadarApplication             : No active profile set, falling back to 1 default profile: "default"
-2026-08-29T18:39:12.862-03:00  INFO 15476 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-08-29T18:39:12.946-03:00  INFO 15476 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 72 ms. Found 5 JPA repository interfaces.
-2026-08-29T18:39:13.536-03:00  INFO 15476 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
-2026-08-29T18:39:13.562-03:00  INFO 15476 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-08-29T18:39:13.563-03:00  INFO 15476 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
-2026-08-29T18:39:13.659-03:00  INFO 15476 --- [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1668 ms
-2026-08-29T18:39:13.902-03:00  INFO 15476 --- [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-08-29T18:39:14.029-03:00  INFO 15476 --- [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.1.Final
-2026-08-29T18:39:14.877-03:00  INFO 15476 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-08-29T18:39:14.957-03:00  INFO 15476 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-08-29T18:39:15.191-03:00  INFO 15476 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.sqlite.jdbc4.JDBC4Connection@298e002d
-2026-08-29T18:39:15.195-03:00  INFO 15476 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-08-29T18:39:15.307-03:00  INFO 15476 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2026-08-29T21:52:07.830-03:00  INFO 20896 --- [           main] b.c.r.radar.RadarApplication             : Starting RadarApplication using Java 21.0.8 with PID 20896 (C:\Visão_Futura\Projeto_Radar_Fornecedor\radar\target\classes started by Inceptor in C:\Visão_Futura\Projeto_Radar_Fornecedor\radar)
+2026-08-29T21:52:07.835-03:00  INFO 20896 --- [           main] b.c.r.radar.RadarApplication             : No active profile set, falling back to 1 default profile: "default"
+2026-08-29T21:52:08.678-03:00  INFO 20896 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-29T21:52:08.751-03:00  INFO 20896 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 63 ms. Found 5 JPA repository interfaces.
+2026-08-29T21:52:09.305-03:00  INFO 20896 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-08-29T21:52:09.313-03:00  INFO 20896 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-29T21:52:09.313-03:00  INFO 20896 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-08-29T21:52:09.393-03:00  INFO 20896 --- [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1478 ms
+2026-08-29T21:52:09.638-03:00  INFO 20896 --- [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-08-29T21:52:09.711-03:00  INFO 20896 --- [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.1.Final
+2026-08-29T21:52:10.249-03:00  INFO 20896 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-29T21:52:10.281-03:00  INFO 20896 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-08-29T21:52:10.465-03:00  INFO 20896 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.sqlite.jdbc4.JDBC4Connection@2299d903
+2026-08-29T21:52:10.471-03:00  INFO 20896 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-08-29T21:52:10.517-03:00  INFO 20896 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [jdbc:sqlite:DBLRadar.db]
 	Database driver: SQLite JDBC
 	Database dialect: SQLiteDialect
@@ -61,29 +61,13 @@
 	Pool: DataSourceConnectionProvider
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2026-08-29T18:39:16.888-03:00  INFO 15476 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-08-29T18:39:16.948-03:00  INFO 15476 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-08-29T18:39:17.055-03:00  INFO 15476 --- [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-08-29T18:39:17.361-03:00  WARN 15476 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-08-29T18:39:17.382-03:00  INFO 15476 --- [           main] o.s.b.w.a.WelcomePageHandlerMapping      : Adding welcome page: class path resource [static/index.html]
-2026-08-29T18:39:17.733-03:00  INFO 15476 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
-2026-08-29T18:39:17.738-03:00  INFO 15476 --- [           main] b.c.r.radar.RadarApplication             : Started RadarApplication in 6.379 seconds (process running for 6.924)
-2026-08-29T18:39:37.958-03:00  INFO 15476 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-08-29T18:39:37.959-03:00  INFO 15476 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-08-29T18:39:37.960-03:00  INFO 15476 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-Hibernate: select u1_0.id,u1_0.ativo,u1_0.cliente,u1_0.comprador,u1_0.fornecedor,u1_0.representante,u1_0.senha,u1_0.tipo,u1_0.username from usuarios u1_0 where u1_0.username=?
-Hibernate: select u1_0.id,u1_0.ativo,u1_0.cliente,u1_0.comprador,u1_0.fornecedor,u1_0.representante,u1_0.senha,u1_0.tipo,u1_0.username from usuarios u1_0
-Hibernate: select f1_0.id,f1_0.aceitacpf,f1_0.bairro,f1_0.cep,f1_0.cidade,f1_0.cnpj,f1_0.cod_cidade,f1_0.complemento,f1_0.estado,f1_0.latitude,f1_0.logradouro,f1_0.longitude,f1_0.empresa,f1_0.numero,f1_0.pontuacao_risco,f1_0.status from fornecedores f1_0
-Hibernate: select c1_0.id,c1_0.bairro,c1_0.cep,c1_0.cidade,c1_0.cnpj,c1_0.cod_cidade,c1_0.complemento,c1_0.estado,c1_0.latitude,c1_0.logradouro,c1_0.longitude,c1_0.empresa,c1_0.numero,c1_0.pontuacao_risco,c1_0.status from compradores c1_0
-Hibernate: select u1_0.id,u1_0.ativo,u1_0.cliente,u1_0.comprador,u1_0.fornecedor,u1_0.representante,u1_0.senha,u1_0.tipo,u1_0.username from usuarios u1_0
-Hibernate: select r1_0.id,r1_0.cnpj,r1_0.cnpj_fornecedor,r1_0.cod_empresa,r1_0.nome,r1_0.status from representantes r1_0
-Hibernate: select c1_0.id,c1_0.cpf_cnpj,c1_0.nome,c1_0.status,c1_0.tipo_pessoa from clientes c1_0
-Hibernate: select u1_0.id,u1_0.ativo,u1_0.cliente,u1_0.comprador,u1_0.fornecedor,u1_0.representante,u1_0.senha,u1_0.tipo,u1_0.username from usuarios u1_0 where u1_0.username=?
-Hibernate: select u1_0.id,u1_0.ativo,u1_0.cliente,u1_0.comprador,u1_0.fornecedor,u1_0.representante,u1_0.senha,u1_0.tipo,u1_0.username from usuarios u1_0
-Hibernate: select u1_0.id,u1_0.ativo,u1_0.cliente,u1_0.comprador,u1_0.fornecedor,u1_0.representante,u1_0.senha,u1_0.tipo,u1_0.username from usuarios u1_0 where u1_0.username=?
-Hibernate: select u1_0.id,u1_0.ativo,u1_0.cliente,u1_0.comprador,u1_0.fornecedor,u1_0.representante,u1_0.senha,u1_0.tipo,u1_0.username from usuarios u1_0
-Hibernate: select u1_0.id,u1_0.ativo,u1_0.cliente,u1_0.comprador,u1_0.fornecedor,u1_0.representante,u1_0.senha,u1_0.tipo,u1_0.username from usuarios u1_0 where u1_0.username=?
-Hibernate: select u1_0.id,u1_0.ativo,u1_0.cliente,u1_0.comprador,u1_0.fornecedor,u1_0.representante,u1_0.senha,u1_0.tipo,u1_0.username from usuarios u1_0
-Hibernate: select u1_0.id,u1_0.ativo,u1_0.cliente,u1_0.comprador,u1_0.fornecedor,u1_0.representante,u1_0.senha,u1_0.tipo,u1_0.username from usuarios u1_0 where u1_0.username=?
-Hibernate: select c1_0.id,c1_0.bairro,c1_0.cep,c1_0.cidade,c1_0.cnpj,c1_0.cod_cidade,c1_0.complemento,c1_0.estado,c1_0.latitude,c1_0.logradouro,c1_0.longitude,c1_0.empresa,c1_0.numero,c1_0.pontuacao_risco,c1_0.status from compradores c1_0 where c1_0.cnpj=?
-Hibernate: select c1_0.id,c1_0.bairro,c1_0.cep,c1_0.cidade,c1_0.cnpj,c1_0.cod_cidade,c1_0.complemento,c1_0.estado,c1_0.latitude,c1_0.logradouro,c1_0.longitude,c1_0.empresa,c1_0.numero,c1_0.pontuacao_risco,c1_0.status from compradores c1_0
+2026-08-29T21:52:11.502-03:00  INFO 20896 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-29T21:52:11.546-03:00  INFO 20896 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-29T21:52:11.629-03:00  INFO 20896 --- [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-08-29T21:52:11.894-03:00  WARN 20896 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-08-29T21:52:11.912-03:00  INFO 20896 --- [           main] o.s.b.w.a.WelcomePageHandlerMapping      : Adding welcome page: class path resource [static/index.html]
+2026-08-29T21:52:12.211-03:00  INFO 20896 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-08-29T21:52:12.216-03:00  INFO 20896 --- [           main] b.c.r.radar.RadarApplication             : Started RadarApplication in 5.033 seconds (process running for 5.583)
+2026-08-29T21:52:37.565-03:00  INFO 20896 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-08-29T21:52:37.566-03:00  INFO 20896 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-08-29T21:52:37.567-03:00  INFO 20896 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
