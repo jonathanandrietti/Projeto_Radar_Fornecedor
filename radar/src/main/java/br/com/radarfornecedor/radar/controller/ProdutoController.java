@@ -4,7 +4,7 @@ import br.com.radarfornecedor.radar.dto.CategoriaProdutoDTO;
 import br.com.radarfornecedor.radar.model.CategoriaProduto;
 import br.com.radarfornecedor.radar.model.Produto;
 import br.com.radarfornecedor.radar.service.ProdutoService;
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

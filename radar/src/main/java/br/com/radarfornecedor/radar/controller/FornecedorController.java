@@ -2,7 +2,7 @@ package br.com.radarfornecedor.radar.controller;
 
 import br.com.radarfornecedor.radar.model.Fornecedor;
 import br.com.radarfornecedor.radar.service.FornecedorService;
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -73,7 +73,7 @@ public class FornecedorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Fornecedor>> listarTodos(jakarta.servlet.http.HttpSession session) {
+    public ResponseEntity<List<Fornecedor>> listarTodos(javax.servlet.http.HttpSession session) {
         List<Fornecedor> lista = fornecedorService.listarTodos(session);
         return ResponseEntity.ok(lista);
     }
@@ -93,7 +93,7 @@ public class FornecedorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Fornecedor> atualizar(@PathVariable Long id, @Valid @RequestBody Fornecedor fornecedor, jakarta.servlet.http.HttpSession session) {
+    public ResponseEntity<Fornecedor> atualizar(@PathVariable Long id, @Valid @RequestBody Fornecedor fornecedor, javax.servlet.http.HttpSession session) {
         try {
             Fornecedor atualizado = fornecedorService.atualizar(id, fornecedor, session);
             return ResponseEntity.ok(atualizado);

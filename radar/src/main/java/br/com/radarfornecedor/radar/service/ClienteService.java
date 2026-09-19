@@ -8,7 +8,7 @@ import br.com.radarfornecedor.radar.model.Representante;
 import br.com.radarfornecedor.radar.repository.ClienteRepository;
 import br.com.radarfornecedor.radar.repository.FornecedorRepository;
 import br.com.radarfornecedor.radar.repository.RepresentanteRepository;
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

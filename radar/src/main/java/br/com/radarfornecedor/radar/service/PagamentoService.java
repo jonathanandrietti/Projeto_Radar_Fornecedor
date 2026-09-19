@@ -4,7 +4,7 @@ import br.com.radarfornecedor.radar.dto.PagamentoRequest;
 import br.com.radarfornecedor.radar.model.*;
 import br.com.radarfornecedor.radar.repository.PagamentoRepository;
 import br.com.radarfornecedor.radar.repository.ProdutoRepository;
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -21,14 +21,14 @@ public class PagamentoService {
 
     public Pagamento criar(PagamentoRequest dados, HttpSession session) {
         Usuario usuario = clienteLogado(session);
-        Produto produto = produtoRepository.findById(dados.produtoId()).orElseThrow(() -> new IllegalArgumentException("Produto não encontrado."));
+        Produto produto = produtoRepository.findById(dados.getProdutoId()).orElseThrow(() -> new IllegalArgumentException("Produto não encontrado."));
         if (produto.getFornecedorId() == null || produto.getPreco() == null) throw new IllegalArgumentException("O produto precisa ter empresa e preço cadastrados antes da compra.");
-        String cep = dados.cepEntrega().replaceAll("\\D", "");
+        String cep = dados.getCepEntrega().replaceAll("\\D", "");
         if (cep.length() != 8) throw new IllegalArgumentException("Informe um CEP de entrega válido.");
         Pagamento pagamento = new Pagamento();
         pagamento.setProdutoId(produto.getId()); pagamento.setFornecedorId(produto.getFornecedorId()); pagamento.setCliente(usuario.getUsername());
-        pagamento.setForma(dados.forma()); pagamento.setValor(produto.getPreco()); pagamento.setCepEntrega(cep);
-        if (dados.forma() == FormaPagamento.BOLETO_BANCARIO) pagamento.setVencimentoBoleto(proximoDiaUtil().atTime(LocalTime.MAX));
+        pagamento.setForma(dados.getForma()); pagamento.setValor(produto.getPreco()); pagamento.setCepEntrega(cep);
+        if (dados.getForma() == FormaPagamento.BOLETO_BANCARIO) pagamento.setVencimentoBoleto(proximoDiaUtil().atTime(LocalTime.MAX));
         return pagamentoRepository.save(pagamento);
     }
 

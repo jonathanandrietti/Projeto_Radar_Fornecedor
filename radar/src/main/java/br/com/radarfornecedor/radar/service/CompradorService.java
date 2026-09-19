@@ -36,7 +36,7 @@ public class CompradorService {
         return compradorRepository.findAll();
     }
 
-    public List<Comprador> listarTodos(jakarta.servlet.http.HttpSession session) {
+    public List<Comprador> listarTodos(javax.servlet.http.HttpSession session) {
         br.com.radarfornecedor.radar.model.Usuario usuario = (br.com.radarfornecedor.radar.model.Usuario) session.getAttribute("usuario");
         if (usuario != null) {
             if (usuario.getTipo() == br.com.radarfornecedor.radar.model.TipoUsuario.CLIENTE) {
@@ -94,6 +94,14 @@ public class CompradorService {
         existente.setLatitude(dadosNovos.getLatitude());
         existente.setLongitude(dadosNovos.getLongitude());
         existente.setCodCidade(dadosNovos.getCodCidade());
+        
+        // Atualizar categoria e atividade
+        if (dadosNovos.getCategoria() != null) {
+            existente.setCategoria(dadosNovos.getCategoria());
+        }
+        if (dadosNovos.getAtividade() != null) {
+            existente.setAtividade(dadosNovos.getAtividade());
+        }
 
         return compradorRepository.save(existente);
     }

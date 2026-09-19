@@ -6,11 +6,12 @@ import br.com.radarfornecedor.radar.model.TipoUsuario;
 import br.com.radarfornecedor.radar.model.Fornecedor;
 import br.com.radarfornecedor.radar.repository.RepresentanteRepository;
 import br.com.radarfornecedor.radar.repository.FornecedorRepository;
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RepresentanteService {
@@ -87,7 +88,7 @@ public class RepresentanteService {
                             Optional<Fornecedor> fornOpt = fornecedorRepository.findByCnpj(rep.getCnpjFornecedor().replaceAll("\\D", ""));
                             return fornOpt.isPresent() && Boolean.TRUE.equals(fornOpt.get().getAceitaCpf());
                         })
-                        .toList();
+                        .collect(Collectors.toList());
             }
         }
         return representanteRepository.findAll();
@@ -153,6 +154,14 @@ public class RepresentanteService {
         existente.setEstado(dadosNovos.getEstado());
         existente.setLatitude(dadosNovos.getLatitude());
         existente.setLongitude(dadosNovos.getLongitude());
+        
+        // Atualizar categoria e atividade
+        if (dadosNovos.getCategoria() != null) {
+            existente.setCategoria(dadosNovos.getCategoria());
+        }
+        if (dadosNovos.getAtividade() != null) {
+            existente.setAtividade(dadosNovos.getAtividade());
+        }
 
         return representanteRepository.save(existente);
     }

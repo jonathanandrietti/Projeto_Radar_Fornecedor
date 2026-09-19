@@ -2,10 +2,10 @@ package br.com.radarfornecedor.radar.config;
 
 import br.com.radarfornecedor.radar.model.TipoUsuario;
 import br.com.radarfornecedor.radar.model.Usuario;
-import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

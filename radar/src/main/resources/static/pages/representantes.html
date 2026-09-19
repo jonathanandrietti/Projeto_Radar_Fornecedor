@@ -130,7 +130,7 @@
                 <div class="space-y-4 mt-2">
                     <div class="grid grid-cols-3 gap-4">
                         <label class="campo col-span-1">CEP
-                            <input id="cep" maxlength="9" placeholder="00000-000" oninput="mascaraCep(this)" onblur="consultarCep()" class="mt-1">
+                            <input id="cep" maxlength="9" placeholder="00000-000" oninput="mascaraCep(this)" class="mt-1">
                         </label>
                         <label class="campo col-span-2">Logradouro
                             <input id="logradouro" class="mt-1" placeholder="Rua, Avenida...">
@@ -166,6 +166,23 @@
                 </div>
             </fieldset>
 
+            <!-- Categoria e Atividade -->
+            <fieldset class="rounded-xl border border-slate-200 p-5 bg-slate-50/50">
+                <legend class="px-3 text-xs font-black uppercase tracking-widest text-slate-500">Negócio e Atividade</legend>
+                <div class="space-y-4 mt-2">
+                    <label class="campo">Categoria de Produtos
+                        <select id="categoria" class="mt-1 cursor-pointer">
+                            <option value="">Selecione uma categoria...</option>
+                        </select>
+                    </label>
+                    <label class="campo">Atividade (CNAE)
+                        <select id="atividade" class="mt-1 cursor-pointer">
+                            <option value="">Selecione uma atividade...</option>
+                        </select>
+                    </label>
+                </div>
+            </fieldset>
+
             <div class="flex justify-end gap-4 pt-4">
                 <button type="button" onclick="fecharFormulario()" class="rounded-xl border border-slate-200 px-6 py-3 font-bold text-slate-500">CANCELAR</button>
                 <button type="submit" class="rounded-xl bg-sky-600 px-8 py-3 font-black text-white shadow-lg shadow-sky-100 hover:bg-sky-700">SALVAR AGENTE</button>
@@ -175,3 +192,4 @@
 </div>
 </body>
 </html>
+<script src="/js/preenchimento-automatico.js"></script>

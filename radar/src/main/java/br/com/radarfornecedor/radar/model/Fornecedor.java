@@ -1,8 +1,8 @@
 package br.com.radarfornecedor.radar.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "Fornecedores")
@@ -78,6 +78,15 @@ public class Fornecedor {
     @Column(name = "FotoNome")
     private String fotoNome;
 
+    // Relacionamento com Categoria e Atividade
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoria_id")
+    private Categoria categoria;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "atividade_id")
+    private Atividade atividade;
+
     public Fornecedor() {}
 
     public Fornecedor(Long id, String nome, String cnpj, String status, Double pontuacaoRisco) {
@@ -151,4 +160,10 @@ public class Fornecedor {
 
     public String getFotoNome() { return fotoNome; }
     public void setFotoNome(String fotoNome) { this.fotoNome = fotoNome; }
+
+    public Categoria getCategoria() { return categoria; }
+    public void setCategoria(Categoria categoria) { this.categoria = categoria; }
+
+    public Atividade getAtividade() { return atividade; }
+    public void setAtividade(Atividade atividade) { this.atividade = atividade; }
 }

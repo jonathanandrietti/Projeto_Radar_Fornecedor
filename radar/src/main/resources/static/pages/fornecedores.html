@@ -152,7 +152,17 @@
                     <input id="prazoEntregaDias" type="number" min="0" max="30" value="2" class="mt-1">
                 </label>
                 <label class="campo">CEP (Busca Automática)
-                    <input id="cep" maxlength="9" placeholder="00000-000" oninput="mascaraCep(this)" onblur="consultarCep()" class="mt-1">
+                    <input id="cep" maxlength="9" placeholder="00000-000" oninput="mascaraCep(this)" class="mt-1">
+                </label>
+                <label class="campo">Categoria de Produtos
+                    <select id="categoria" class="mt-1 cursor-pointer">
+                        <option value="">Selecione uma categoria...</option>
+                    </select>
+                </label>
+                <label class="campo">Atividade (CNAE)
+                    <select id="atividade" class="mt-1 cursor-pointer">
+                        <option value="">Selecione uma atividade...</option>
+                    </select>
                 </label>
             </div>
 
@@ -195,3 +205,4 @@
 </div>
 </body>
 </html>
+<script src="/js/preenchimento-automatico.js"></script>

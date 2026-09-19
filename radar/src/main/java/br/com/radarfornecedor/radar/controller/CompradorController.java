@@ -2,7 +2,7 @@ package br.com.radarfornecedor.radar.controller;
 
 import br.com.radarfornecedor.radar.model.Comprador;
 import br.com.radarfornecedor.radar.service.CompradorService;
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +26,7 @@ public class CompradorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Comprador>> listarTodos(jakarta.servlet.http.HttpSession session) {
+    public ResponseEntity<List<Comprador>> listarTodos(javax.servlet.http.HttpSession session) {
         List<Comprador> lista = compradorService.listarTodos(session);
         return ResponseEntity.ok(lista);
     }

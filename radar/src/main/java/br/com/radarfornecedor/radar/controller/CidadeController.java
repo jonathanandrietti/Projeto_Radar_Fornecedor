@@ -22,15 +22,21 @@ public class CidadeController {
 
     @GetMapping("/ibge/{codigoIbge}")
     public ResponseEntity<CidadeResponse> buscarPorCodigoIbge(@PathVariable Integer codigoIbge) {
-        List<CidadeResponse> cidades = jdbcTemplate.query("""
-                        SELECT CodCidade, Cidade, UF, CodCidadeIBGE
-                        FROM Cidades WHERE CodCidadeIBGE = ?
-                        """,
+        String sql = "SELECT CodCidade, Cidade, UF, CodCidadeIBGE FROM Cidades WHERE CodCidadeIBGE = ?";
+        List<CidadeResponse> cidades = jdbcTemplate.query(sql,
                 (rs, linha) -> new CidadeResponse(
                         rs.getLong("CodCidade"), rs.getString("Cidade"),
                         rs.getString("UF"), rs.getInt("CodCidadeIBGE")), codigoIbge);
         return cidades.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(cidades.get(0));
     }
 
-    public record CidadeResponse(Long codCidade, String cidade, String uf, Integer codCidadeIBGE) { }
+    @lombok.Data
+    @lombok.NoArgsConstructor
+    @lombok.AllArgsConstructor
+    public static class CidadeResponse {
+        private Long codCidade;
+        private String cidade;
+        private String uf;
+        private Integer codCidadeIBGE;
+    }
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FornecedorService {
@@ -40,7 +41,7 @@ public class FornecedorService {
         return fornecedorRepository.findAll();
     }
 
-    public List<Fornecedor> listarTodos(jakarta.servlet.http.HttpSession session) {
+    public List<Fornecedor> listarTodos(javax.servlet.http.HttpSession session) {
         br.com.radarfornecedor.radar.model.Usuario usuario = (br.com.radarfornecedor.radar.model.Usuario) session.getAttribute("usuario");
         if (usuario != null) {
             if (usuario.getTipo() == br.com.radarfornecedor.radar.model.TipoUsuario.FORNECEDOR) {
@@ -87,7 +88,7 @@ public class FornecedorService {
                 // Return only suppliers who accept CPF
                 return fornecedorRepository.findAll().stream()
                         .filter(f -> Boolean.TRUE.equals(f.getAceitaCpf()))
-                        .toList();
+                        .collect(Collectors.toList());
             }
         }
         return fornecedorRepository.findAll();
@@ -101,7 +102,7 @@ public class FornecedorService {
         return fornecedorRepository.findByCnpj(cnpj);
     }
 
-    public Fornecedor atualizar(Long id, Fornecedor dadosNovos, jakarta.servlet.http.HttpSession session) {
+    public Fornecedor atualizar(Long id, Fornecedor dadosNovos, javax.servlet.http.HttpSession session) {
         Fornecedor existente = fornecedorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Fornecedor não encontrado com o ID: " + id));
 
@@ -144,6 +145,14 @@ public class FornecedorService {
         existente.setLatitude(dadosNovos.getLatitude());
         existente.setLongitude(dadosNovos.getLongitude());
         existente.setCodCidade(dadosNovos.getCodCidade());
+        
+        // Atualizar categoria e atividade
+        if (dadosNovos.getCategoria() != null) {
+            existente.setCategoria(dadosNovos.getCategoria());
+        }
+        if (dadosNovos.getAtividade() != null) {
+            existente.setAtividade(dadosNovos.getAtividade());
+        }
 
         return fornecedorRepository.save(existente);
     }

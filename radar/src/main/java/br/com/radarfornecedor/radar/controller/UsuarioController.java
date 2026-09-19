@@ -3,7 +3,7 @@ package br.com.radarfornecedor.radar.controller;
 import br.com.radarfornecedor.radar.model.TipoUsuario;
 import br.com.radarfornecedor.radar.model.Usuario;
 import br.com.radarfornecedor.radar.service.UsuarioService;
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

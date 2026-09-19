@@ -1,8 +1,23 @@
 package br.com.radarfornecedor.radar.dto;
 
 import br.com.radarfornecedor.radar.model.FormaPagamento;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public record PagamentoRequest(@NotNull Long produtoId, @NotNull FormaPagamento forma,
-                               @NotBlank String cepEntrega) {}
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class PagamentoRequest {
+    @NotNull
+    private Long produtoId;
+    
+    @NotNull
+    private FormaPagamento forma;
+    
+    @NotBlank
+    private String cepEntrega;
+}

@@ -1,8 +1,8 @@
 package br.com.radarfornecedor.radar.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Email;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Email;
 
 @Entity
 @Table(name = "Representantes")
@@ -63,6 +63,16 @@ public class Representante {
 
     @Column(name = "Longitude")
     private Double longitude;
+
+    // Relacionamento com Categoria e Atividade
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoria_id")
+    private Categoria categoria;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "atividade_id")
+    private Atividade atividade;
+
     public Representante() {}
 
     public Representante(Long id, String nome, String status) {
@@ -129,4 +139,10 @@ public class Representante {
 
     public Double getLongitude() { return longitude; }
     public void setLongitude(Double longitude) { this.longitude = longitude; }
+
+    public Categoria getCategoria() { return categoria; }
+    public void setCategoria(Categoria categoria) { this.categoria = categoria; }
+
+    public Atividade getAtividade() { return atividade; }
+    public void setAtividade(Atividade atividade) { this.atividade = atividade; }
 }
