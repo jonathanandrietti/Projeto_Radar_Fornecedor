@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos | Radar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <!-- Leaflet CSS para mapas -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="/script.js?v=5" defer></script>
+</head>
+<body data-entidade="produtos" data-singular="Produto" data-plural="Produtos" data-standalone="true">
+<div class="flex min-h-screen">
+    <aside id="menu-lateral" class="w-64 hidden md:block"></aside>
+    <div class="flex-1 flex flex-col md:ml-64 main-content-overlay">
+        <header class="bg-black/80 backdrop-blur-md text-white shadow-lg sticky top-0 z-40 border-b border-slate-800">
+            <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
+                <a href="/pages/produtos.html" class="flex items-center gap-3 font-black text-lg md:hidden"><i class="fa-solid fa-satellite-dish text-sky-400"></i> RADAR</a>
+                <div id="user-info" class="flex items-center gap-3 text-sm font-semibold ml-auto"></div>
+            </div>
+        </header>
+        <main class="mx-auto max-w-7xl px-6 py-8 w-full flex-1">
+            <div class="mb-8">
+                <p class="text-xs font-black uppercase tracking-[0.2em] text-sky-700">Catálogo de produtos</p>
+                <h1 class="mt-1 text-4xl font-black text-slate-900 tracking-tight">Encontre o que você precisa</h1>
+                <p class="mt-2 text-slate-600 font-medium">Escolha uma categoria ou pesquise pelo nome do produto.</p>
+            </div>
+            <div class="relative mb-8 max-w-3xl">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input id="busca-produto" class="w-full rounded-xl border border-slate-200 bg-white pl-12 pr-4 py-4 text-sm shadow-sm outline-none focus:ring-2 focus:ring-sky-500" placeholder="Ex.: parafuso, notebook, embalagem...">
+            </div>
+            <section>
+                <div class="mb-4 flex items-center justify-between gap-4"><h2 class="text-xl font-black text-slate-800">Categorias</h2><button id="limpar-filtro" class="hidden text-sm font-bold text-sky-700 hover:text-sky-900">Ver todas</button></div>
+                <div id="categorias" class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6"></div>
+            </section>
+            <section class="mt-10 rounded-2xl border border-amber-200 bg-amber-50/70 p-6">
+                <div class="mb-5 flex items-center gap-3"><i class="fa-solid fa-trophy text-xl text-amber-500"></i><div><h2 class="text-xl font-black text-slate-800">Empresas mais bem avaliadas</h2><p class="text-sm text-slate-600">Classificação calculada pelas avaliações de clientes, de 5 a 1 estrela.</p></div></div>
+                <div id="ranking-empresas" class="grid gap-3 md:grid-cols-2 lg:grid-cols-3"></div>
+            </section>
+            <section id="secao-atividades" class="mt-10 hidden rounded-2xl border border-indigo-200 bg-indigo-50/70 p-6">
+                <div class="mb-5 flex items-center gap-3"><i class="fa-solid fa-briefcase text-xl text-indigo-600"></i><div><h2 class="text-xl font-black text-slate-800">Empresas que trabalham com esta categoria</h2><p class="text-sm text-slate-600" id="subtitulo-atividades"></p></div></div>
+                <div id="lista-atividades" class="grid gap-3 md:grid-cols-2 lg:grid-cols-3"></div>
+            </section>
+            <section class="mt-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div class="mb-5 flex items-center justify-between"><h2 class="text-xl font-black text-slate-800">Produtos encontrados</h2><span id="quantidade" class="rounded-full bg-sky-50 px-3 py-1 text-xs font-bold text-sky-700">0 produtos</span></div>
+                <div id="lista-produtos" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+            </section>
+        </main>
+    </div>
+</div>
+<div id="modal-compra" class="fixed inset-0 z-[60] hidden overflow-y-auto bg-slate-950/80 backdrop-blur-sm p-4">
+    <div class="mx-auto my-16 max-w-lg rounded-2xl bg-white shadow-2xl">
+        <div class="flex items-center justify-between border-b px-7 py-5"><div><p class="text-xs font-black uppercase tracking-widest text-sky-700">Finalizar compra</p><h2 id="produto-compra" class="mt-1 text-xl font-black text-slate-800"></h2></div><button id="fechar-compra" class="text-2xl text-slate-400 hover:text-slate-700">&times;</button></div>
+        <form id="form-compra" class="space-y-5 p-7"><input id="produto-id-compra" type="hidden">
+            <label class="campo">CEP de entrega<input id="cep-compra" required maxlength="9" class="mt-1" placeholder="00000-000" oninput="mascaraCep(this)"></label>
+            <fieldset><legend class="mb-3 text-sm font-bold text-slate-700">Forma de pagamento</legend><div class="space-y-2 text-sm font-semibold text-slate-700"><label class="flex gap-2"><input type="radio" name="forma" value="PIX" checked> Pix</label><label class="flex gap-2"><input type="radio" name="forma" value="CARTAO_CREDITO_VIRTUAL"> Cartão virtual de crédito</label><label class="flex gap-2"><input type="radio" name="forma" value="CARTAO_DEBITO"> Cartão de débito</label><label class="flex gap-2"><input type="radio" name="forma" value="BOLETO_BANCARIO"> Boleto bancário <span class="font-normal text-slate-500">(vence no próximo dia útil)</span></label></div></fieldset>
+            <p id="resultado-compra" class="hidden rounded-lg p-3 text-sm"></p><button class="w-full rounded-xl bg-sky-600 px-6 py-3 font-black text-white hover:bg-sky-700">GERAR PAGAMENTO</button>
+        </form>
+    </div>
+</div>
+<div id="modal-avaliacao" class="fixed inset-0 z-[60] hidden overflow-y-auto bg-slate-950/80 backdrop-blur-sm p-4">
+    <div class="mx-auto my-16 max-w-lg rounded-2xl bg-white shadow-2xl">
+        <div class="flex items-center justify-between border-b px-7 py-5"><div><p class="text-xs font-black uppercase tracking-widest text-sky-700">Avaliação do produto</p><h2 id="produto-avaliado" class="mt-1 text-xl font-black text-slate-800"></h2></div><button id="fechar-avaliacao" class="text-2xl text-slate-400 hover:text-slate-700">&times;</button></div>
+        <form id="form-avaliacao" class="space-y-5 p-7">
+            <input id="produto-id-avaliacao" type="hidden">
+            <div><p class="mb-2 text-sm font-bold text-slate-700">Sua nota</p><div id="estrelas-input" class="flex gap-2 text-3xl text-slate-300"></div><input id="nota-avaliacao" type="hidden" value="0"><p id="erro-nota" class="mt-2 hidden text-xs font-bold text-rose-600">Escolha de 1 a 5 estrelas.</p></div>
+            <label class="campo">Conte sua experiência<textarea id="comentario-avaliacao" required maxlength="1000" rows="4" class="mt-1 resize-none" placeholder="Como foi sua experiência com este produto?"></textarea></label>
+            <button class="w-full rounded-xl bg-sky-600 px-6 py-3 font-black text-white hover:bg-sky-700">PUBLICAR AVALIAÇÃO</button>
+        </form>
+    </div>
+</div>
+<div id="modal-mapa-atividades" class="fixed inset-0 z-[60] hidden overflow-y-auto bg-slate-950/80 backdrop-blur-sm p-4">
+    <div class="mx-auto my-8 max-w-6xl rounded-2xl bg-white shadow-2xl">
+        <div class="flex items-center justify-between border-b px-7 py-5">
+            <div>
+                <p class="text-xs font-black uppercase tracking-widest text-indigo-700">Mapa de empresas</p>
+                <h2 id="titulo-mapa" class="mt-1 text-xl font-black text-slate-800"></h2>
+            </div>
+            <button id="fechar-mapa" class="text-2xl text-slate-400 hover:text-slate-700">&times;</button>
+        </div>
+        <div class="p-6">
+            <div class="mb-4 flex flex-wrap items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <label class="text-sm font-bold text-slate-700">Raio de busca:</label>
+                    <input id="raio-busca" type="range" min="1" max="50" value="10" class="w-32">
+                    <span id="valor-raio" class="min-w-12 text-sm font-bold text-slate-700">10 km</span>
+                </div>
+                <button id="btn-zoom-mapa" class="rounded-lg bg-sky-600 px-4 py-2 text-sm font-black text-white hover:bg-sky-700">Ajustar zoom</button>
+            </div>
+            <div id="mapa-container" class="rounded-xl border border-slate-200 bg-slate-50" style="height: 500px;"></div>
+            <div class="mt-4">
+                <p class="text-sm font-bold text-slate-700 mb-3">Empresas encontradas (<span id="total-empresas-mapa">0</span>):</p>
+                <div id="lista-empresas-mapa" class="grid gap-3 md:grid-cols-2 lg:grid-cols-3 max-h-48 overflow-y-auto"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let categorias = [], produtos = [], categoriaSelecionada = '', fornecedores = [], mapaInstancia = null, marcadores = [];
+
+    const metaCategorias = {
+        AUTOMOTIVO: { descricao: 'Automotivo', icone: 'fa-car' },
+        MOTOCICLETAS: { descricao: 'Motocicletas', icone: 'fa-motorcycle' },
+        MODA_E_TEXTIL: { descricao: 'Moda e Têxtil', icone: 'fa-shirt' },
+        EMBALAGENS: { descricao: 'Embalagens', icone: 'fa-box' },
+        TECNOLOGIA: { descricao: 'Tecnologia', icone: 'fa-laptop' },
+        CONSTRUCAO: { descricao: 'Construção', icone: 'fa-helmet-safety' },
+        MOVEIS_E_ESCRITORIO: { descricao: 'Móveis e Escritório', icone: 'fa-chair' },
+        ELETRICA_E_ELETRONICA: { descricao: 'Elétrica e Eletrônica', icone: 'fa-plug' },
+        FERRAMENTAS_E_EQUIPAMENTOS: { descricao: 'Ferramentas e Equipamentos', icone: 'fa-screwdriver-wrench' },
+        BELEZA_E_COSMETICOS: { descricao: 'Beleza e Cosméticos', icone: 'fa-pump-soap' },
+        SAUDE_E_HOSPITALAR: { descricao: 'Saúde e Hospitalar', icone: 'fa-kit-medical' },
+        ALIMENTOS_E_BEBIDAS: { descricao: 'Alimentos e Bebidas', icone: 'fa-utensils' },
+        AGRONEGOCIO: { descricao: 'Agronegócio', icone: 'fa-seedling' },
+        LIMPEZA_E_HIGIENE: { descricao: 'Limpeza e Higiene', icone: 'fa-broom' },
+        PET: { descricao: 'Pet', icone: 'fa-paw' },
+        ESPORTES_E_FITNESS: { descricao: 'Esportes e Fitness', icone: 'fa-dumbbell' },
+        BRINQUEDOS_E_INFANTIL: { descricao: 'Brinquedos e Infantil', icone: 'fa-puzzle-piece' },
+        CASA_E_DECORACAO: { descricao: 'Casa e Decoração', icone: 'fa-house' },
+        INDUSTRIAL: { descricao: 'Industrial', icone: 'fa-industry' },
+        SEGURANCA: { descricao: 'Segurança', icone: 'fa-shield-halved' },
+        ENERGIA: { descricao: 'Energia', icone: 'fa-solar-panel' },
+        GRAFICA_E_PERSONALIZADOS: { descricao: 'Gráfica e Personalizados', icone: 'fa-print' },
+        ARTESANATO_E_HOBBIES: { descricao: 'Artesanato e Hobbies', icone: 'fa-palette' },
+        OUTROS: { descricao: 'Outros', icone: 'fa-boxes-stacked' }
+    };
+
+    const escapar = valor => { const el = document.createElement('span'); el.textContent = valor || ''; return el.innerHTML; };
+    const titulo = (cat) => {
+        if (typeof cat === 'string') return metaCategorias[cat]?.descricao || cat;
+        return cat?.descricao || cat?.codigo || 'Sem categoria';
+    };
+
+    function distanciaEntrePontos(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Raio da Terra em km
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+
+    function renderizarCategorias() {
+        document.getElementById('categorias').innerHTML = categorias.map(cat => {
+            const codigo = typeof cat === 'string' ? cat : cat.codigo;
+            const descricao = typeof cat === 'string' ? (metaCategorias[codigo]?.descricao || codigo) : cat.descricao;
+            const icone = typeof cat === 'string' ? (metaCategorias[codigo]?.icone || 'fa-tag') : cat.icone;
+            
+            return `<button data-categoria="${codigo}" class="categoria-produto rounded-xl border p-4 text-left transition hover:-translate-y-0.5 hover:border-sky-400 hover:shadow-md ${categoriaSelecionada === codigo ? 'border-sky-500 bg-sky-50 ring-2 ring-sky-200' : 'border-slate-200 bg-white'}"><i class="fa-solid ${icone} mb-3 text-xl text-sky-600"></i><span class="block text-sm font-black text-slate-700">${escapar(descricao)}</span></button>`;
+        }).join('');
+        document.querySelectorAll('.categoria-produto').forEach(botao => botao.onclick = () => { 
+            categoriaSelecionada = botao.dataset.categoria; 
+            renderizarCategorias(); 
+            renderizarProdutos(); 
+            renderizarAtividades();
+            document.getElementById('limpar-filtro').classList.remove('hidden'); 
+        });
+    }
+
+    function renderizarAtividades() {
+        const secao = document.getElementById('secao-atividades');
+        const listaAtividades = document.getElementById('lista-atividades');
+
+        if (!categoriaSelecionada) {
+            secao.classList.add('hidden');
+            return;
+        }
+
+        const fornecedoresFiltrados = fornecedores.filter(f => f.categorias && f.categorias.some(cat => {
+            const codigo = typeof cat === 'string' ? cat : cat.codigo;
+            return codigo === categoriaSelecionada;
+        }));
+
+        if (fornecedoresFiltrados.length === 0) {
+            secao.classList.add('hidden');
+            return;
+        }
+
+        const categoriaNome = titulo(categoriaSelecionada);
+        document.getElementById('subtitulo-atividades').textContent = `${fornecedoresFiltrados.length} empresa(s) trabalhando com ${categoriaNome.toLowerCase()}`;
+
+        listaAtividades.innerHTML = fornecedoresFiltrados.map(fornecedor => `
+            <article class="rounded-xl border border-indigo-200 bg-white p-4 shadow-sm transition hover:shadow-md">
+                <div class="flex items-start justify-between gap-3">
+                    <div class="flex-1">
+                        <h3 class="font-black text-slate-800">${escapar(fornecedor.nome)}</h3>
+                        <p class="mt-1 text-xs text-slate-600"><i class="fa-solid fa-building mr-1"></i>CNPJ: ${escapar(fornecedor.cnpj || 'N/A')}</p>
+                    </div>
+                    <span class="whitespace-nowrap text-sm font-black text-indigo-700">${fornecedor.pontuacaoRisco?.toFixed(1) || 'N/A'} <i class="fa-solid fa-shield text-indigo-600"></i></span>
+                </div>
+                <div class="mt-3 flex flex-wrap gap-2">
+                    ${fornecedor.email ? `<span class="inline-flex items-center gap-1 text-xs text-slate-600"><i class="fa-solid fa-envelope"></i>${escapar(fornecedor.email)}</span>` : ''}
+                    ${fornecedor.telefone ? `<span class="inline-flex items-center gap-1 text-xs text-slate-600"><i class="fa-solid fa-phone"></i>${escapar(fornecedor.telefone)}</span>` : ''}
+                </div>
+                ${fornecedor.categorias ? `<div class="mt-3 flex flex-wrap gap-2">
+                    ${fornecedor.categorias.map(cat => {
+                        const codigo = typeof cat === 'string' ? cat : cat.codigo;
+                        const desc = titulo(cat);
+                        return `<span class="rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-semibold text-indigo-700">${escapar(desc)}</span>`;
+                    }).join('')}
+                </div>` : ''}
+                <button data-fornecedor-id="${fornecedor.id}" class="ver-mapa-atividade mt-4 w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-black text-white hover:bg-indigo-700"><i class="fa-solid fa-map mr-2"></i>Ver no mapa</button>
+            </article>
+        `).join('');
+
+        document.querySelectorAll('.ver-mapa-atividade').forEach(botao => {
+            botao.onclick = () => abrirMapaAtividades(Number(botao.dataset.fornecedorId));
+        });
+    }
+
+    function abrirMapaAtividades(fornecedorId) {
+        const fornecedor = fornecedores.find(f => f.id === fornecedorId);
+        if (!fornecedor || !fornecedor.latitude || !fornecedor.longitude) {
+            alert('Fornecedor não possui localização disponível.');
+            return;
+        }
+
+        document.getElementById('titulo-mapa').textContent = fornecedor.nome;
+        document.getElementById('modal-mapa-atividades').classList.remove('hidden');
+
+        // Inicializar mapa
+        setTimeout(() => {
+            if (mapaInstancia) mapaInstancia.remove();
+            mapaInstancia = L.map('mapa-container').setView([fornecedor.latitude, fornecedor.longitude], 12);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(mapaInstancia);
+
+            atualizarMapa(fornecedor.latitude, fornecedor.longitude);
+        }, 100);
+
+        // Controles
+        document.getElementById('raio-busca').onchange = (e) => {
+            document.getElementById('valor-raio').textContent = e.target.value + ' km';
+            atualizarMapa(fornecedor.latitude, fornecedor.longitude);
+        };
+
+        document.getElementById('btn-zoom-mapa').onclick = () => {
+            const raio = Number(document.getElementById('raio-busca').value);
+            const bounds = L.latLngBounds();
+            marcadores.forEach(m => bounds.extend(m.getLatLng()));
+            if (bounds.isValid()) mapaInstancia.fitBounds(bounds);
+        };
+    }
+
+    function atualizarMapa(lat, lon) {
+        marcadores.forEach(m => mapaInstancia.removeLayer(m));
+        marcadores = [];
+
+        const raio = Number(document.getElementById('raio-busca').value);
+        const fornecedorCentral = fornecedores.find(f => f.latitude === lat && f.longitude === lon);
+
+        // Marcador central (vermelho)
+        if (fornecedorCentral) {
+            const marker = L.circleMarker([lat, lon], {
+                radius: 8,
+                fillColor: '#ef4444',
+                color: '#dc2626',
+                weight: 3,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).addTo(mapaInstancia).bindPopup(`<strong>${escapar(fornecedorCentral.nome)}</strong><br/>(Selecionada)`);
+            marcadores.push(marker);
+        }
+
+        // Desenhar círculo do raio
+        L.circle([lat, lon], raio * 1000, {
+            color: '#06b6d4',
+            fill: true,
+            fillColor: '#06b6d4',
+            fillOpacity: 0.1,
+            weight: 2,
+            dashArray: '5, 5'
+        }).addTo(mapaInstancia);
+
+        // Encontrar outras empresas no raio
+        const empresasNoRaio = fornecedores.filter(f => 
+            f.latitude && f.longitude && 
+            f.id !== fornecedorCentral?.id &&
+            distanciaEntrePontos(lat, lon, f.latitude, f.longitude) <= raio &&
+            f.categorias && f.categorias.some(cat => {
+                const codigo = typeof cat === 'string' ? cat : cat.codigo;
+                return codigo === categoriaSelecionada;
+            })
+        );
+
+        empresasNoRaio.forEach(empresa => {
+            const marker = L.circleMarker([empresa.latitude, empresa.longitude], {
+                radius: 6,
+                fillColor: '#3b82f6',
+                color: '#1e40af',
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.7
+            }).addTo(mapaInstancia).bindPopup(`<strong>${escapar(empresa.nome)}</strong><br/>${escapar(empresa.cnpj)}`);
+            marcadores.push(marker);
+        });
+
+        document.getElementById('total-empresas-mapa').textContent = empresasNoRaio.length;
+        document.getElementById('lista-empresas-mapa').innerHTML = empresasNoRaio.length ? empresasNoRaio.map(e => `
+            <div class="rounded-lg border border-indigo-200 bg-indigo-50 p-3">
+                <h4 class="font-bold text-slate-800">${escapar(e.nome)}</h4>
+                <p class="text-xs text-slate-600 mt-1">${escapar(e.cnpj)}</p>
+                <p class="text-xs text-sky-600 font-semibold mt-2"><i class="fa-solid fa-location-dot mr-1"></i>${distanciaEntrePontos(lat, lon, e.latitude, e.longitude).toFixed(1)} km</p>
+            </div>
+        `).join('') : '<p class="text-sm text-slate-500">Nenhuma empresa encontrada neste raio.</p>';
+    }
+
+    function renderizarProdutos() {
+        const busca = document.getElementById('busca-produto').value.trim().toLowerCase();
+        const filtrados = produtos.filter(produto => (!categoriaSelecionada || produto.categoria === categoriaSelecionada) && [produto.nome, produto.descricao, titulo(produto.categoria)].some(valor => String(valor || '').toLowerCase().includes(busca)));
+        document.getElementById('quantidade').textContent = `${filtrados.length} ${filtrados.length === 1 ? 'produto' : 'produtos'}`;
+        document.getElementById('lista-produtos').innerHTML = filtrados.length ? filtrados.map(produto => `<article class="rounded-xl border border-slate-200 p-5"><span class="text-xs font-black uppercase tracking-wider text-sky-700">${escapar(titulo(produto.categoria))}</span><h3 class="mt-2 text-lg font-black text-slate-800">${escapar(produto.nome)}</h3><p class="mt-2 text-sm text-slate-600">${escapar(produto.descricao || 'Sem descrição disponível.')}</p>${produto.preco != null ? `<p class="mt-4 text-lg font-black text-slate-800">${Number(produto.preco).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}</p><button data-produto-id="${produto.id}" class="comprar-produto mt-3 rounded-lg bg-sky-600 px-4 py-2 text-sm font-black text-white hover:bg-sky-700">COMPRAR</button>` : ''}<div class="mt-5 flex gap-4"><button data-produto-id="${produto.id}" class="avaliar-produto text-sm font-black text-amber-600 hover:text-amber-700"><i class="fa-solid fa-star mr-1"></i>Avaliar</button><button data-produto-id="${produto.id}" class="ver-avaliacoes text-sm font-bold text-sky-700 hover:text-sky-900">Ver comentários</button></div><div id="avaliacoes-${produto.id}" class="mt-4 hidden border-t border-slate-100 pt-4"></div></article>`).join('') : '<p class="col-span-full py-8 text-center text-slate-500">Nenhum produto encontrado para esta busca.</p>';
+        document.querySelectorAll('.avaliar-produto').forEach(botao => botao.onclick = () => abrirAvaliacao(Number(botao.dataset.produtoId)));
+        document.querySelectorAll('.ver-avaliacoes').forEach(botao => botao.onclick = () => carregarAvaliacoes(Number(botao.dataset.produtoId)));
+        document.querySelectorAll('.comprar-produto').forEach(botao => botao.onclick = () => abrirCompra(Number(botao.dataset.produtoId)));
+    }
+
+    async function carregarAvaliacoes(produtoId) { const painel = document.getElementById(`avaliacoes-${produtoId}`); if (!painel) return; if (!painel.classList.contains('hidden')) { painel.classList.add('hidden'); return; } const resposta = await fetch(`/api/avaliacoes/produto/${produtoId}`); const avaliacoes = await resposta.json(); painel.innerHTML = avaliacoes.length ? avaliacoes.map(avaliacao => `<div class="mb-3 rounded-lg bg-slate-50 p-3"><div class="flex items-center justify-between"><strong class="text-sm text-slate-700">${escapar(avaliacao.cliente)}</strong><span class="text-sm">${estrelas(avaliacao.nota)}</span></div><p class="mt-2 text-sm text-slate-600">${escapar(avaliacao.comentario)}</p></div>`).join('') : '<p class="text-sm text-slate-500">Este produto ainda não recebeu comentários.</p>'; painel.classList.remove('hidden'); }
+    function estrelas(nota) { return Array.from({length: 5}, (_, i) => `<i class="fa-${i < Math.round(nota) ? 'solid' : 'regular'} fa-star text-amber-400"></i>`).join(''); }
+    function abrirAvaliacao(id) { const produto = produtos.find(item => item.id === id); document.getElementById('produto-id-avaliacao').value = id; document.getElementById('produto-avaliado').textContent = produto.nome; document.getElementById('nota-avaliacao').value = 0; document.getElementById('comentario-avaliacao').value = ''; renderizarEstrelas(0); document.getElementById('modal-avaliacao').classList.remove('hidden'); }
+    function abrirCompra(id) { const produto = produtos.find(item => item.id === id); document.getElementById('produto-id-compra').value = id; document.getElementById('produto-compra').textContent = produto.nome; document.getElementById('cep-compra').value = ''; document.getElementById('resultado-compra').classList.add('hidden'); document.getElementById('modal-compra').classList.remove('hidden'); }
+    function renderizarEstrelas(selecionada) { document.getElementById('estrelas-input').innerHTML = Array.from({length: 5}, (_, i) => `<button type="button" data-nota="${i + 1}" class="hover:scale-110 ${i < selecionada ? 'text-amber-400' : 'text-slate-300'}"><i class="fa-solid fa-star"></i></button>`).join(''); document.querySelectorAll('#estrelas-input button').forEach(botao => botao.onclick = () => { const nota = Number(botao.dataset.nota); document.getElementById('nota-avaliacao').value = nota; document.getElementById('erro-nota').classList.add('hidden'); renderizarEstrelas(nota); }); }
+    function renderizarRanking(ranking) { document.getElementById('ranking-empresas').innerHTML = ranking.length ? ranking.map((empresa, indice) => `<article class="rounded-xl bg-white p-4 shadow-sm"><div class="flex items-start justify-between gap-3"><div><span class="text-xs font-black text-amber-600">#${indice + 1}</span><h3 class="font-black text-slate-800">${escapar(empresa.empresa)}</h3></div><span class="whitespace-nowrap text-sm font-black text-slate-700">${empresa.media.toFixed(1)} <i class="fa-solid fa-star text-amber-400"></i></span></div><div class="mt-2 text-sm">${estrelas(empresa.media)} <span class="ml-1 text-xs text-slate-500">${empresa.totalAvaliacoes} avaliações</span></div></article>`).join('') : '<p class="text-sm text-slate-500">Ainda não há avaliações para montar o ranking.</p>'; }
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+        await carregarMenuLateral();
+        exibirInfoUsuario();
+        aplicarControlesDeAcesso();
+
+        const [respostaCategorias, respostaProdutos, respostaRanking, respostaFornecedores] = await Promise.all([fetch('/api/produtos/categorias'), fetch('/api/produtos'), fetch('/api/avaliacoes/ranking-empresas'), fetch('/api/fornecedores')]);
+        categorias = await respostaCategorias.json(); 
+        produtos = await respostaProdutos.json(); 
+        fornecedores = await respostaFornecedores.json();
+        renderizarCategorias(); 
+        renderizarProdutos(); 
+        renderizarRanking(await respostaRanking.json());
+        
+        document.getElementById('busca-produto').addEventListener('input', renderizarProdutos);
+        document.getElementById('limpar-filtro').onclick = () => { categoriaSelecionada = ''; renderizarCategorias(); renderizarProdutos(); document.getElementById('secao-atividades').classList.add('hidden'); document.getElementById('limpar-filtro').classList.add('hidden'); };
+        document.getElementById('fechar-avaliacao').onclick = () => document.getElementById('modal-avaliacao').classList.add('hidden');
+        document.getElementById('fechar-compra').onclick = () => document.getElementById('modal-compra').classList.add('hidden');
+        document.getElementById('fechar-mapa').onclick = () => { document.getElementById('modal-mapa-atividades').classList.add('hidden'); if (mapaInstancia) mapaInstancia.remove(); };
+        
+        document.getElementById('form-avaliacao').onsubmit = async event => { event.preventDefault(); const nota = Number(document.getElementById('nota-avaliacao').value); if (!nota) { document.getElementById('erro-nota').classList.remove('hidden'); return; } const resposta = await fetch('/api/avaliacoes', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({produtoId: Number(document.getElementById('produto-id-avaliacao').value), nota, comentario: document.getElementById('comentario-avaliacao').value.trim()})}); if (!resposta.ok) { alert(await resposta.text()); return; } document.getElementById('modal-avaliacao').classList.add('hidden'); const ranking = await (await fetch('/api/avaliacoes/ranking-empresas')).json(); renderizarRanking(ranking); };
+        
+        document.getElementById('form-compra').onsubmit = async event => { event.preventDefault(); const resposta = await fetch('/api/pagamentos', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({produtoId: Number(document.getElementById('produto-id-compra').value), forma: document.querySelector('input[name="forma"]:checked').value, cepEntrega: document.getElementById('cep-compra').value})}); const aviso = document.getElementById('resultado-compra'); const texto = resposta.ok ? `Pagamento criado com sucesso.${(await resposta.json()).vencimentoBoleto ? ' O boleto vence no próximo dia útil.' : ''}` : await resposta.text(); aviso.textContent = texto; aviso.className = `rounded-lg p-3 text-sm ${resposta.ok ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'}`; aviso.classList.remove('hidden'); };
+    });
+</script>
+</body>
+</html>

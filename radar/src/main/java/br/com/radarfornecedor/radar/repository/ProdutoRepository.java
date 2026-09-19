@@ -1,0 +1,11 @@
+package br.com.radarfornecedor.radar.repository;
+
+import br.com.radarfornecedor.radar.model.CategoriaProduto;
+import br.com.radarfornecedor.radar.model.Produto;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface ProdutoRepository extends JpaRepository<Produto, Long> {
+    List<Produto> findByCategoria(CategoriaProduto categoria);
+}

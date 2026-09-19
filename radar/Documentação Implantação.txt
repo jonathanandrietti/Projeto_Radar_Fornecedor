@@ -1,0 +1,35 @@
+Quero adicionar um ponto de edição para adicionar as tabelas, colunas, remover... Separados por exemplos em tópicos:
+//Create Tabela X
+//Create Table Mercadorias....
+
+//Add Coluna X
+//Add Coluna Codigo Integer...
+
+//Drop....
+
+Seguindo este modelos para as opções base se não existir ou se existir para Drops.
+Tipo:
+
+procedure TAtualizaBancoSQLite.ExecutarAtualizacoes;
+var
+  ScriptText: TStringList;
+begin
+  ScriptText := TStringList.Create;
+  try
+    // =========================================================================
+    // ÁREA DE EDIÇÃO DO SCRIPT (Histórico Cronológico de Atualizações)
+    // =========================================================================
+
+    // --- CRIAÇÃO DAS TABELAS PRINCIPAIS ---
+    // Garante que as tabelas existam antes de qualquer alteração.
+
+    ScriptText.Add('/* Cria a tabela de Usuário, se não existir */');
+    ScriptText.Add('CREATE TABLE IF NOT EXISTS USUARIO (');
+    ScriptText.Add('  CodUser INTEGER PRIMARY KEY,');
+    ScriptText.Add('  Nome VARCHAR(100),');
+    ScriptText.Add('  Senha VARCHAR(100),');
+    ScriptText.Add('  SenhaConf VARCHAR(100),');
+    ScriptText.Add('  ExibirTecnico INTEGER DEFAULT 0,');
+    ScriptText.Add('  ExibirDeve INTEGER DEFAULT 0');
+    ScriptText.Add(');');
+    ScriptText.Add('GO');

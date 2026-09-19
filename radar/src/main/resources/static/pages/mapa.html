@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa | Radar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/script.js?v=4" defer></script>
+    <style>
+        #mapa-container { height: calc(100vh - 280px); min-height: 400px; }
+        .leaflet-popup-content-wrapper { border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,0.18); padding: 0; }
+        .leaflet-popup-content { margin: 0; }
+        .popup-card { padding: 14px 16px; min-width: 230px; }
+        .popup-card h3 { font-size: 13px; font-weight: 900; color: #0f172a; margin-bottom: 4px; }
+        .popup-card p  { font-size: 11px; color: #64748b; margin: 3px 0; line-height: 1.4; }
+        .popup-tipo    { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 6px; }
+        .popup-badge   { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 700; margin-top: 6px; }
+        .badge-aprovado   { background:#dcfce7; color:#166534; }
+        .badge-suspenso   { background:#fef9c3; color:#854d0e; }
+        .badge-rejeitado  { background:#fee2e2; color:#991b1b; }
+        .badge-em_analise { background:#e0f2fe; color:#0369a1; }
+        .badge-ativo      { background:#dcfce7; color:#166534; }
+        .badge-inativo    { background:#f1f5f9; color:#64748b; }
+        .legenda-item { display:flex; align-items:center; gap:6px; font-size:11px; color:#94a3b8; }
+        .legenda-dot  { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+    </style>
+</head>
+<body data-entidade="fornecedores" data-standalone="true">
+<div class="flex min-h-screen">
+    <aside id="menu-lateral" class="w-64 hidden md:block"></aside>
+
+    <div class="flex-1 flex flex-col md:ml-64 main-content-overlay">
+        <header class="bg-black/80 backdrop-blur-md text-white shadow-lg sticky top-0 z-40 border-b border-slate-800">
+            <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
+                <a href="/pages/mapa.html" class="flex items-center gap-3 font-black text-lg md:hidden">
+                    <i class="fa-solid fa-satellite-dish text-sky-400"></i> RADAR
+                </a>
+                <div class="flex items-center gap-4 text-sm font-semibold ml-auto">
+                    <div id="user-info" class="flex items-center gap-3"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="mx-auto w-full max-w-7xl px-6 py-6 flex-1 flex flex-col gap-5">
+            <div id="alerta" class="hidden rounded-xl border px-4 py-3 text-sm shadow-sm"></div>
+
+            <!-- Cabeçalho -->
+            <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="h-2 w-2 bg-sky-500 rounded-full animate-pulse"></span>
+                        <p class="text-xs font-black uppercase tracking-[0.2em] text-sky-700">Geolocalização</p>
+                    </div>
+                    <h1 class="text-4xl font-black text-slate-900 tracking-tight">Mapa</h1>
+                    <p id="subtitulo-mapa" class="mt-1 text-slate-600 font-medium">Carregando visão personalizada...</p>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <!-- KPIs -->
+                    <div class="flex gap-3">
+                        <div class="rounded-xl bg-white border border-slate-200 px-4 py-3 text-center shadow-sm min-w-[70px]">
+                            <p class="text-[10px] font-black uppercase text-slate-500">No mapa</p>
+                            <p id="kpi-no-mapa" class="text-2xl font-black text-sky-600">0</p>
+                        </div>
+                        <div class="rounded-xl bg-white border border-slate-200 px-4 py-3 text-center shadow-sm min-w-[70px]">
+                            <p class="text-[10px] font-black uppercase text-slate-500">Sem coords</p>
+                            <p id="kpi-sem-coords" class="text-2xl font-black text-rose-400">0</p>
+                        </div>
+                        <div class="rounded-xl bg-white border border-slate-200 px-4 py-3 text-center shadow-sm min-w-[70px]">
+                            <p class="text-[10px] font-black uppercase text-slate-500">Total</p>
+                            <p id="kpi-total-mapa" class="text-2xl font-black text-slate-700">0</p>
+                        </div>
+                    </div>
+                    <!-- Legenda -->
+                    <div id="legenda" class="rounded-xl bg-white border border-slate-200 px-4 py-3 shadow-sm flex flex-wrap gap-x-4 gap-y-2"></div>
+                </div>
+            </div>
+
+            <!-- Seletor de camadas (ADMIN) -->
+            <div id="seletor-camadas" class="hidden flex-wrap gap-2 items-center">
+                <span class="text-xs font-black uppercase text-slate-500 mr-2">Camadas:</span>
+                <label class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm cursor-pointer hover:bg-slate-50">
+                    <input type="checkbox" id="camada-fornecedores" checked onchange="renderizarCamadasAdmin()" class="accent-sky-600"> <span class="w-2 h-2 rounded-full bg-sky-500 inline-block"></span> Fornecedores
+                </label>
+                <label class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm cursor-pointer hover:bg-slate-50">
+                    <input type="checkbox" id="camada-compradores" checked onchange="renderizarCamadasAdmin()" class="accent-violet-600"> <span class="w-2 h-2 rounded-full bg-violet-500 inline-block"></span> Compradores
+                </label>
+                <label class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm cursor-pointer hover:bg-slate-50">
+                    <input type="checkbox" id="camada-representantes" checked onchange="renderizarCamadasAdmin()" class="accent-amber-600"> <span class="w-2 h-2 rounded-full bg-amber-500 inline-block"></span> Representantes
+                </label>
+                <label class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm cursor-pointer hover:bg-slate-50">
+                    <input type="checkbox" id="camada-clientes" checked onchange="renderizarCamadasAdmin()" class="accent-rose-600"> <span class="w-2 h-2 rounded-full bg-rose-500 inline-block"></span> Clientes
+                </label>
+            </div>
+
+            <!-- Filtros -->
+            <div class="flex flex-wrap gap-3">
+                <div class="relative flex-1 min-w-[180px]">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input id="busca-mapa" oninput="filtrarMapa()" placeholder="Buscar no mapa..."
+                           class="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                </div>
+                <select id="filtro-status-mapa" onchange="filtrarMapa()"
+                        class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                    <option value="">Todos os status</option>
+                    <option value="APROVADO">Aprovado</option>
+                    <option value="EM_ANALISE">Em Análise</option>
+                    <option value="SUSPENSO">Suspenso</option>
+                    <option value="REJEITADO">Rejeitado</option>
+                    <option value="ATIVO">Ativo</option>
+                    <option value="INATIVO">Inativo</option>
+                </select>
+                <select id="filtro-estado-mapa" onchange="filtrarMapa()"
+                        class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                    <option value="">Todos os estados</option>
+                </select>
+                <button onclick="centralizarMapa()" class="rounded-xl border bg-white px-4 py-2.5 text-sm text-slate-500 hover:text-sky-600 transition-all shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-crosshairs"></i> Centralizar
+                </button>
+                <button onclick="iniciarMapa()" class="rounded-xl border bg-white p-2.5 text-slate-500 hover:text-sky-600 transition-all shadow-sm">
+                    <i class="fa-solid fa-rotate text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Mapa -->
+            <div id="mapa-container" class="rounded-2xl overflow-hidden shadow-xl border border-slate-200 w-full"></div>
+
+            <!-- Sem coordenadas -->
+            <div id="sem-coords-box" class="hidden rounded-2xl bg-amber-50 border border-amber-200 p-5">
+                <p class="text-xs font-black uppercase text-amber-700 mb-3">
+                    <i class="fa-solid fa-triangle-exclamation mr-1"></i>
+                    Registros sem coordenadas (não aparecem no mapa)
+                </p>
+                <div id="sem-coords-lista" class="flex flex-wrap gap-2"></div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+    let mapaLeaflet = null;
+    let marcadoresAtivos = [];
+    let dadosFornecedores   = [];
+    let dadosCompradores    = [];
+    let dadosRepresentantes = [];
+    let dadosClientes       = [];
+    let tipoUsuario = '';
+
+    // Cores por tipo e status
+    const CORES = {
+        fornecedor:    { APROVADO:'#22c55e', EM_ANALISE:'#38bdf8', SUSPENSO:'#f59e0b', REJEITADO:'#ef4444', _default:'#94a3b8' },
+        comprador:     { APROVADO:'#8b5cf6', EM_ANALISE:'#a78bfa', SUSPENSO:'#f59e0b', REJEITADO:'#ef4444', _default:'#c4b5fd' },
+        representante: { ATIVO:'#f59e0b',   INATIVO:'#94a3b8', _default:'#fbbf24' },
+        cliente:       { ATIVO:'#f43f5e',   INATIVO:'#94a3b8', _default:'#fb7185' }
+    };
+
+    const STATUS_LABEL = {
+        APROVADO:'Aprovado', EM_ANALISE:'Em Análise', SUSPENSO:'Suspenso',
+        REJEITADO:'Rejeitado', ATIVO:'Ativo', INATIVO:'Inativo'
+    };
+    const STATUS_BADGE = {
+        APROVADO:'badge-aprovado', EM_ANALISE:'badge-em_analise',
+        SUSPENSO:'badge-suspenso', REJEITADO:'badge-rejeitado',
+        ATIVO:'badge-ativo', INATIVO:'badge-inativo'
+    };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await carregarMenuLateral();
+        exibirInfoUsuario();
+        aplicarControlesDeAcesso();
+        inicializarMapa();
+        await iniciarMapa();
+    });
+
+    function inicializarMapa() {
+        if (mapaLeaflet) return;
+        mapaLeaflet = L.map('mapa-container', { zoomControl: true });
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(mapaLeaflet);
+        centralizarMapa();
+    }
+
+    function centralizarMapa() {
+        if (mapaLeaflet) mapaLeaflet.setView([-15.7801, -47.9292], 4);
+    }
+
+    async function iniciarMapa() {
+        try { tipoUsuario = JSON.parse(localStorage.getItem('usuario') || '{}').tipo || ''; } catch(e) {}
+
+        await Promise.all([
+            carregarEndpoint('/api/fornecedores').then(d   => dadosFornecedores   = d),
+            carregarEndpoint('/api/compradores').then(d    => dadosCompradores    = d),
+            carregarEndpoint('/api/representantes').then(d => dadosRepresentantes = d),
+            carregarEndpoint('/api/clientes').then(d       => dadosClientes       = d),
+        ]);
+
+        configurarVisaoPorPerfil();
+    }
+
+    async function carregarEndpoint(url) {
+        try { const r = await fetch(url); return r.ok ? await r.json() : []; } catch(e) { return []; }
+    }
+
+    function configurarVisaoPorPerfil() {
+        const seletor = document.getElementById('seletor-camadas');
+
+        if (['ADMIN','MANUTENCAO','EDICAO'].includes(tipoUsuario)) {
+            document.getElementById('subtitulo-mapa').textContent = 'Visão completa — todas as entidades.';
+            seletor.classList.remove('hidden');
+            seletor.classList.add('flex');
+            renderizarCamadasAdmin();
+            definirLegenda([
+                { cor: CORES.fornecedor.APROVADO,    label: 'Fornecedor Aprovado' },
+                { cor: CORES.fornecedor.EM_ANALISE,  label: 'Fornecedor Em Análise' },
+                { cor: CORES.comprador.APROVADO,     label: 'Comprador Aprovado' },
+                { cor: CORES.comprador.EM_ANALISE,   label: 'Comprador Em Análise' },
+                { cor: CORES.representante.ATIVO,    label: 'Representante Ativo' },
+                { cor: CORES.cliente.ATIVO,          label: 'Cliente Ativo' },
+                { cor: CORES.fornecedor.SUSPENSO,    label: 'Suspenso / Inativo' },
+            ]);
+            popularFiltroEstados([...dadosFornecedores, ...dadosCompradores, ...dadosRepresentantes, ...dadosClientes]);
+
+        } else if (tipoUsuario === 'REPRESENTANTE') {
+            // Representante vê: fornecedores vinculados + clientes
+            document.getElementById('subtitulo-mapa').textContent = 'Fornecedores vinculados e clientes cadastrados.';
+            const lista = [
+                ...dadosFornecedores.map(f => ({ ...f, _tipo: 'fornecedor' })),
+                ...dadosClientes.map(c    => ({ ...c, _tipo: 'cliente' }))
+            ];
+            plotarLista(lista);
+            definirLegenda([
+                { cor: CORES.fornecedor.APROVADO, label: 'Fornecedor Aprovado' },
+                { cor: CORES.cliente.ATIVO,       label: 'Cliente Ativo' },
+            ]);
+            popularFiltroEstados([...dadosFornecedores, ...dadosClientes]);
+
+        } else if (tipoUsuario === 'COMPRADOR') {
+            // Comprador vê: fornecedores + representantes
+            document.getElementById('subtitulo-mapa').textContent = 'Fornecedores e representantes disponíveis.';
+            const lista = [
+                ...dadosFornecedores.map(f   => ({ ...f, _tipo: 'fornecedor' })),
+                ...dadosRepresentantes.map(r => ({ ...r, _tipo: 'representante' }))
+            ];
+            plotarLista(lista);
+            definirLegenda([
+                { cor: CORES.fornecedor.APROVADO,  label: 'Fornecedor Aprovado' },
+                { cor: CORES.representante.ATIVO,  label: 'Representante Ativo' },
+            ]);
+            popularFiltroEstados([...dadosFornecedores, ...dadosRepresentantes]);
+
+        } else if (tipoUsuario === 'CLIENTE') {
+            // Cliente PF: fornecedores com aceitaCpf + representantes
+            const fornCpf = dadosFornecedores.filter(f => f.aceitaCpf === true);
+            document.getElementById('subtitulo-mapa').textContent =
+                `Fornecedores que aceitam CPF (${fornCpf.length}) e representantes disponíveis.`;
+            const lista = [
+                ...fornCpf.map(f             => ({ ...f, _tipo: 'fornecedor' })),
+                ...dadosRepresentantes.map(r => ({ ...r, _tipo: 'representante' }))
+            ];
+            plotarLista(lista);
+            definirLegenda([
+                { cor: CORES.fornecedor.APROVADO, label: 'Fornecedor (aceita CPF)' },
+                { cor: CORES.representante.ATIVO, label: 'Representante' },
+            ]);
+            popularFiltroEstados([...fornCpf, ...dadosRepresentantes]);
+
+        } else if (tipoUsuario === 'FORNECEDOR') {
+            // Fornecedor vê: compradores + clientes + representantes
+            document.getElementById('subtitulo-mapa').textContent = 'Compradores, clientes e representantes.';
+            const lista = [
+                ...dadosCompradores.map(c    => ({ ...c, _tipo: 'comprador' })),
+                ...dadosClientes.map(c       => ({ ...c, _tipo: 'cliente' })),
+                ...dadosRepresentantes.map(r => ({ ...r, _tipo: 'representante' }))
+            ];
+            plotarLista(lista);
+            definirLegenda([
+                { cor: CORES.comprador.APROVADO,  label: 'Comprador Aprovado' },
+                { cor: CORES.cliente.ATIVO,       label: 'Cliente Ativo' },
+                { cor: CORES.representante.ATIVO, label: 'Representante Ativo' },
+            ]);
+            popularFiltroEstados([...dadosCompradores, ...dadosClientes, ...dadosRepresentantes]);
+
+        } else {
+            document.getElementById('subtitulo-mapa').textContent = 'Fornecedores cadastrados.';
+            plotarLista(dadosFornecedores.map(f => ({ ...f, _tipo: 'fornecedor' })));
+            definirLegenda([{ cor: CORES.fornecedor.APROVADO, label: 'Fornecedor' }]);
+            popularFiltroEstados(dadosFornecedores);
+        }
+    }
+
+    function renderizarCamadasAdmin() {
+        const verForn = document.getElementById('camada-fornecedores')?.checked;
+        const verComp = document.getElementById('camada-compradores')?.checked;
+        const verRepr = document.getElementById('camada-representantes')?.checked;
+        const verCli  = document.getElementById('camada-clientes')?.checked;
+        const lista = [
+            ...(verForn ? dadosFornecedores.map(f   => ({ ...f, _tipo: 'fornecedor' }))    : []),
+            ...(verComp ? dadosCompradores.map(c     => ({ ...c, _tipo: 'comprador' }))     : []),
+            ...(verRepr ? dadosRepresentantes.map(r  => ({ ...r, _tipo: 'representante' })) : []),
+            ...(verCli  ? dadosClientes.map(c        => ({ ...c, _tipo: 'cliente' }))       : []),
+        ];
+        limparMarcadores();
+        plotarLista(lista);
+    }
+
+    function filtrarMapa() {
+        const termo  = (document.getElementById('busca-mapa').value || '').toLowerCase();
+        const status = document.getElementById('filtro-status-mapa').value;
+        const estado = document.getElementById('filtro-estado-mapa').value;
+
+        if (['ADMIN','MANUTENCAO','EDICAO'].includes(tipoUsuario)) {
+            renderizarCamadasAdmin(); return;
+        }
+
+        // Monta base conforme perfil
+        let base = [];
+        if (tipoUsuario === 'REPRESENTANTE') {
+            base = [...dadosFornecedores.map(f => ({...f,_tipo:'fornecedor'})), ...dadosClientes.map(c => ({...c,_tipo:'cliente'}))];
+        } else if (tipoUsuario === 'COMPRADOR') {
+            base = [...dadosFornecedores.map(f => ({...f,_tipo:'fornecedor'})), ...dadosRepresentantes.map(r => ({...r,_tipo:'representante'}))];
+        } else if (tipoUsuario === 'CLIENTE') {
+            base = [...dadosFornecedores.filter(f=>f.aceitaCpf).map(f=>({...f,_tipo:'fornecedor'})), ...dadosRepresentantes.map(r=>({...r,_tipo:'representante'}))];
+        } else if (tipoUsuario === 'FORNECEDOR') {
+            base = [...dadosCompradores.map(c=>({...c,_tipo:'comprador'})), ...dadosClientes.map(c=>({...c,_tipo:'cliente'})), ...dadosRepresentantes.map(r=>({...r,_tipo:'representante'}))];
+        } else {
+            base = dadosFornecedores.map(f=>({...f,_tipo:'fornecedor'}));
+        }
+
+        const filtrados = base.filter(item =>
+            (!termo  || (item.nome||'').toLowerCase().includes(termo) || (item.cidade||'').toLowerCase().includes(termo)) &&
+            (!status || item.status === status) &&
+            (!estado || item.estado === estado)
+        );
+        limparMarcadores();
+        plotarLista(filtrados);
+    }
+
+    function plotarLista(lista) {
+        limparMarcadores();
+        const comCoords = lista.filter(f => f.latitude && f.longitude);
+        const semCoords = lista.filter(f => !f.latitude || !f.longitude);
+
+        document.getElementById('kpi-no-mapa').textContent    = comCoords.length;
+        document.getElementById('kpi-sem-coords').textContent = semCoords.length;
+        document.getElementById('kpi-total-mapa').textContent = lista.length;
+
+        comCoords.forEach(item => {
+            const tipo   = item._tipo || 'fornecedor';
+            const paleta = CORES[tipo] || CORES.fornecedor;
+            const cor    = paleta[item.status] || paleta._default;
+            const inicial = (item.nome || '?').charAt(0).toUpperCase();
+
+            const icone = L.divIcon({
+                className: '',
+                html: `<div style="width:32px;height:38px;position:relative;">
+                    <svg viewBox="0 0 32 38" xmlns="http://www.w3.org/2000/svg"
+                         style="width:100%;height:100%;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.3))">
+                        <path d="M16 0C7.163 0 0 7.163 0 16c0 10 16 22 16 22S32 26 32 16C32 7.163 24.837 0 16 0z" fill="${cor}"/>
+                        <circle cx="16" cy="16" r="7" fill="white" opacity="0.9"/>
+                    </svg>
+                    <span style="position:absolute;top:8px;left:50%;transform:translateX(-50%);
+                                 font-size:10px;font-weight:900;color:${cor};">${inicial}</span>
+                </div>`,
+                iconSize: [32,38], iconAnchor: [16,38], popupAnchor: [0,-40]
+            });
+
+            const TIPO_LABEL = { fornecedor:'FORNECEDOR', comprador:'COMPRADOR', representante:'REPRESENTANTE', cliente:'CLIENTE' };
+            const endereco = [item.logradouro, item.numero, item.bairro].filter(Boolean).join(', ');
+            const cidadeUf = [item.cidade, item.estado].filter(Boolean).join(' / ');
+            const risco    = item.pontuacaoRisco != null ? Number(item.pontuacaoRisco).toFixed(1) : null;
+
+            const popup = `<div class="popup-card">
+                <p class="popup-tipo" style="color:${cor}">${TIPO_LABEL[tipo] || tipo.toUpperCase()}</p>
+                <h3>${escapar(item.nome || '')}</h3>
+                ${item.cnpj    ? `<p><i class="fa-solid fa-id-card"      style="color:#94a3b8;margin-right:4px;font-size:10px"></i>${formatarCnpj(item.cnpj)}</p>` : ''}
+                ${item.cpfCnpj ? `<p><i class="fa-solid fa-id-card"      style="color:#94a3b8;margin-right:4px;font-size:10px"></i>${escapar(item.cpfCnpj)}</p>` : ''}
+                ${endereco     ? `<p><i class="fa-solid fa-location-dot" style="color:#94a3b8;margin-right:4px;font-size:10px"></i>${escapar(endereco)}</p>` : ''}
+                ${cidadeUf     ? `<p><i class="fa-solid fa-city"         style="color:#94a3b8;margin-right:4px;font-size:10px"></i>${escapar(cidadeUf)}</p>` : ''}
+                ${risco        ? `<p><i class="fa-solid fa-gauge"         style="color:#94a3b8;margin-right:4px;font-size:10px"></i>Risco: <strong>${risco}</strong></p>` : ''}
+                ${item.aceitaCpf ? '<p><i class="fa-solid fa-check" style="color:#22c55e;margin-right:4px;font-size:10px"></i>Aceita CPF</p>' : ''}
+                <p style="font-size:10px;color:#cbd5e1;margin-top:4px;">${Number(item.latitude).toFixed(5)}, ${Number(item.longitude).toFixed(5)}</p>
+                <span class="popup-badge ${STATUS_BADGE[item.status] || ''}">${STATUS_LABEL[item.status] || item.status || '—'}</span>
+            </div>`;
+
+            const m = L.marker([item.latitude, item.longitude], { icon: icone })
+                .bindPopup(popup, { maxWidth: 280 })
+                .addTo(mapaLeaflet);
+            marcadoresAtivos.push(m);
+        });
+
+        if (comCoords.length > 0) {
+            const bounds = L.latLngBounds(comCoords.map(f => [f.latitude, f.longitude]));
+            mapaLeaflet.fitBounds(bounds, { padding: [40,40], maxZoom: 12 });
+        }
+
+        // Lista sem coords
+        if (semCoords.length > 0) {
+            document.getElementById('sem-coords-box').classList.remove('hidden');
+            document.getElementById('sem-coords-lista').innerHTML = semCoords.map(f =>
+                `<span class="rounded-lg bg-white border border-amber-200 px-3 py-1.5 text-xs font-semibold text-amber-800 shadow-sm">${escapar(f.nome)}</span>`
+            ).join('');
+        } else {
+            document.getElementById('sem-coords-box').classList.add('hidden');
+        }
+    }
+
+    function limparMarcadores() {
+        marcadoresAtivos.forEach(m => mapaLeaflet.removeLayer(m));
+        marcadoresAtivos = [];
+    }
+
+    function definirLegenda(itens) {
+        document.getElementById('legenda').innerHTML = itens.map(i =>
+            `<div class="legenda-item"><div class="legenda-dot" style="background:${i.cor}"></div><span>${i.label}</span></div>`
+        ).join('');
+    }
+
+    function popularFiltroEstados(lista) {
+        const estados = [...new Set(lista.map(f => f.estado).filter(Boolean))].sort();
+        const sel = document.getElementById('filtro-estado-mapa');
+        while (sel.options.length > 1) sel.remove(1);
+        estados.forEach(uf => sel.innerHTML += `<option value="${uf}">${uf}</option>`);
+    }
+</script>
+</body>
+</html>

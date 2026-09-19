@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamentos | Radar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <script src="/script.js?v=4" defer></script>
+</head>
+<body data-entidade="pagamentos" data-singular="Pagamento" data-plural="Pagamentos" data-standalone="true">
+<div class="flex min-h-screen">
+    <aside id="menu-lateral" class="w-64 hidden md:block"></aside>
+
+    <div class="flex-1 flex flex-col md:ml-64 main-content-overlay">
+        <header class="bg-black/80 backdrop-blur-md text-white shadow-lg sticky top-0 z-40 border-b border-slate-800">
+            <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
+                <a href="/pages/pagamentos.html" class="flex items-center gap-3 font-black text-lg md:hidden">
+                    <i class="fa-solid fa-satellite-dish text-sky-400"></i> RADAR
+                </a>
+                <div class="flex items-center gap-4 text-sm font-semibold ml-auto">
+                    <div id="user-info" class="flex items-center gap-3"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="mx-auto w-full max-w-7xl px-6 py-8 flex-1">
+            <div id="alerta" class="mb-5 hidden rounded-xl border px-4 py-3 text-sm shadow-sm"></div>
+
+            <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="h-2 w-2 bg-violet-500 rounded-full animate-pulse"></span>
+                        <p class="text-xs font-black uppercase tracking-[0.2em] text-violet-700">Financeiro</p>
+                    </div>
+                    <h1 class="text-4xl font-black text-slate-900 tracking-tight">Pagamentos</h1>
+                    <p class="mt-2 text-slate-600 font-medium">Histórico de transações e status de pagamentos.</p>
+                </div>
+            </div>
+
+            <!-- KPIs -->
+            <section class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <div class="rounded-2xl bg-white p-5 shadow-sm border border-slate-200">
+                    <p class="text-xs font-bold uppercase text-slate-500">Total</p>
+                    <p id="kpi-total-pag" class="mt-1 text-3xl font-black text-slate-800">0</p>
+                </div>
+                <div class="rounded-2xl bg-white p-5 shadow-sm border border-slate-200">
+                    <p class="text-xs font-bold uppercase text-slate-500">Pendentes</p>
+                    <p id="kpi-pendentes" class="mt-1 text-3xl font-black text-amber-500">0</p>
+                </div>
+                <div class="rounded-2xl bg-white p-5 shadow-sm border border-slate-200">
+                    <p class="text-xs font-bold uppercase text-slate-500">Confirmados</p>
+                    <p id="kpi-confirmados" class="mt-1 text-3xl font-black text-emerald-600">0</p>
+                </div>
+                <div class="rounded-2xl bg-white p-5 shadow-sm border border-slate-200">
+                    <p class="text-xs font-bold uppercase text-slate-500">Volume Total</p>
+                    <p id="kpi-volume" class="mt-1 text-2xl font-black text-violet-600">R$ 0</p>
+                </div>
+            </section>
+
+            <!-- Filtros -->
+            <div class="mb-6 flex flex-col gap-3 sm:flex-row">
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input id="busca-pag" oninput="filtrarPagamentos()" class="w-full rounded-xl border border-slate-200 bg-white pl-12 pr-4 py-3 text-sm focus:ring-2 focus:ring-violet-500 outline-none" placeholder="Buscar por cliente ou forma...">
+                </div>
+                <select id="filtro-status-pag" onchange="filtrarPagamentos()" class="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm focus:ring-2 focus:ring-violet-500 outline-none">
+                    <option value="">Todos os status</option>
+                    <option value="PENDENTE">Pendente</option>
+                    <option value="CONFIRMADO">Confirmado</option>
+                    <option value="EXPIRADO">Expirado</option>
+                    <option value="CANCELADO">Cancelado</option>
+                </select>
+                <button onclick="carregarPagamentos()" class="rounded-xl border bg-white p-3 text-slate-500 hover:text-violet-600 transition-all shadow-sm">
+                    <i class="fa-solid fa-rotate text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Tabela -->
+            <section class="overflow-hidden rounded-2xl bg-white shadow-xl border border-slate-200">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 text-[10px] font-black uppercase text-slate-400 tracking-widest border-b">
+                            <tr>
+                                <th class="p-5">ID</th>
+                                <th class="p-5">Cliente</th>
+                                <th class="p-5">Produto</th>
+                                <th class="p-5">Forma</th>
+                                <th class="p-5">Valor</th>
+                                <th class="p-5">CEP Entrega</th>
+                                <th class="p-5 text-center">Status</th>
+                                <th class="p-5">Criado em</th>
+                                <th class="p-5 text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="linhas-pagamentos" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<script>
+    let pagamentosRegistros = [];
+    let produtosMap = {};
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await carregarMenuLateral();
+        exibirInfoUsuario();
+        aplicarControlesDeAcesso();
+        await carregarProdutosMap();
+        await carregarPagamentos();
+    });
+
+    async function carregarProdutosMap() {
+        try {
+            const r = await fetch('/api/produtos');
+            if (!r.ok) return;
+            const lista = await r.json();
+            lista.forEach(p => produtosMap[p.id] = p.nome);
+        } catch(e) {}
+    }
+
+    async function carregarPagamentos() {
+        try {
+            const r = await fetch('/api/pagamentos');
+            if (r.status === 403) {
+                mostrarAlerta('Acesso restrito. Faça login para visualizar seus pagamentos.', true);
+                return;
+            }
+            if (!r.ok) throw new Error('Não foi possível carregar os pagamentos.');
+            pagamentosRegistros = await r.json();
+            filtrarPagamentos();
+            atualizarKpisPag();
+        } catch(e) { mostrarAlerta(e.message, true); }
+    }
+
+    function filtrarPagamentos() {
+        const termo = (document.getElementById('busca-pag').value || '').toLowerCase();
+        const statusFiltro = document.getElementById('filtro-status-pag').value;
+        const exibidos = pagamentosRegistros.filter(p => {
+            const textoOk = !termo || [p.cliente, p.forma].some(v => (v || '').toLowerCase().includes(termo));
+            const statusOk = !statusFiltro || p.status === statusFiltro;
+            return textoOk && statusOk;
+        });
+        const tbody = document.getElementById('linhas-pagamentos');
+        if (!tbody) return;
+        tbody.innerHTML = exibidos.length ? exibidos.map(linhaPagamento).join('') :
+            '<tr><td colspan="9" class="p-10 text-center text-slate-500">Nenhum pagamento encontrado.</td></tr>';
+    }
+
+    const FORMA_LABEL = { PIX: 'Pix', CARTAO_CREDITO_VIRTUAL: 'Cartão Crédito', CARTAO_DEBITO: 'Cartão Débito', BOLETO_BANCARIO: 'Boleto' };
+    const FORMA_ICONE = { PIX: 'fa-qrcode', CARTAO_CREDITO_VIRTUAL: 'fa-credit-card', CARTAO_DEBITO: 'fa-credit-card', BOLETO_BANCARIO: 'fa-barcode' };
+    const STATUS_BADGE = {
+        PENDENTE:   'bg-amber-100 text-amber-700',
+        CONFIRMADO: 'bg-emerald-100 text-emerald-700',
+        EXPIRADO:   'bg-slate-100 text-slate-500',
+        CANCELADO:  'bg-rose-100 text-rose-700'
+    };
+    const STATUS_LABEL = { PENDENTE: 'Pendente', CONFIRMADO: 'Confirmado', EXPIRADO: 'Expirado', CANCELADO: 'Cancelado' };
+
+    function linhaPagamento(p) {
+        const badge = STATUS_BADGE[p.status] || 'bg-slate-100 text-slate-500';
+        const label = STATUS_LABEL[p.status] || p.status;
+        const forma = FORMA_LABEL[p.forma] || p.forma;
+        const iconeForma = FORMA_ICONE[p.forma] || 'fa-money-bill';
+        const valor = p.valor != null ? `R$ ${Number(p.valor).toLocaleString('pt-BR', {minimumFractionDigits: 2})}` : '—';
+        const data = p.criadoEm ? new Date(p.criadoEm).toLocaleDateString('pt-BR') : '—';
+        const nomeProduto = produtosMap[p.produtoId] || `Produto #${p.produtoId}`;
+
+        const btnConfirmar = p.status === 'PENDENTE'
+            ? `<button onclick="confirmarPagamento(${p.id})" class="text-emerald-600 hover:text-emerald-800 transition" title="Confirmar pagamento"><i class="fa-solid fa-circle-check"></i></button>`
+            : '';
+
+        return `<tr class="hover:bg-slate-50">
+            <td class="p-5 font-medium text-slate-400">${p.id}</td>
+            <td class="p-5 font-semibold text-slate-800">${escapar(p.cliente)}</td>
+            <td class="p-5 text-slate-600 text-xs">${escapar(nomeProduto)}</td>
+            <td class="p-5"><i class="fa-solid ${iconeForma} mr-1 text-slate-400"></i>${forma}</td>
+            <td class="p-5 font-black text-slate-800">${valor}</td>
+            <td class="p-5 font-mono text-xs text-slate-500">${p.cepEntrega || '—'}</td>
+            <td class="p-5 text-center"><span class="rounded-full px-3 py-1 text-xs font-black ${badge}">${label}</span></td>
+            <td class="p-5 text-xs text-slate-500">${data}</td>
+            <td class="p-5 text-center">${btnConfirmar}</td>
+        </tr>`;
+    }
+
+    async function confirmarPagamento(id) {
+        if (!confirm('Confirmar este pagamento?')) return;
+        try {
+            const r = await fetch(`/api/pagamentos/${id}/confirmar`, { method: 'PUT' });
+            if (!r.ok) { mostrarAlerta(await r.text() || 'Erro ao confirmar.', true); return; }
+            mostrarAlerta('Pagamento confirmado com sucesso.');
+            carregarPagamentos();
+        } catch(e) { mostrarAlerta('Erro ao comunicar com o servidor.', true); }
+    }
+
+    function atualizarKpisPag() {
+        document.getElementById('kpi-total-pag').textContent = pagamentosRegistros.length;
+        document.getElementById('kpi-pendentes').textContent = pagamentosRegistros.filter(p => p.status === 'PENDENTE').length;
+        document.getElementById('kpi-confirmados').textContent = pagamentosRegistros.filter(p => p.status === 'CONFIRMADO').length;
+        const volume = pagamentosRegistros.reduce((s, p) => s + Number(p.valor || 0), 0);
+        document.getElementById('kpi-volume').textContent = `R$ ${volume.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+    }
+</script>
+</body>
+</html>

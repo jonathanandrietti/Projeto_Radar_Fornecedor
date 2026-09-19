@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração | Radar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <script src="/script.js?v=4" defer></script>
+</head>
+<body data-entidade="usuarios" data-singular="Usuário" data-plural="Usuários" data-standalone="true">
+<div class="flex min-h-screen">
+    <aside id="menu-lateral" class="w-64 hidden md:block"></aside>
+
+    <div class="flex-1 flex flex-col md:ml-64 main-content-overlay">
+        <header class="bg-black/80 backdrop-blur-md text-white shadow-lg sticky top-0 z-40 border-b border-slate-800">
+            <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
+                <a href="/pages/admin.html" class="flex items-center gap-3 font-black text-lg md:hidden">
+                    <i class="fa-solid fa-satellite-dish text-sky-400"></i> RADAR
+                </a>
+                <div class="flex items-center gap-4 text-sm font-semibold ml-auto">
+                    <div id="user-info" class="flex items-center gap-3"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="mx-auto w-full max-w-7xl px-6 py-8 flex-1">
+            <div id="alerta" class="mb-5 hidden rounded-xl border px-4 py-3 text-sm shadow-sm"></div>
+
+            <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="h-2.5 w-2.5 rounded-full bg-[#d4af37]"></span>
+                        <p class="text-[10px] font-black uppercase tracking-[0.24em] text-[#a57b00]">Controle de Sistema</p>
+                    </div>
+                    <h1 class="text-3xl font-black tracking-tight text-slate-900">Gestão de Usuários</h1>
+                    <p class="mt-2 text-sm text-slate-600 font-medium">Controle de acessos, permissões e segurança da plataforma.</p>
+                </div>
+                <button onclick="abrirModalUsuario()" class="inline-flex items-center gap-2 rounded-xl bg-sky-700 px-5 py-3 font-black text-white shadow-lg shadow-sky-200 transition-colors duration-200 hover:bg-sky-800">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>Novo usuário</span>
+                </button>
+            </div>
+
+            <section class="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <div class="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm kpi-card">
+                    <div class="flex items-center justify-between">
+                        <p class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Total Usuários</p>
+                        <span class="rounded-lg bg-sky-100 p-2 text-sky-700"><i class="fa-solid fa-users"></i></span>
+                    </div>
+                    <p id="total-usuarios" class="mt-4 text-3xl font-black text-slate-800">0</p>
+                    <p class="mt-1 text-xs text-slate-500">usuários cadastrados</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm kpi-card">
+                    <div class="flex items-center justify-between">
+                        <p class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Contas Ativas</p>
+                        <span class="rounded-lg bg-emerald-100 p-2 text-emerald-700"><i class="fa-solid fa-user-check"></i></span>
+                    </div>
+                    <p id="usuarios-ativos" class="mt-4 text-3xl font-black text-emerald-700">0</p>
+                    <p class="mt-1 text-xs text-slate-500">usuários ativos</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm kpi-card">
+                    <div class="flex items-center justify-between">
+                        <p class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Contas Inativas</p>
+                        <span class="rounded-lg bg-rose-100 p-2 text-rose-700"><i class="fa-solid fa-user-slash"></i></span>
+                    </div>
+                    <p id="usuarios-inativos" class="mt-4 text-3xl font-black text-rose-700">0</p>
+                    <p class="mt-1 text-xs text-slate-500">usuários inativos</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm kpi-card">
+                    <div class="flex items-center justify-between">
+                        <p class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Administradores</p>
+                        <span class="rounded-lg bg-sky-100 p-2 text-sky-700"><i class="fa-solid fa-shield-halved"></i></span>
+                    </div>
+                    <p id="total-admins" class="mt-4 text-3xl font-black text-sky-700">0</p>
+                    <p class="mt-1 text-xs text-slate-500">administradores</p>
+                </div>
+            </section>
+
+            <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+                <div class="flex flex-col gap-4 border-b border-slate-200 bg-slate-50/60 p-4 sm:flex-row sm:items-center">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input id="busca" oninput="filtrarUsuarios()" class="w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 py-3 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:border-sky-300 focus:ring-2 focus:ring-sky-100" placeholder="Buscar por username ou perfil...">
+                    </div>
+                    <button onclick="carregarUsuarios()" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white p-3 text-slate-500 transition-colors duration-200 hover:border-sky-200 hover:text-sky-700" title="Atualizar usuários">
+                        <i class="fa-solid fa-rotate text-lg"></i>
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 text-[10px] font-black uppercase tracking-[0.18em] text-slate-500 border-b border-slate-200">
+                            <tr>
+                                <th class="p-4">ID</th>
+                                <th class="p-4">Usuário</th>
+                                <th class="p-4">Perfil</th>
+                                <th class="p-4 text-center">Status</th>
+                                <th class="p-4 text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="linhas-usuarios" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<!-- Modal Usuário -->
+<div id="modal-usuario" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-2xl bg-white shadow-2xl overflow-hidden">
+        <div class="flex items-center justify-between border-b px-8 py-5 bg-slate-50">
+            <h2 id="titulo-modal" class="text-lg font-black text-slate-800">DADOS DO USUÁRIO</h2>
+            <button onclick="fecharModalUsuario()" class="text-2xl text-slate-400 hover:text-slate-600">&times;</button>
+        </div>
+        <form id="form-usuario" class="p-8 space-y-6" onsubmit="salvarUsuario(event)">
+            <input id="usuario-id" type="hidden">
+            <label class="campo">Username
+                <input id="usuario-username" required maxlength="50" class="mt-1" placeholder="Ex: admin.radar">
+            </label>
+            <label class="campo">Senha
+                <input id="usuario-senha" type="text" required class="mt-1" placeholder="Crie uma senha segura">
+            </label>
+            <label class="campo">Tipo de Perfil
+                <select id="usuario-tipo" required class="mt-1">
+                    <option value="ADMIN">ADMINISTRADOR</option>
+                    <option value="MANUTENCAO">MANUTENÇÃO</option>
+                    <option value="EDICAO">EDIÇÃO</option>
+                </select>
+            </label>
+
+            <div class="campo">
+                <span class="text-xs font-black uppercase text-slate-500 mb-3 block">Atribuições de Negócio</span>
+                <div class="grid grid-cols-2 gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                    <label class="flex items-center gap-2 font-bold text-slate-600 cursor-pointer text-xs uppercase">
+                        <input id="usuario-fornecedor" type="checkbox" class="rounded w-4 h-4 text-sky-600"> Fornecedor
+                    </label>
+                    <label class="flex items-center gap-2 font-bold text-slate-600 cursor-pointer text-xs uppercase">
+                        <input id="usuario-comprador" type="checkbox" class="rounded w-4 h-4 text-sky-600"> Comprador
+                    </label>
+                    <label class="flex items-center gap-2 font-bold text-slate-600 cursor-pointer text-xs uppercase">
+                        <input id="usuario-representante" type="checkbox" class="rounded w-4 h-4 text-sky-600"> Representante
+                    </label>
+                    <label class="flex items-center gap-2 font-bold text-slate-600 cursor-pointer text-xs uppercase">
+                        <input id="usuario-cliente" type="checkbox" class="rounded w-4 h-4 text-sky-600"> Cliente
+                    </label>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-4 pt-4">
+                <button type="button" onclick="fecharModalUsuario()" class="rounded-xl border border-slate-200 px-6 py-3 font-bold text-slate-500">CANCELAR</button>
+                <button type="submit" class="rounded-xl bg-sky-600 px-8 py-3 font-black text-white shadow-lg shadow-sky-100 hover:bg-sky-700">SALVAR</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    let usuariosRegistros = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await carregarMenuLateral();
+        exibirInfoUsuario();
+        aplicarControlesDeAcesso();
+        verificarPermissaoAdmin();
+        carregarUsuarios();
+    });
+
+    function verificarPermissaoAdmin() {
+        try {
+            const usuarioJson = localStorage.getItem('usuario');
+            if (!usuarioJson) { window.location.href = '/login.html'; return; }
+            const user = JSON.parse(usuarioJson);
+            if (user.tipo !== 'ADMIN') {
+                alert('Acesso restrito. Apenas administradores podem acessar esta área.');
+                window.location.href = '/';
+            }
+        } catch (e) {
+            window.location.href = '/login.html';
+        }
+    }
+
+    async function carregarUsuarios() {
+        try {
+            const resposta = await fetch('/api/usuarios');
+            if (!resposta.ok) {
+                const msg = await resposta.text();
+                mostrarAlerta(msg || 'Não foi possível carregar os usuários.', true);
+                return;
+            }
+            usuariosRegistros = await resposta.json();
+            filtrarUsuarios();
+            atualizarIndicadoresAdmin();
+        } catch (erro) {
+            mostrarAlerta('Erro ao comunicar com o servidor.', true);
+        }
+    }
+
+    function filtrarUsuarios() {
+        const termo = (document.getElementById('busca').value || '').toLowerCase();
+        const exibidos = usuariosRegistros.filter(u =>
+            [u.username, u.tipo].some(v => String(v || '').toLowerCase().includes(termo))
+        );
+        const tbody = document.getElementById('linhas-usuarios');
+        if (!tbody) return;
+        tbody.innerHTML = exibidos.length
+            ? exibidos.map(linhaUsuario).join('')
+            : '<tr><td colspan="6" class="p-10 text-center text-slate-500">Nenhum usuário encontrado.</td></tr>';
+    }
+
+    function linhaUsuario(u) {
+        const tipoBadge = {
+            ADMIN: 'bg-rose-100 text-rose-700',
+            MANUTENCAO: 'bg-amber-100 text-amber-700',
+            EDICAO: 'bg-sky-100 text-sky-700'
+        }[u.tipo] || 'bg-slate-100 text-slate-600';
+
+        const statusBadge = u.ativo
+            ? '<span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-bold text-emerald-700"><span class="h-1.5 w-1.5 rounded-full bg-emerald-600"></span>Ativo</span>'
+            : '<span class="inline-flex items-center gap-1.5 rounded-full bg-rose-100 px-2.5 py-1 text-[10px] font-bold text-rose-700"><span class="h-1.5 w-1.5 rounded-full bg-rose-600"></span>Inativo</span>';
+
+        const vinculos = [
+            u.fornecedor && 'Fornecedor',
+            u.comprador && 'Comprador',
+            u.representante && 'Representante',
+            u.cliente && 'Cliente'
+        ].filter(Boolean);
+        const vinculosHtml = vinculos.length
+            ? vinculos.map(v => `<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] font-bold text-slate-500 uppercase">${v}</span>`).join(' ')
+            : '<span class="text-xs text-slate-400 italic">Nenhum</span>';
+
+        const acoes = u.tipo === 'ADMIN'
+            ? `<button onclick="editarUsuario(${u.id})" class="mr-2 text-sky-700 hover:text-sky-900 transition" title="Editar usuário"><i class="fa-solid fa-pen"></i></button>`
+            : `<button onclick="editarUsuario(${u.id})" class="mr-2 text-sky-700 hover:text-sky-900 transition" title="Editar usuário"><i class="fa-solid fa-pen"></i></button>
+               <button onclick="inativarUsuario(${u.id})" class="text-rose-700 hover:text-rose-900 transition" title="${u.ativo ? 'Desativar usuário' : 'Ativar usuário'}"><i class="fa-solid fa-ban"></i></button>`;
+
+        return `<tr class="hover:bg-slate-50">
+            <td class="p-4 font-medium text-slate-500">${u.id}</td>
+            <td class="p-4">
+                <p class="font-bold text-slate-800">${escapar(u.username)}</p>
+                <div class="mt-1 flex flex-wrap gap-1">${vinculosHtml}</div>
+            </td>
+            <td class="p-4"><span class="rounded-full px-2 py-1 text-[10px] font-black ${tipoBadge}">${u.tipo}</span></td>
+            <td class="p-4 text-center">${statusBadge}</td>
+            <td class="p-4 text-center">${acoes}</td>
+        </tr>`;
+    }
+
+    function atualizarIndicadoresAdmin() {
+        const total = usuariosRegistros.length;
+        const ativos = usuariosRegistros.filter(u => u.ativo).length;
+        const inativos = total - ativos;
+        const admins = usuariosRegistros.filter(u => u.tipo === 'ADMIN').length;
+
+        document.getElementById('total-usuarios').textContent = total;
+        document.getElementById('usuarios-ativos').textContent = ativos;
+        document.getElementById('usuarios-inativos').textContent = inativos;
+        document.getElementById('total-admins').textContent = admins;
+    }
+
+    function abrirModalUsuario() {
+        document.getElementById('usuario-id').value = '';
+        document.getElementById('form-usuario').reset();
+        document.getElementById('titulo-modal').textContent = 'NOVO USUÁRIO';
+        document.getElementById('usuario-senha').required = true;
+        document.getElementById('modal-usuario').classList.remove('hidden');
+    }
+
+    function fecharModalUsuario() {
+        document.getElementById('modal-usuario').classList.add('hidden');
+    }
+
+    function editarUsuario(id) {
+        const u = usuariosRegistros.find(u => u.id === id);
+        if (!u) return;
+
+        document.getElementById('usuario-id').value = u.id;
+        document.getElementById('usuario-username').value = u.username;
+        document.getElementById('usuario-senha').value = u.senha;
+        document.getElementById('usuario-tipo').value = u.tipo;
+        document.getElementById('usuario-fornecedor').checked = !!u.fornecedor;
+        document.getElementById('usuario-comprador').checked = !!u.comprador;
+        document.getElementById('usuario-representante').checked = !!u.representante;
+        document.getElementById('usuario-cliente').checked = !!u.cliente;
+
+        document.getElementById('titulo-modal').textContent = 'EDITAR USUÁRIO';
+        document.getElementById('usuario-senha').required = false;
+        document.getElementById('modal-usuario').classList.remove('hidden');
+    }
+
+    async function salvarUsuario(evento) {
+        evento.preventDefault();
+        const id = document.getElementById('usuario-id').value;
+
+        const dados = {
+            username: document.getElementById('usuario-username').value.trim(),
+            senha: document.getElementById('usuario-senha').value.trim(),
+            tipo: document.getElementById('usuario-tipo').value,
+            fornecedor: document.getElementById('usuario-fornecedor').checked,
+            comprador: document.getElementById('usuario-comprador').checked,
+            representante: document.getElementById('usuario-representante').checked,
+            cliente: document.getElementById('usuario-cliente').checked
+        };
+
+        // Na edição, só envia senha se foi preenchida
+        if (id && !dados.senha) delete dados.senha;
+
+        try {
+            const url = id ? `/api/usuarios/${id}` : '/api/usuarios';
+            const metodo = id ? 'PUT' : 'POST';
+            const resposta = await fetch(url, {
+                method: metodo,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            });
+
+            if (!resposta.ok) {
+                const msg = await resposta.text();
+                mostrarAlerta(msg || 'Não foi possível salvar o usuário.', true);
+                return;
+            }
+
+            fecharModalUsuario();
+            mostrarAlerta(id ? 'Usuário atualizado com sucesso.' : 'Usuário cadastrado com sucesso.');
+            carregarUsuarios();
+        } catch (erro) {
+            mostrarAlerta('Erro ao comunicar com o servidor.', true);
+        }
+    }
+
+    async function inativarUsuario(id) {
+        const u = usuariosRegistros.find(u => u.id === id);
+        if (!u) return;
+        const acao = u.ativo ? 'inativar' : 'reativar';
+        if (!confirm(`Deseja ${acao} o usuário "${u.username}"?`)) return;
+
+        try {
+            const resposta = await fetch(`/api/usuarios/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ativo: !u.ativo })
+            });
+
+            if (!resposta.ok) {
+                const msg = await resposta.text();
+                mostrarAlerta(msg || `Não foi possível ${acao} o usuário.`, true);
+                return;
+            }
+
+            mostrarAlerta(`Usuário ${u.ativo ? 'inativado' : 'reativado'} com sucesso.`);
+            carregarUsuarios();
+        } catch (erro) {
+            mostrarAlerta('Erro ao comunicar com o servidor.', true);
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fornecedores | Radar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <script src="/script.js?v=4" defer></script>
+</head>
+<body data-entidade="fornecedores" data-singular="Fornecedor" data-plural="Fornecedoras">
+<div class="flex min-h-screen">
+    <!-- Placeholder para Menu Lateral (Carregado via JS) -->
+    <aside id="menu-lateral" class="w-64 hidden md:block"></aside>
+
+    <!-- Conteúdo Principal -->
+    <div class="flex-1 flex flex-col md:ml-64 main-content-overlay">
+        <!-- Header -->
+        <header class="bg-black/80 backdrop-blur-md text-white shadow-lg sticky top-0 z-40 border-b border-slate-800">
+            <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
+                <a href="/pages/fornecedores.html" class="flex items-center gap-3 font-black text-lg md:hidden">
+                    <i class="fa-solid fa-satellite-dish text-sky-400"></i> RADAR
+                </a>
+                <div class="flex items-center gap-4 text-sm font-semibold ml-auto">
+                    <div id="user-info" class="flex items-center gap-3"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Corpo Principal -->
+        <main class="mx-auto max-w-7xl px-6 py-8 w-full flex-1">
+            <div id="alerta" class="mb-5 hidden rounded-xl border px-4 py-3 text-sm shadow-sm backdrop-blur-sm"></div>
+
+            <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="h-2 w-2 rounded-full bg-[#d4af37]"></span>
+                        <p class="text-[10px] font-black uppercase tracking-[0.28em] text-sky-700">Módulo de Cadastro</p>
+                    </div>
+                    <h1 class="text-3xl font-black tracking-tight text-slate-900 md:text-4xl">Empresas Fornecedoras</h1>
+                    <p class="mt-2 text-sm font-medium text-slate-600 md:text-base">Gestão centralizada de conformidade, risco e geolocalização.</p>
+                </div>
+                <button onclick="abrirFormulario()" class="group inline-flex items-center gap-2 rounded-xl bg-sky-600 px-5 py-3 font-black text-white shadow-lg shadow-sky-200 transition-colors duration-200 hover:bg-sky-700 hover:shadow-sky-300">
+                    <i class="fa-solid fa-plus text-sm"></i>
+                    <span>NOVO FORNECEDOR</span>
+                </button>
+            </div>
+
+            <!-- Indicadores -->
+            <section class="mb-10 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+                <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm kpi-card">
+                    <div class="mb-4 flex items-center justify-between gap-3">
+                        <div class="rounded-xl bg-slate-100 p-2.5 text-slate-500"><i class="fa-solid fa-building text-lg"></i></div>
+                        <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Base Geral</span>
+                    </div>
+                    <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Total Ativos</p>
+                    <p id="total" class="mt-3 text-3xl font-black text-slate-900">0</p>
+                    <p class="mt-2 text-xs text-slate-500">fornecedores ativos</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm kpi-card">
+                    <div class="mb-4 flex items-center justify-between gap-3">
+                        <div class="rounded-xl bg-amber-50 p-2.5 text-amber-500"><i class="fa-solid fa-hourglass-half text-lg"></i></div>
+                        <span class="text-[10px] font-black uppercase tracking-[0.2em] text-amber-500">Aguardando</span>
+                    </div>
+                    <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Em Análise</p>
+                    <p id="analise" class="mt-3 text-3xl font-black text-amber-600">0</p>
+                    <p class="mt-2 text-xs text-slate-500">pendentes de revisão</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm kpi-card">
+                    <div class="mb-4 flex items-center justify-between gap-3">
+                        <div class="rounded-xl bg-sky-50 p-2.5 text-sky-600"><i class="fa-solid fa-chart-line text-lg"></i></div>
+                        <span class="text-[10px] font-black uppercase tracking-[0.2em] text-sky-600">Performance</span>
+                    </div>
+                    <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Score Médio</p>
+                    <p id="media" class="mt-3 text-3xl font-black text-sky-700">0,0</p>
+                    <p class="mt-2 text-xs text-slate-500">média geral</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm kpi-card">
+                    <div class="mb-4 flex items-center justify-between gap-3">
+                        <div class="rounded-xl bg-rose-50 p-2.5 text-rose-500"><i class="fa-solid fa-triangle-exclamation text-lg"></i></div>
+                        <span class="text-[10px] font-black uppercase tracking-[0.2em] text-rose-500">Alerta</span>
+                    </div>
+                    <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Risco Crítico</p>
+                    <p id="criticos" class="mt-3 text-3xl font-black text-rose-600">0</p>
+                    <p class="mt-2 text-xs text-slate-500">em atenção</p>
+                </div>
+            </section>
+
+            <!-- Tabela -->
+            <section class="overflow-hidden rounded-2xl bg-white shadow-xl border border-slate-200">
+                <div class="flex flex-col gap-4 border-b bg-slate-50/50 p-5 sm:flex-row sm:items-center">
+                    <div class="relative w-full flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input id="busca" oninput="filtrar()" class="w-full rounded-xl border border-slate-200 bg-white py-3 pl-12 pr-4 text-sm text-slate-700 outline-none transition-all focus:border-sky-300 focus:ring-2 focus:ring-sky-100" placeholder="Filtrar por nome, CNPJ ou localização...">
+                    </div>
+                    <button onclick="carregar()" class="rounded-xl border border-slate-200 bg-white p-3 text-slate-500 shadow-sm transition-colors duration-200 hover:border-sky-200 hover:text-sky-600">
+                        <i class="fa-solid fa-rotate text-lg"></i>
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse text-left text-sm">
+                        <thead class="border-b bg-slate-50/80 text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">
+                            <tr>
+                                <th class="p-4">ID</th>
+                                <th class="p-4">Empresa / Razão Social</th>
+                                <th class="p-4">CNPJ</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4">Score</th>
+                                <th class="p-4">Geolocalização</th>
+                                <th class="p-4 text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="linhas" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="fixed inset-0 z-[60] hidden overflow-y-auto bg-slate-950/80 backdrop-blur-sm p-4">
+    <div class="mx-auto my-8 max-w-3xl rounded-2xl bg-white shadow-2xl transform transition-all">
+        <div class="flex items-center justify-between border-b px-8 py-5 bg-slate-50 rounded-t-2xl">
+            <h2 id="titulo-form" class="text-xl font-black text-slate-800 uppercase tracking-tight">Cadastrar fornecedor</h2>
+            <button onclick="fecharFormulario()" class="h-8 w-8 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition-all text-2xl">&times;</button>
+        </div>
+        <form id="formulario" class="space-y-6 p-8" onsubmit="salvar(event)">
+            <input id="id" type="hidden">
+            <input id="codCidade" type="hidden">
+
+            <div class="grid gap-6 md:grid-cols-2">
+                <label class="campo md:col-span-2">Empresa / Razão Social
+                    <input id="nome" required maxlength="100" class="mt-1" placeholder="Ex: Nome da Empresa Ltda">
+                </label>
+                <label class="campo">CNPJ
+                    <input id="cnpj" required maxlength="18" placeholder="00.000.000/0000-00" oninput="mascaraCnpj(this)" class="mt-1">
+                </label>
+                <label class="campo">Status Operacional
+                    <select id="status" class="mt-1 cursor-pointer">
+                        <option value="EM_ANALISE">Em análise</option>
+                        <option value="APROVADO">Aprovado</option>
+                        <option value="REJEITADO">Rejeitado</option>
+                        <option value="SUSPENSO">Suspenso</option>
+                    </select>
+                </label>
+                <label class="campo">Pontuação de Risco (0-10)
+                    <input id="pontuacao" type="number" min="0" max="10" step="0.1" value="0" class="mt-1">
+                </label>
+                <label class="campo">Prazo de preparo (dias úteis)
+                    <input id="prazoEntregaDias" type="number" min="0" max="30" value="2" class="mt-1">
+                </label>
+                <label class="campo">CEP (Busca Automática)
+                    <input id="cep" maxlength="9" placeholder="00000-000" oninput="mascaraCep(this)" onblur="consultarCep()" class="mt-1">
+                </label>
+            </div>
+
+            <fieldset class="rounded-xl border border-slate-200 p-6 bg-slate-50/50">
+                <legend class="px-3 text-xs font-black uppercase tracking-widest text-slate-500">Localização e Endereço</legend>
+                <div class="grid gap-4 md:grid-cols-3">
+                    <label class="campo md:col-span-2">Logradouro
+                        <input id="logradouro" class="mt-1">
+                    </label>
+                    <label class="campo">Número
+                        <input id="numero" class="mt-1">
+                    </label>
+                    <label class="campo md:col-span-1">Bairro
+                        <input id="bairro" class="mt-1">
+                    </label>
+                    <label class="campo">Cidade
+                        <input id="cidade" readonly class="mt-1 bg-slate-100 font-semibold">
+                    </label>
+                    <label class="campo">UF
+                        <input id="estado" maxlength="2" readonly class="mt-1 bg-slate-100 font-semibold">
+                    </label>
+                    <label class="campo md:col-span-3">Complemento
+                        <input id="complemento" class="mt-1">
+                    </label>
+                    <label class="campo">Latitude
+                        <input id="latitude" type="number" step="0.000001" readonly class="mt-1 bg-slate-100 text-slate-500 text-xs">
+                    </label>
+                    <label class="campo">Longitude
+                        <input id="longitude" type="number" step="0.000001" readonly class="mt-1 bg-slate-100 text-slate-500 text-xs">
+                    </label>
+                </div>
+            </fieldset>
+
+            <div class="flex justify-end gap-4 pt-4">
+                <button type="button" onclick="fecharFormulario()" class="rounded-xl border border-slate-200 px-6 py-3 font-bold text-slate-500 hover:bg-slate-50 transition-all">CANCELAR</button>
+                <button type="submit" class="rounded-xl bg-sky-600 px-8 py-3 font-black text-white shadow-lg shadow-sky-100 hover:bg-sky-700 transition-all">SALVAR REGISTRO</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

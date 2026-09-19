@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes | Radar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <script src="/script.js?v=4" defer></script>
+</head>
+<body data-entidade="clientes" data-singular="Cliente" data-plural="Clientes">
+<div class="flex min-h-screen">
+    <aside id="menu-lateral" class="w-64 hidden md:block"></aside>
+
+    <div class="flex-1 flex flex-col md:ml-64 main-content-overlay">
+        <header class="bg-black/80 backdrop-blur-md text-white shadow-lg sticky top-0 z-40 border-b border-slate-800">
+            <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
+                <a href="/pages/clientes.html" class="flex items-center gap-3 font-black text-lg md:hidden">
+                    <i class="fa-solid fa-satellite-dish text-sky-400"></i> RADAR
+                </a>
+                <div class="flex items-center gap-4 text-sm font-semibold ml-auto">
+                    <div id="user-info" class="flex items-center gap-3"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="mx-auto max-w-7xl px-6 py-8 w-full flex-1">
+            <div id="alerta" class="mb-5 hidden rounded-xl border px-4 py-3 text-sm shadow-sm"></div>
+
+            <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="h-2 w-2 bg-indigo-500 rounded-full animate-pulse"></span>
+                        <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-700">Módulo de Clientes</p>
+                    </div>
+                    <h1 class="text-4xl font-black text-slate-900 tracking-tight">Base de Clientes</h1>
+                    <p class="mt-2 text-slate-600 font-medium">Gestão de carteira de pessoas físicas (CPF).</p>
+                </div>
+                <button onclick="abrirFormulario()" class="group rounded-xl bg-sky-600 px-6 py-3.5 font-black text-white shadow-xl shadow-sky-200 hover:bg-sky-700 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-plus group-hover:scale-110"></i> NOVO CLIENTE
+                </button>
+            </div>
+
+            <section class="mb-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div class="rounded-2xl bg-white p-6 shadow-sm border border-slate-200 kpi-card">
+                    <p class="text-xs font-bold uppercase text-slate-500">Total Carteira</p>
+                    <p id="total" class="mt-1 text-4xl font-black text-slate-900">0</p>
+                </div>
+                <div class="rounded-2xl bg-white p-6 shadow-sm border border-slate-200 kpi-card">
+                    <p class="text-xs font-bold uppercase text-slate-500">Clientes Ativos</p>
+                    <p id="analise" class="mt-1 text-4xl font-black text-emerald-600">0</p>
+                </div>
+            </section>
+
+            <section class="overflow-hidden rounded-2xl bg-white shadow-xl border border-slate-200">
+                <div class="flex flex-col gap-4 border-b bg-slate-50/50 p-6 sm:flex-row">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input id="busca" oninput="filtrar()" class="w-full rounded-xl border border-slate-200 bg-white pl-12 pr-4 py-3 text-sm focus:ring-2 focus:ring-sky-500 outline-none" placeholder="Buscar por nome, CPF/CNPJ ou tipo...">
+                    </div>
+                    <button onclick="carregar()" class="rounded-xl border bg-white p-3 text-slate-500 hover:text-sky-600 transition-all shadow-sm">
+                        <i class="fa-solid fa-rotate text-lg"></i>
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm border-collapse">
+                        <thead class="bg-slate-50 text-[10px] font-black uppercase text-slate-400 tracking-widest border-b">
+                            <tr>
+                                <th class="p-5">ID</th>
+                                <th class="p-5">Nome do Cliente</th>
+                                <th class="p-5">CPF</th>
+                                <th class="p-5">Status</th>
+                                <th class="p-5 text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="linhas" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<div id="modal" class="fixed inset-0 z-[60] hidden overflow-y-auto bg-slate-950/80 backdrop-blur-sm p-4">
+    <div class="mx-auto my-8 max-w-xl rounded-2xl bg-white shadow-2xl">
+        <div class="flex items-center justify-between border-b px-8 py-5 bg-slate-50 rounded-t-2xl">
+            <h2 id="titulo-form" class="text-xl font-black text-slate-800 uppercase tracking-tight">DADOS DO CLIENTE</h2>
+            <button onclick="fecharFormulario()" class="text-2xl text-slate-400 hover:text-slate-600">&times;</button>
+        </div>
+        <form id="formulario" class="space-y-6 p-8" onsubmit="salvar(event)">
+            <input id="id" type="hidden">
+            <input id="tipoPessoa" type="hidden">
+            <label class="campo">Nome Completo / Razão Social
+                <input id="nome" required class="mt-1" placeholder="Ex: João da Silva">
+            </label>
+            <label class="campo">Documento (CPF)
+                <input id="cpfCnpj" required class="mt-1" placeholder="Somente CPF — 11 dígitos" maxlength="14" oninput="this.value=this.value.replace(/\D/g,'').slice(0,11)">
+            </label>
+            <label class="campo">Estado da Conta
+                <select id="status" class="mt-1">
+                    <option value="ATIVO">Ativo</option>
+                    <option value="INATIVO">Inativo</option>
+                </select>
+            </label>
+
+            <!-- Endereço e Geolocalização -->
+            <fieldset class="rounded-xl border border-slate-200 p-5 bg-slate-50/50">
+                <legend class="px-3 text-xs font-black uppercase tracking-widest text-slate-500">Endereço e Localização</legend>
+                <div class="space-y-4 mt-2">
+                    <div class="grid grid-cols-3 gap-4">
+                        <label class="campo col-span-1">CEP
+                            <input id="cep" maxlength="9" placeholder="00000-000" oninput="mascaraCep(this)" onblur="consultarCep()" class="mt-1">
+                        </label>
+                        <label class="campo col-span-2">Logradouro
+                            <input id="logradouro" class="mt-1" placeholder="Rua, Avenida...">
+                        </label>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <label class="campo">Número
+                            <input id="numero" class="mt-1" placeholder="Ex: 100">
+                        </label>
+                        <label class="campo col-span-2">Bairro
+                            <input id="bairro" class="mt-1">
+                        </label>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <label class="campo col-span-2">Cidade
+                            <input id="cidade" readonly class="mt-1 bg-slate-100 font-semibold">
+                        </label>
+                        <label class="campo">UF
+                            <input id="estado" maxlength="2" readonly class="mt-1 bg-slate-100 font-semibold">
+                        </label>
+                    </div>
+                    <label class="campo">Complemento
+                        <input id="complemento" class="mt-1" placeholder="Apto, Sala, Bloco...">
+                    </label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="campo">Latitude
+                            <input id="latitude" type="number" step="0.000001" readonly class="mt-1 bg-slate-100 text-slate-500 text-xs">
+                        </label>
+                        <label class="campo">Longitude
+                            <input id="longitude" type="number" step="0.000001" readonly class="mt-1 bg-slate-100 text-slate-500 text-xs">
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="flex justify-end gap-4 pt-4">
+                <button type="button" onclick="fecharFormulario()" class="rounded-xl border border-slate-200 px-6 py-3 font-bold text-slate-500">CANCELAR</button>
+                <button type="submit" class="rounded-xl bg-sky-600 px-8 py-3 font-black text-white shadow-lg shadow-sky-100 hover:bg-sky-700">SALVAR</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

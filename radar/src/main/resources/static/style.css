@@ -1,0 +1,249 @@
+/* Estilos personalizados para o Radar de Parceiros */
+
+/* Barra de rolagem elegante */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #e2e8f0;
+}
+::-webkit-scrollbar-thumb {
+    background: #94a3b8;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* Fundo com imagem no corpo da página */
+body {
+    background: url('/imagem/FundoHAIE.png') no-repeat center center fixed !important;
+    background-size: cover !important;
+    background-color: #cbd5e1 !important;
+}
+
+/* Overlay para o conteúdo principal para manter a legibilidade */
+.main-content-overlay {
+    background-color: rgba(241, 245, 249, 0.9); /* slate-50 com 90% de opacidade */
+    min-height: 100vh;
+}
+
+.login-card {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: #475569;
+}
+
+.campo input, .campo select {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 1rem;
+    background: #fff;
+    padding: 0.82rem 0.95rem 0.82rem 2.8rem;
+    color: #0f172a;
+    font-size: 0.875rem;
+    font-weight: 400;
+    letter-spacing: normal;
+    text-transform: none;
+    line-height: 1.2;
+}
+
+.campo input::placeholder {
+    color: #94a3b8;
+    opacity: 1;
+}
+
+.campo .relative .fa-user,
+.campo .relative .fa-lock {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+    font-size: 0.9rem;
+    color: #94a3b8;
+    line-height: 1;
+}
+
+.campo input:focus, .campo select:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.12);
+}
+
+.module-card {
+    cursor: default;
+    transform: none !important;
+    transition: none;
+}
+
+.module-card i {
+    color: #d4af37 !important;
+}
+
+.module-card * {
+    transform: none !important;
+    scale: 1 !important;
+}
+
+@media (max-width: 480px) {
+    .login-card {
+        border-radius: 1.5rem;
+    }
+
+    .module-item span {
+        font-size: 9px;
+    }
+}
+
+/* Fundo Preto no menu lateral */
+aside {
+    background: linear-gradient(180deg, #000000 0%, #0c0c0e 100%) !important;
+    background-color: #000000 !important;
+    border-right: 1px solid #1f1f23 !important;
+    overflow: visible !important;
+}
+
+#cidade-suggestions {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.6) rgba(15, 23, 42, 0.9);
+}
+
+#cidade-suggestions::-webkit-scrollbar {
+    width: 6px;
+}
+
+#cidade-suggestions::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.6);
+    border-radius: 9999px;
+}
+
+.sugestao-cidade {
+    display: block;
+    width: 100%;
+    padding: 0.6rem 0.7rem;
+    text-align: left;
+    font-size: 0.72rem;
+    line-height: 1.3;
+    color: #e2e8f0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    white-space: normal;
+    word-break: break-word;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sugestao-cidade:hover,
+.sugestao-cidade.is-active {
+    background: rgba(212, 175, 55, 0.12);
+    color: #f8fafc;
+}
+
+/* Ajustes nos botões ativos e inativos da sidebar */
+.btn-sidebar-active {
+    background: linear-gradient(90deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.86)) !important;
+    color: #e2e8f0 !important;
+    border: 1px solid rgba(212, 175, 55, 0.45) !important;
+    box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.08) !important;
+    position: relative;
+}
+
+.btn-sidebar-active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 10%;
+    bottom: 10%;
+    width: 3px;
+    border-radius: 0 9999px 9999px 0;
+    background: #d4af37;
+}
+
+.btn-sidebar-inactive {
+    background-color: transparent !important;
+    color: #b6c4d8 !important;
+}
+
+.btn-sidebar-inactive:hover {
+    background-color: rgba(15, 23, 42, 0.9) !important;
+    color: #e2e8f0 !important;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    border-radius: 12px;
+    background-color: transparent;
+    color: #cbd5e1;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.menu-item:hover {
+    background-color: rgba(15, 23, 42, 0.72) !important;
+    color: #f8fafc !important;
+}
+
+.menu-item:hover i,
+.menu-item:hover span {
+    color: #f8fafc !important;
+}
+
+.menu-item.active {
+    background-color: rgba(15, 23, 42, 0.72) !important;
+    color: #f8fafc !important;
+    box-shadow: none !important;
+}
+
+.menu-item.active i {
+    color: #d4af37 !important;
+}
+
+.menu-item.active span {
+    color: #f8fafc !important;
+}
+
+.menu-item,
+.menu-item * {
+    transform: none !important;
+    scale: 1 !important;
+}
+
+.kpi-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kpi-card:hover {
+    transform: none !important;
+    box-shadow: 0 8px 18px -12px rgba(15, 23, 42, 0.18);
+}
+
+/* Card KPI hover */
+.kpi-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Botões de ação */
+.btn-primary-action {
+    background-color: #0284c7 !important; /* sky-600 */
+    transition: all 0.2s ease-in-out;
+}
+.btn-primary-action:hover {
+    background-color: #0369a1 !important; /* sky-700 */
+    transform: scale(1.02);
+}

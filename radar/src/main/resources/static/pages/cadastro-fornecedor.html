@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Empresa | Radar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+        <!-- Cabeçalho -->
+        <div class="text-center mb-10">
+            <a href="/login.html" class="inline-flex items-center gap-3 font-black text-lg mb-6">
+                <i class="fa-solid fa-arrow-left text-sky-600"></i>
+                <span class="text-slate-600">Voltar</span>
+            </a>
+            <div class="flex justify-center mb-6">
+                <div class="relative inline-block">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-sky-600 to-indigo-600 rounded-full blur opacity-30"></div>
+                    <i class="fa-solid fa-building relative text-5xl text-sky-600"></i>
+                </div>
+            </div>
+            <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase">Cadastro de Empresa</h1>
+            <p class="text-slate-600 mt-3 font-medium">Preencha os dados da sua empresa e cadastre seus produtos</p>
+        </div>
+
+        <!-- Formulário -->
+        <div class="bg-white rounded-3xl shadow-2xl p-8 border border-slate-100">
+            <form id="form-cadastro" class="space-y-8">
+                <!-- ETAPA 1: Informações da Empresa -->
+                <div id="etapa-1">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-10 h-10 rounded-full bg-sky-600 text-white font-black flex items-center justify-center">1</div>
+                        <h2 class="text-2xl font-black text-slate-800">Informações da Empresa</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <label class="campo md:col-span-2">
+                            <span class="font-black text-[10px] text-slate-400 uppercase">Nome da Empresa *</span>
+                            <input type="text" id="nome" required class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none transition-all" placeholder="Sua Empresa Ltda.">
+                        </label>
+
+                        <label class="campo">
+                            <span class="font-black text-[10px] text-slate-400 uppercase">CNPJ *</span>
+                            <input type="text" id="cnpj" required class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none transition-all" placeholder="00.000.000/0000-00" oninput="mascararCnpj(this)">
+                        </label>
+
+                        <label class="campo">
+                            <span class="font-black text-[10px] text-slate-400 uppercase">Email *</span>
+                            <input type="email" id="email" required class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none transition-all" placeholder="contato@empresa.com">
+                        </label>
+
+                        <label class="campo">
+                            <span class="font-black text-[10px] text-slate-400 uppercase">Telefone *</span>
+                            <input type="tel" id="telefone" required class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none transition-all" placeholder="(00) 00000-0000" oninput="mascararTelefone(this)">
+                        </label>
+
+                        <label class="campo">
+                            <span class="font-black text-[10px] text-slate-400 uppercase">Prazo de Entrega (dias) *</span>
+                            <input type="number" id="prazoEntregaDias" required min="1" max="90" class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none transition-all" placeholder="7">
+                        </label>
+                    </div>
+
+                    <hr class="my-8 border-slate-200">
+
+                    <!-- Endereço -->
+                    <h3 class="text-lg font-black text-slate-800 mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-location-dot text-sky-600"></i>
+                        Endereço
+                    </h3>
+
+                    <div class="grid grid-cols-1 gap-6">
+                        <label class="campo">
+                            <span class="font-black text-[10px] text-slate-400 uppercase">Logradouro *</span>
+                            <input type="text" id="logradouro" required class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none transition-all" placeholder="Rua Principal">
+                        </label>
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                            <label class="campo">
+                                <span class="font-black text-[10px] text-slate-400 uppercase">Número *</span>
+                                <input type="text" id="numero" required class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none transition-all" placeholder="123">
+                            </label>
+
+                            <label class="campo">
+                                <span class="font-black text-[10px] text-slate-400 uppercase">Complemento</span>
+                                <input type="text" id="complemento" class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none transition-all" placeholder="Apto 45">
+                            </label>
+
+                            <label class="campo">
+                                <span class="font-black text-[10px] text-slate-400 uppercase">Bairro *</span>
+                                <input type="text" id="bairro" required class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none transition-all" placeholder="Centro">
+                            </label>
+
+                            <label class="campo">
+                                <span class="font-black text-[10px] text-slate-400 uppercase">CEP *</span>
+                                <input type="text" id="cep" required class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none transition-all" placeholder="00000-000" oninput="mascararCep(this)">
+                            </label>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <label class="campo">
+                                <span class="font-black text-[10px] text-slate-400 uppercase">Cidade *</span>
+                                <input type="text" id="cidade" required class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none transition-all" placeholder="São Paulo">
+                            </label>
+
+                            <label class="campo">
+                                <span class="font-black text-[10px] text-slate-400 uppercase">Estado *</span>
+                                <select id="estado" required class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none transition-all">
+                                    <option value="">Selecione...</option>
+                                    <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option>
+                                    <option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option>
+                                    <option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option>
+                                    <option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option>
+                                    <option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option>
+                                    <option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option>
+                                    <option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option>
+                                    <option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option>
+                                    <option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+
+                    <hr class="my-8 border-slate-200">
+
+                    <!-- Foto de Perfil -->
+                    <h3 class="text-lg font-black text-slate-800 mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-camera text-sky-600"></i>
+                        Logo da Empresa
+                    </h3>
+
+                    <label class="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-slate-300 rounded-xl cursor-pointer hover:border-sky-500 hover:bg-sky-50 transition-all">
+                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                            <svg class="w-10 h-10 mb-2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            <p class="mb-2 text-sm text-slate-700 font-semibold"><span class="font-black">Clique para enviar</span> ou arraste aqui</p>
+                            <p class="text-xs text-slate-500">PNG, JPG ou GIF (máx. 5MB)</p>
+                        </div>
+                        <input type="file" id="foto" accept="image/*" class="hidden">
+                    </label>
+
+                    <div id="preview-foto" class="hidden text-center mt-4">
+                        <img id="foto-preview" src="" alt="Preview" class="w-32 h-32 rounded-xl object-cover mx-auto shadow-lg mb-3">
+                        <button type="button" id="remover-foto" class="text-sm font-bold text-rose-600 hover:text-rose-700">
+                            <i class="fa-solid fa-trash mr-1"></i>Remover foto
+                        </button>
+                    </div>
+
+                    <!-- Botão Próximo -->
+                    <button type="button" id="btn-proxima" class="w-full mt-8 bg-sky-600 text-white font-black py-3 rounded-xl hover:bg-sky-700 transition-all active:scale-95">
+                        Próximo: Adicionar Produtos <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <!-- ETAPA 2: Produtos -->
+                <div id="etapa-2" class="hidden">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-10 h-10 rounded-full bg-sky-600 text-white font-black flex items-center justify-center">2</div>
+                        <h2 class="text-2xl font-black text-slate-800">Meus Produtos</h2>
+                    </div>
+
+                    <div id="lista-produtos" class="space-y-4 mb-8"></div>
+
+                    <!-- Botão Adicionar Produto -->
+                    <button type="button" id="btn-adicionar-produto" class="w-full mb-8 bg-emerald-600 text-white font-black py-3 rounded-xl hover:bg-emerald-700 transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus"></i> Adicionar Produto
+                    </button>
+
+                    <!-- Botões de Ação -->
+                    <div class="flex gap-4">
+                        <button type="button" id="btn-voltar" class="flex-1 bg-slate-600 text-white font-black py-3 rounded-xl hover:bg-slate-700 transition-all">
+                            <i class="fa-solid fa-arrow-left mr-2"></i>Voltar
+                        </button>
+                        <button type="submit" class="flex-1 bg-gradient-to-r from-sky-600 to-sky-700 text-white font-black py-3 rounded-xl hover:shadow-xl transition-all active:scale-95">
+                            <i class="fa-solid fa-check mr-2"></i>Finalizar Cadastro
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mensagens de Erro -->
+                <div id="erro-cadastro" class="hidden rounded-lg bg-rose-50 border border-rose-200 p-4 text-rose-800 text-sm">
+                    <i class="fa-solid fa-circle-exclamation mr-2"></i>
+                    <span id="erro-texto"></span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Produto -->
+    <div id="modal-produto" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-950/80 backdrop-blur-sm p-4">
+        <div class="mx-auto my-16 max-w-lg rounded-2xl bg-white shadow-2xl">
+            <div class="flex items-center justify-between border-b px-7 py-5">
+                <h2 class="text-xl font-black text-slate-800">Novo Produto</h2>
+                <button type="button" id="fechar-modal" class="text-2xl text-slate-400 hover:text-slate-700">&times;</button>
+            </div>
+            <form id="form-produto" class="space-y-5 p-7">
+                <label class="campo">
+                    <span class="font-black text-[10px] text-slate-400 uppercase">Nome do Produto *</span>
+                    <input type="text" id="produto-nome" required class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3" placeholder="Ex.: Parafuso M8">
+                </label>
+
+                <label class="campo">
+                    <span class="font-black text-[10px] text-slate-400 uppercase">Descrição</span>
+                    <textarea id="produto-descricao" class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 resize-none" rows="3" placeholder="Descrição do produto..."></textarea>
+                </label>
+
+                <label class="campo">
+                    <span class="font-black text-[10px] text-slate-400 uppercase">Categoria *</span>
+                    <select id="produto-categoria" required class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3"></select>
+                </label>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <label class="campo">
+                        <span class="font-black text-[10px] text-slate-400 uppercase">Preço (R$) *</span>
+                        <input type="number" id="produto-preco" required min="0.01" step="0.01" class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3" placeholder="0.00">
+                    </label>
+
+                    <label class="campo">
+                        <span class="font-black text-[10px] text-slate-400 uppercase">Qtd. Mínima *</span>
+                        <input type="number" id="produto-quantidade-minima" required min="1" class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3" placeholder="1">
+                    </label>
+                </div>
+
+                <label class="campo">
+                    <span class="font-black text-[10px] text-slate-400 uppercase">Estoque *</span>
+                    <input type="number" id="produto-estoque" required min="0" class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3" placeholder="0">
+                </label>
+
+                <button type="submit" class="w-full rounded-xl bg-sky-600 px-6 py-3 font-black text-white hover:bg-sky-700">
+                    Adicionar Produto
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let fornecedorId = null;
+        let produtos = [];
+        let categorias = [];
+
+        // Máscaras
+        function mascararCnpj(input) {
+            let valor = input.value.replace(/\D/g, '');
+            if (valor.length > 0) {
+                valor = valor.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+            }
+            input.value = valor;
+        }
+
+        function mascararTelefone(input) {
+            let valor = input.value.replace(/\D/g, '');
+            if (valor.length > 0) {
+                valor = valor.replace(/(\d{2})(\d{4,5})(\d{4})/, '($1) $2-$3');
+            }
+            input.value = valor;
+        }
+
+        function mascararCep(input) {
+            let valor = input.value.replace(/\D/g, '');
+            if (valor.length > 0) {
+                valor = valor.replace(/(\d{5})(\d{3})/, '$1-$2');
+            }
+            input.value = valor;
+        }
+
+        // Upload de foto
+        const inputFoto = document.getElementById('foto');
+        const previewFoto = document.getElementById('preview-foto');
+        const fotoPreview = document.getElementById('foto-preview');
+        const removerFoto = document.getElementById('remover-foto');
+
+        document.querySelector('label[for="foto"]').addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.currentTarget.classList.add('border-sky-500', 'bg-sky-50');
+        });
+
+        document.querySelector('label[for="foto"]').addEventListener('dragleave', (e) => {
+            e.currentTarget.classList.remove('border-sky-500', 'bg-sky-50');
+        });
+
+        document.querySelector('label[for="foto"]').addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.currentTarget.classList.remove('border-sky-500', 'bg-sky-50');
+            if (e.dataTransfer.files.length > 0) {
+                inputFoto.files = e.dataTransfer.files;
+                exibirPreview();
+            }
+        });
+
+        inputFoto.addEventListener('change', exibirPreview);
+
+        function exibirPreview() {
+            if (inputFoto.files && inputFoto.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    fotoPreview.src = e.target.result;
+                    previewFoto.classList.remove('hidden');
+                };
+                reader.readAsDataURL(inputFoto.files[0]);
+            }
+        }
+
+        removerFoto.addEventListener('click', () => {
+            inputFoto.value = '';
+            previewFoto.classList.add('hidden');
+        });
+
+        // Carregar categorias
+        async function carregarCategorias() {
+            const res = await fetch('/api/produtos/categorias');
+            categorias = await res.json();
+            const select = document.getElementById('produto-categoria');
+            select.innerHTML = '<option value="">Selecione...</option>' + categorias.map(cat => 
+                `<option value="${cat.codigo}">${cat.descricao}</option>`
+            ).join('');
+        }
+
+        // Navegação entre etapas
+        document.getElementById('btn-proxima').addEventListener('click', () => {
+            if (validarEtapa1()) {
+                document.getElementById('etapa-1').classList.add('hidden');
+                document.getElementById('etapa-2').classList.remove('hidden');
+            }
+        });
+
+        document.getElementById('btn-voltar').addEventListener('click', () => {
+            document.getElementById('etapa-2').classList.add('hidden');
+            document.getElementById('etapa-1').classList.remove('hidden');
+        });
+
+        function validarEtapa1() {
+            const campos = ['nome', 'cnpj', 'email', 'telefone', 'logradouro', 'numero', 'bairro', 'cep', 'cidade', 'estado', 'prazoEntregaDias'];
+            for (let campo of campos) {
+                if (!document.getElementById(campo).value.trim()) {
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Modal de produto
+        const modalProduto = document.getElementById('modal-produto');
+        const formProduto = document.getElementById('form-produto');
+        
+        document.getElementById('btn-adicionar-produto').addEventListener('click', () => {
+            formProduto.reset();
+            modalProduto.classList.remove('hidden');
+        });
+
+        document.getElementById('fechar-modal').addEventListener('click', () => {
+            modalProduto.classList.add('hidden');
+        });
+
+        formProduto.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const produto = {
+                id: Date.now(),
+                nome: document.getElementById('produto-nome').value,
+                descricao: document.getElementById('produto-descricao').value,
+                categoria: document.getElementById('produto-categoria').value,
+                preco: parseFloat(document.getElementById('produto-preco').value),
+                quantidadeMinima: parseInt(document.getElementById('produto-quantidade-minima').value),
+                estoque: parseInt(document.getElementById('produto-estoque').value)
+            };
+            produtos.push(produto);
+            renderizarProdutos();
+            modalProduto.classList.add('hidden');
+        });
+
+        function renderizarProdutos() {
+            const lista = document.getElementById('lista-produtos');
+            if (produtos.length === 0) {
+                lista.innerHTML = '<p class="text-center text-slate-500 py-8">Nenhum produto adicionado ainda.</p>';
+                return;
+            }
+            
+            lista.innerHTML = produtos.map(produto => {
+                const cat = categorias.find(c => c.codigo === produto.categoria);
+                return `
+                    <div class="border border-slate-200 rounded-xl p-4 bg-slate-50">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h4 class="font-black text-slate-800">${produto.nome}</h4>
+                                <p class="text-xs text-sky-600 font-bold uppercase">${cat?.descricao || produto.categoria}</p>
+                            </div>
+                            <button type="button" onclick="removerProduto(${produto.id})" class="text-rose-600 hover:text-rose-700">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-sm">
+                            <div><span class="text-slate-500">Preço:</span> <strong>R$ ${produto.preco.toFixed(2)}</strong></div>
+                            <div><span class="text-slate-500">Qtd. Mín:</span> <strong>${produto.quantidadeMinima}</strong></div>
+                            <div><span class="text-slate-500">Estoque:</span> <strong>${produto.estoque}</strong></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function removerProduto(id) {
+            produtos = produtos.filter(p => p.id !== id);
+            renderizarProdutos();
+        }
+
+        // Submissão do formulário
+        document.getElementById('form-cadastro').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (produtos.length === 0) {
+                alert('Você precisa adicionar pelo menos um produto.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('nome', document.getElementById('nome').value);
+            formData.append('cnpj', document.getElementById('cnpj').value);
+            formData.append('email', document.getElementById('email').value);
+            formData.append('telefone', document.getElementById('telefone').value);
+            formData.append('logradouro', document.getElementById('logradouro').value);
+            formData.append('numero', document.getElementById('numero').value);
+            formData.append('complemento', document.getElementById('complemento').value);
+            formData.append('bairro', document.getElementById('bairro').value);
+            formData.append('cidade', document.getElementById('cidade').value);
+            formData.append('estado', document.getElementById('estado').value);
+            formData.append('cep', document.getElementById('cep').value);
+            formData.append('prazoEntregaDias', document.getElementById('prazoEntregaDias').value);
+            
+            if (inputFoto.files && inputFoto.files[0]) {
+                formData.append('foto', inputFoto.files[0]);
+            }
+
+            try {
+                const resFornecedor = await fetch('/api/fornecedores/registrar', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!resFornecedor.ok) {
+                    const erro = await resFornecedor.json();
+                    throw new Error(erro.erro || 'Erro ao cadastrar empresa');
+                }
+
+                const fornecedor = await resFornecedor.json();
+                fornecedorId = fornecedor.id;
+
+                // Cadastrar produtos
+                for (let produto of produtos) {
+                    const resProduto = await fetch('/api/produtos', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            nome: produto.nome,
+                            descricao: produto.descricao,
+                            categoria: produto.categoria,
+                            preco: produto.preco,
+                            quantidadeMinima: produto.quantidadeMinima,
+                            estoque: produto.estoque,
+                            fornecedorId: fornecedorId
+                        })
+                    });
+
+                    if (!resProduto.ok) {
+                        throw new Error('Erro ao cadastrar produto: ' + produto.nome);
+                    }
+                }
+
+                alert('Empresa e produtos cadastrados com sucesso! Você será redirecionado para o login.');
+                window.location.href = '/login.html';
+            } catch (err) {
+                const erroDiv = document.getElementById('erro-cadastro');
+                document.getElementById('erro-texto').textContent = err.message;
+                erroDiv.classList.remove('hidden');
+            }
+        });
+
+        // Carregar categorias ao iniciar
+        carregarCategorias();
+    </script>
+</body>
+</html>
