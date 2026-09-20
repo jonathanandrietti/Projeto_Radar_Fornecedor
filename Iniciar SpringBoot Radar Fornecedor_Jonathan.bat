@@ -1,8 +1,8 @@
 @echo off
 setlocal enabledelayedexpansion
 
-:: Forca uso do JDK 24 (compativel com Java 17 target do projeto)
-set "JAVA_HOME=C:\Program Files\Java\jdk-24"
+:: Forca uso do JDK 11 (instalado no sistema)
+set "JAVA_HOME=C:\Program Files\Microsoft\jdk-11.0.28.6-hotspot"
 set "PATH=%JAVA_HOME%\bin;%PATH%"
 
 :: O caractere '?' substitui o 'a com til' para evitar problemas de codificacao no CMD
@@ -20,7 +20,7 @@ if not exist "mvnw.cmd" (
 tasklist /FI "IMAGENAME eq java.exe" 2>NUL | find /I /N "java.exe">NUL
 if "%ERRORLEVEL%"=="0" (
     powershell -Command "Stop-Process -Name 'java' -Force -ErrorAction SilentlyContinue"
-    powershell -Command "Write-Host '[STATUS] Aplicacao PARADA com sucesso!' -ForegroundColor Red"
+    powershell -Command "Write-Host '[STATUS] Finalizando o Spring Boot!' -ForegroundColor Red"
     timeout /t 3 >nul
     exit /b
 )
@@ -29,8 +29,8 @@ if "%ERRORLEVEL%"=="0" (
 set "LAUNCHER=%TEMP%\radar_launch.bat"
 (
     echo @echo off
-    echo set "JAVA_HOME=C:\Program Files\Java\jdk-24"
-    echo set "PATH=C:\Program Files\Java\jdk-24\bin;%%PATH%%"
+    echo set "JAVA_HOME=C:\Program Files\Microsoft\jdk-11.0.28.6-hotspot"
+    echo set "PATH=C:\Program Files\Microsoft\jdk-11.0.28.6-hotspot\bin;%%PATH%%"
     echo cd /d "%CD%"
     echo call mvnw.cmd spring-boot:run ^> spring_boot.log 2^>^&1
 ) > "%LAUNCHER%"
@@ -42,7 +42,7 @@ timeout /t 5 >nul
 
 tasklist /FI "IMAGENAME eq java.exe" 2>NUL | find /I /N "java.exe">NUL
 if "%ERRORLEVEL%"=="0" (
-    powershell -Command "Write-Host '[STATUS] Aplicacao INICIADA em segundo plano!' -ForegroundColor Green"
+    powershell -Command "Write-Host '[STATUS] Iniciando o Spring Boot!' -ForegroundColor Green"
 ) else (
     powershell -Command "Write-Host '[ERRO] Falha ao iniciar! Verifique o log em: spring_boot.log' -ForegroundColor Red"
 )
@@ -50,3 +50,4 @@ if "%ERRORLEVEL%"=="0" (
 echo.
 timeout /t 4
 exit /b
+

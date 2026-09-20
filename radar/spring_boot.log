@@ -5,531 +5,62 @@
 [INFO]   from pom.xml
 [INFO] --------------------------------[ jar ]---------------------------------
 [INFO] 
-[INFO] >>> spring-boot:4.1.0:run (default-cli) > test-compile @ radar >>>
+[INFO] >>> spring-boot:2.7.14:run (default-cli) > test-compile @ radar >>>
 [INFO] 
-[INFO] --- resources:3.5.0:resources (default-resources) @ radar ---
-[INFO] Copying 1 resource from src\main\resources to target\classes
-[INFO] Copying 38 resources from src\main\resources to target\classes
+[INFO] --- resources:3.2.0:resources (default-resources) @ radar ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] Copying 1 resource
+[INFO] Copying 38 resources
 [INFO] 
-[INFO] --- compiler:3.15.0:compile (default-compile) @ radar ---
-[INFO] Recompiling the module because of changed source code.
-[INFO] Compiling 64 source files with javac [debug parameters release 17] to target\classes
-[INFO] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/ConsultaCnpjService.java: Some input files use unchecked or unsafe operations.
-[INFO] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/ConsultaCnpjService.java: Recompile with -Xlint:unchecked for details.
-[INFO] -------------------------------------------------------------
-[ERROR] COMPILATION ERROR : 
-[INFO] -------------------------------------------------------------
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Atividade.java:[4,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Atividade.java:[5,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Atividade.java:[6,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Atividade.java:[11,2] cannot find symbol
-  symbol: class Data
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Atividade.java:[12,2] cannot find symbol
-  symbol: class NoArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Atividade.java:[13,2] cannot find symbol
-  symbol: class AllArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Categoria.java:[4,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Categoria.java:[5,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Categoria.java:[6,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Categoria.java:[11,2] cannot find symbol
-  symbol: class Data
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Categoria.java:[12,2] cannot find symbol
-  symbol: class NoArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Categoria.java:[13,2] cannot find symbol
-  symbol: class AllArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/PreenchimentoAutomaticoDto.java:[3,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/PreenchimentoAutomaticoDto.java:[4,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/PreenchimentoAutomaticoDto.java:[5,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/PreenchimentoAutomaticoDto.java:[11,2] cannot find symbol
-  symbol: class Data
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/PreenchimentoAutomaticoDto.java:[12,2] cannot find symbol
-  symbol: class NoArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/PreenchimentoAutomaticoDto.java:[13,2] cannot find symbol
-  symbol: class AllArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCnpjDto.java:[3,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCnpjDto.java:[4,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCnpjDto.java:[5,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCnpjDto.java:[11,2] cannot find symbol
-  symbol: class Data
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCnpjDto.java:[12,2] cannot find symbol
-  symbol: class NoArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCnpjDto.java:[13,2] cannot find symbol
-  symbol: class AllArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCepDto.java:[3,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCepDto.java:[4,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCepDto.java:[5,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCepDto.java:[10,2] cannot find symbol
-  symbol: class Data
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCepDto.java:[11,2] cannot find symbol
-  symbol: class NoArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCepDto.java:[12,2] cannot find symbol
-  symbol: class AllArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/AtividadeService.java:[47,35] cannot find symbol
-  symbol:   method getCnae()
-  location: variable atividade of type br.com.radarfornecedor.radar.model.Atividade
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/AtividadeService.java:[48,40] cannot find symbol
-  symbol:   method getDescricao()
-  location: variable atividade of type br.com.radarfornecedor.radar.model.Atividade
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/AtividadeService.java:[49,36] cannot find symbol
-  symbol:   method getSecao()
-  location: variable atividade of type br.com.radarfornecedor.radar.model.Atividade
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/AtividadeService.java:[50,38] cannot find symbol
-  symbol:   method getDivisao()
-  location: variable atividade of type br.com.radarfornecedor.radar.model.Atividade
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/AtividadeService.java:[51,36] cannot find symbol
-  symbol:   method getAtiva()
-  location: variable atividade of type br.com.radarfornecedor.radar.model.Atividade
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/AtividadeService.java:[62,17] cannot find symbol
-  symbol:   method setAtiva(boolean)
-  location: variable ativ of type br.com.radarfornecedor.radar.model.Atividade
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/CategoriaService.java:[39,34] cannot find symbol
-  symbol:   method getNome()
-  location: variable categoria of type br.com.radarfornecedor.radar.model.Categoria
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/CategoriaService.java:[40,39] cannot find symbol
-  symbol:   method getDescricao()
-  location: variable categoria of type br.com.radarfornecedor.radar.model.Categoria
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/CategoriaService.java:[41,35] cannot find symbol
-  symbol:   method getIcone()
-  location: variable categoria of type br.com.radarfornecedor.radar.model.Categoria
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/CategoriaService.java:[42,35] cannot find symbol
-  symbol:   method getAtiva()
-  location: variable categoria of type br.com.radarfornecedor.radar.model.Categoria
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/CategoriaService.java:[53,16] cannot find symbol
-  symbol:   method setAtiva(boolean)
-  location: variable cat of type br.com.radarfornecedor.radar.model.Categoria
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/controller/PreenchimentoAutomaticoController.java:[67,17] cannot find symbol
-  symbol:   method setSucesso(boolean)
-  location: variable erro of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/controller/PreenchimentoAutomaticoController.java:[68,17] cannot find symbol
-  symbol:   method setMensagem(java.lang.String)
-  location: variable erro of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[34,18] cannot find symbol
-  symbol:   method setCnpj(java.lang.String)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[38,26] cannot find symbol
-  symbol:   method setSucesso(boolean)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[39,26] cannot find symbol
-  symbol:   method setMensagem(java.lang.String)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[47,26] cannot find symbol
-  symbol:   method setSucesso(boolean)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[48,26] cannot find symbol
-  symbol:   method setMensagem(java.lang.String)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[54,22] cannot find symbol
-  symbol:   method setDadosCnpj(br.com.radarfornecedor.radar.dto.ConsultaCnpjDto)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[57,26] cannot find symbol
-  symbol:   method getCep()
-  location: variable dadosCnpj of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[57,57] cannot find symbol
-  symbol:   method getCep()
-  location: variable dadosCnpj of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[58,95] cannot find symbol
-  symbol:   method getCep()
-  location: variable dadosCnpj of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[61,30] cannot find symbol
-  symbol:   method setDadosCep(br.com.radarfornecedor.radar.dto.ConsultaCepDto)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[63,30] cannot find symbol
-  symbol:   method setLatitude(java.lang.Double)
-  location: variable dadosCnpj of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[64,30] cannot find symbol
-  symbol:   method setLongitude(java.lang.Double)
-  location: variable dadosCnpj of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[68,22] cannot find symbol
-  symbol:   method setSucesso(boolean)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[69,22] cannot find symbol
-  symbol:   method setMensagem(java.lang.String)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[73,22] cannot find symbol
-  symbol:   method setSucesso(boolean)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[74,22] cannot find symbol
-  symbol:   method setMensagem(java.lang.String)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[87,18] cannot find symbol
-  symbol:   method setCep(java.lang.String)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[91,26] cannot find symbol
-  symbol:   method setSucesso(boolean)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[92,26] cannot find symbol
-  symbol:   method setMensagem(java.lang.String)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[100,26] cannot find symbol
-  symbol:   method setSucesso(boolean)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[101,26] cannot find symbol
-  symbol:   method setMensagem(java.lang.String)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[107,22] cannot find symbol
-  symbol:   method setDadosCep(br.com.radarfornecedor.radar.dto.ConsultaCepDto)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[109,22] cannot find symbol
-  symbol:   method setSucesso(boolean)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[110,22] cannot find symbol
-  symbol:   method setMensagem(java.lang.String)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[114,22] cannot find symbol
-  symbol:   method setSucesso(boolean)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[115,22] cannot find symbol
-  symbol:   method setMensagem(java.lang.String)
-  location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[128,12] cannot find symbol
-  symbol:   method setCnpj(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[129,12] cannot find symbol
-  symbol:   method setNome(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[130,12] cannot find symbol
-  symbol:   method setRazaoSocial(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[131,12] cannot find symbol
-  symbol:   method setNomeFantasia(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[132,12] cannot find symbol
-  symbol:   method setLogradouro(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[133,12] cannot find symbol
-  symbol:   method setNumero(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[134,12] cannot find symbol
-  symbol:   method setComplemento(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[135,12] cannot find symbol
-  symbol:   method setBairro(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[136,12] cannot find symbol
-  symbol:   method setCidade(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[137,12] cannot find symbol
-  symbol:   method setEstado(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[138,12] cannot find symbol
-  symbol:   method setCep(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[139,12] cannot find symbol
-  symbol:   method setAtividade(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[140,12] cannot find symbol
-  symbol:   method setCnae(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[141,12] cannot find symbol
-  symbol:   method setNaturezaJuridica(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[142,12] cannot find symbol
-  symbol:   method setStatus(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[143,12] cannot find symbol
-  symbol:   method setDataAbertura(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[144,12] cannot find symbol
-  symbol:   method setDataUltimaAtualizacao(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[145,12] cannot find symbol
-  symbol:   method setTelefone(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[146,12] cannot find symbol
-  symbol:   method setEmail(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[157,12] cannot find symbol
-  symbol:   method setCep(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[158,12] cannot find symbol
-  symbol:   method setLogradouro(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[159,12] cannot find symbol
-  symbol:   method setComplemento(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[160,12] cannot find symbol
-  symbol:   method setBairro(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[161,12] cannot find symbol
-  symbol:   method setCidade(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[162,12] cannot find symbol
-  symbol:   method setEstado(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[163,12] cannot find symbol
-  symbol:   method setLatitude(java.lang.Double)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[164,12] cannot find symbol
-  symbol:   method setLongitude(java.lang.Double)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[165,12] cannot find symbol
-  symbol:   method setIbge(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[166,12] cannot find symbol
-  symbol:   method setDdd(java.lang.String)
-  location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[INFO] 98 errors 
-[INFO] -------------------------------------------------------------
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD FAILURE
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  5.495 s
-[INFO] Finished at: 2026-09-19T13:04:41-03:00
-[INFO] ------------------------------------------------------------------------
-[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.15.0:compile (default-compile) on project radar: Compilation failure: Compilation failure: 
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Atividade.java:[4,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Atividade.java:[5,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Atividade.java:[6,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Atividade.java:[11,2] cannot find symbol
-[ERROR]   symbol: class Data
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Atividade.java:[12,2] cannot find symbol
-[ERROR]   symbol: class NoArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Atividade.java:[13,2] cannot find symbol
-[ERROR]   symbol: class AllArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Categoria.java:[4,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Categoria.java:[5,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Categoria.java:[6,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Categoria.java:[11,2] cannot find symbol
-[ERROR]   symbol: class Data
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Categoria.java:[12,2] cannot find symbol
-[ERROR]   symbol: class NoArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/model/Categoria.java:[13,2] cannot find symbol
-[ERROR]   symbol: class AllArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/PreenchimentoAutomaticoDto.java:[3,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/PreenchimentoAutomaticoDto.java:[4,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/PreenchimentoAutomaticoDto.java:[5,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/PreenchimentoAutomaticoDto.java:[11,2] cannot find symbol
-[ERROR]   symbol: class Data
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/PreenchimentoAutomaticoDto.java:[12,2] cannot find symbol
-[ERROR]   symbol: class NoArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/PreenchimentoAutomaticoDto.java:[13,2] cannot find symbol
-[ERROR]   symbol: class AllArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCnpjDto.java:[3,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCnpjDto.java:[4,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCnpjDto.java:[5,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCnpjDto.java:[11,2] cannot find symbol
-[ERROR]   symbol: class Data
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCnpjDto.java:[12,2] cannot find symbol
-[ERROR]   symbol: class NoArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCnpjDto.java:[13,2] cannot find symbol
-[ERROR]   symbol: class AllArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCepDto.java:[3,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCepDto.java:[4,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCepDto.java:[5,14] package lombok does not exist
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCepDto.java:[10,2] cannot find symbol
-[ERROR]   symbol: class Data
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCepDto.java:[11,2] cannot find symbol
-[ERROR]   symbol: class NoArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/dto/ConsultaCepDto.java:[12,2] cannot find symbol
-[ERROR]   symbol: class AllArgsConstructor
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/AtividadeService.java:[47,35] cannot find symbol
-[ERROR]   symbol:   method getCnae()
-[ERROR]   location: variable atividade of type br.com.radarfornecedor.radar.model.Atividade
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/AtividadeService.java:[48,40] cannot find symbol
-[ERROR]   symbol:   method getDescricao()
-[ERROR]   location: variable atividade of type br.com.radarfornecedor.radar.model.Atividade
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/AtividadeService.java:[49,36] cannot find symbol
-[ERROR]   symbol:   method getSecao()
-[ERROR]   location: variable atividade of type br.com.radarfornecedor.radar.model.Atividade
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/AtividadeService.java:[50,38] cannot find symbol
-[ERROR]   symbol:   method getDivisao()
-[ERROR]   location: variable atividade of type br.com.radarfornecedor.radar.model.Atividade
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/AtividadeService.java:[51,36] cannot find symbol
-[ERROR]   symbol:   method getAtiva()
-[ERROR]   location: variable atividade of type br.com.radarfornecedor.radar.model.Atividade
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/AtividadeService.java:[62,17] cannot find symbol
-[ERROR]   symbol:   method setAtiva(boolean)
-[ERROR]   location: variable ativ of type br.com.radarfornecedor.radar.model.Atividade
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/CategoriaService.java:[39,34] cannot find symbol
-[ERROR]   symbol:   method getNome()
-[ERROR]   location: variable categoria of type br.com.radarfornecedor.radar.model.Categoria
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/CategoriaService.java:[40,39] cannot find symbol
-[ERROR]   symbol:   method getDescricao()
-[ERROR]   location: variable categoria of type br.com.radarfornecedor.radar.model.Categoria
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/CategoriaService.java:[41,35] cannot find symbol
-[ERROR]   symbol:   method getIcone()
-[ERROR]   location: variable categoria of type br.com.radarfornecedor.radar.model.Categoria
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/CategoriaService.java:[42,35] cannot find symbol
-[ERROR]   symbol:   method getAtiva()
-[ERROR]   location: variable categoria of type br.com.radarfornecedor.radar.model.Categoria
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/CategoriaService.java:[53,16] cannot find symbol
-[ERROR]   symbol:   method setAtiva(boolean)
-[ERROR]   location: variable cat of type br.com.radarfornecedor.radar.model.Categoria
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/controller/PreenchimentoAutomaticoController.java:[67,17] cannot find symbol
-[ERROR]   symbol:   method setSucesso(boolean)
-[ERROR]   location: variable erro of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/controller/PreenchimentoAutomaticoController.java:[68,17] cannot find symbol
-[ERROR]   symbol:   method setMensagem(java.lang.String)
-[ERROR]   location: variable erro of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[34,18] cannot find symbol
-[ERROR]   symbol:   method setCnpj(java.lang.String)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[38,26] cannot find symbol
-[ERROR]   symbol:   method setSucesso(boolean)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[39,26] cannot find symbol
-[ERROR]   symbol:   method setMensagem(java.lang.String)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[47,26] cannot find symbol
-[ERROR]   symbol:   method setSucesso(boolean)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[48,26] cannot find symbol
-[ERROR]   symbol:   method setMensagem(java.lang.String)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[54,22] cannot find symbol
-[ERROR]   symbol:   method setDadosCnpj(br.com.radarfornecedor.radar.dto.ConsultaCnpjDto)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[57,26] cannot find symbol
-[ERROR]   symbol:   method getCep()
-[ERROR]   location: variable dadosCnpj of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[57,57] cannot find symbol
-[ERROR]   symbol:   method getCep()
-[ERROR]   location: variable dadosCnpj of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[58,95] cannot find symbol
-[ERROR]   symbol:   method getCep()
-[ERROR]   location: variable dadosCnpj of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[61,30] cannot find symbol
-[ERROR]   symbol:   method setDadosCep(br.com.radarfornecedor.radar.dto.ConsultaCepDto)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[63,30] cannot find symbol
-[ERROR]   symbol:   method setLatitude(java.lang.Double)
-[ERROR]   location: variable dadosCnpj of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[64,30] cannot find symbol
-[ERROR]   symbol:   method setLongitude(java.lang.Double)
-[ERROR]   location: variable dadosCnpj of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[68,22] cannot find symbol
-[ERROR]   symbol:   method setSucesso(boolean)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[69,22] cannot find symbol
-[ERROR]   symbol:   method setMensagem(java.lang.String)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[73,22] cannot find symbol
-[ERROR]   symbol:   method setSucesso(boolean)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[74,22] cannot find symbol
-[ERROR]   symbol:   method setMensagem(java.lang.String)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[87,18] cannot find symbol
-[ERROR]   symbol:   method setCep(java.lang.String)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[91,26] cannot find symbol
-[ERROR]   symbol:   method setSucesso(boolean)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[92,26] cannot find symbol
-[ERROR]   symbol:   method setMensagem(java.lang.String)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[100,26] cannot find symbol
-[ERROR]   symbol:   method setSucesso(boolean)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[101,26] cannot find symbol
-[ERROR]   symbol:   method setMensagem(java.lang.String)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[107,22] cannot find symbol
-[ERROR]   symbol:   method setDadosCep(br.com.radarfornecedor.radar.dto.ConsultaCepDto)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[109,22] cannot find symbol
-[ERROR]   symbol:   method setSucesso(boolean)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[110,22] cannot find symbol
-[ERROR]   symbol:   method setMensagem(java.lang.String)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[114,22] cannot find symbol
-[ERROR]   symbol:   method setSucesso(boolean)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[115,22] cannot find symbol
-[ERROR]   symbol:   method setMensagem(java.lang.String)
-[ERROR]   location: variable resultado of type br.com.radarfornecedor.radar.dto.PreenchimentoAutomaticoDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[128,12] cannot find symbol
-[ERROR]   symbol:   method setCnpj(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[129,12] cannot find symbol
-[ERROR]   symbol:   method setNome(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[130,12] cannot find symbol
-[ERROR]   symbol:   method setRazaoSocial(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[131,12] cannot find symbol
-[ERROR]   symbol:   method setNomeFantasia(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[132,12] cannot find symbol
-[ERROR]   symbol:   method setLogradouro(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[133,12] cannot find symbol
-[ERROR]   symbol:   method setNumero(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[134,12] cannot find symbol
-[ERROR]   symbol:   method setComplemento(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[135,12] cannot find symbol
-[ERROR]   symbol:   method setBairro(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[136,12] cannot find symbol
-[ERROR]   symbol:   method setCidade(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[137,12] cannot find symbol
-[ERROR]   symbol:   method setEstado(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[138,12] cannot find symbol
-[ERROR]   symbol:   method setCep(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[139,12] cannot find symbol
-[ERROR]   symbol:   method setAtividade(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[140,12] cannot find symbol
-[ERROR]   symbol:   method setCnae(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[141,12] cannot find symbol
-[ERROR]   symbol:   method setNaturezaJuridica(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[142,12] cannot find symbol
-[ERROR]   symbol:   method setStatus(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[143,12] cannot find symbol
-[ERROR]   symbol:   method setDataAbertura(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[144,12] cannot find symbol
-[ERROR]   symbol:   method setDataUltimaAtualizacao(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[145,12] cannot find symbol
-[ERROR]   symbol:   method setTelefone(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[146,12] cannot find symbol
-[ERROR]   symbol:   method setEmail(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCnpjDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[157,12] cannot find symbol
-[ERROR]   symbol:   method setCep(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[158,12] cannot find symbol
-[ERROR]   symbol:   method setLogradouro(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[159,12] cannot find symbol
-[ERROR]   symbol:   method setComplemento(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[160,12] cannot find symbol
-[ERROR]   symbol:   method setBairro(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[161,12] cannot find symbol
-[ERROR]   symbol:   method setCidade(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[162,12] cannot find symbol
-[ERROR]   symbol:   method setEstado(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[163,12] cannot find symbol
-[ERROR]   symbol:   method setLatitude(java.lang.Double)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[164,12] cannot find symbol
-[ERROR]   symbol:   method setLongitude(java.lang.Double)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[165,12] cannot find symbol
-[ERROR]   symbol:   method setIbge(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[ERROR] /C:/Visão_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/PreenchimentoAutomaticoService.java:[166,12] cannot find symbol
-[ERROR]   symbol:   method setDdd(java.lang.String)
-[ERROR]   location: variable dto of type br.com.radarfornecedor.radar.dto.ConsultaCepDto
-[ERROR] -> [Help 1]
-[ERROR] 
-[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
-[ERROR] Re-run Maven using the -X switch to enable full debug logging.
-[ERROR] 
-[ERROR] For more information about the errors and possible solutions, please read the following articles:
-[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+[INFO] --- compiler:3.10.1:compile (default-compile) @ radar ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.2.0:testResources (default-testResources) @ radar ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] skip non existing resourceDirectory C:\Visão_Futura\Projeto_Radar_Fornecedor\radar\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ radar ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] <<< spring-boot:2.7.14:run (default-cli) < test-compile @ radar <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:2.7.14:run (default-cli) @ radar ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::               (v2.7.14)
+
+2026-09-20 14:59:14.656  INFO 15952 --- [           main] b.c.r.radar.RadarApplication             : Starting RadarApplication using Java 11.0.28 on NoteDEV with PID 15952 (C:\Visão_Futura\Projeto_Radar_Fornecedor\radar\target\classes started by Inceptor in C:\Visão_Futura\Projeto_Radar_Fornecedor\radar)
+2026-09-20 14:59:14.658  INFO 15952 --- [           main] b.c.r.radar.RadarApplication             : No active profile set, falling back to 1 default profile: "default"
+2026-09-20 14:59:15.282  INFO 15952 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-20 14:59:15.359  INFO 15952 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 68 ms. Found 10 JPA repository interfaces.
+[DATABASE CONFIG] Usando banco em: C:\Visão_Futura\Projeto_Radar_Fornecedor\radar\DBLRadar.db
+2026-09-20 14:59:16.523  INFO 15952 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-09-20 14:59:16.534  INFO 15952 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-20 14:59:16.534  INFO 15952 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.78]
+2026-09-20 14:59:16.648  INFO 15952 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-09-20 14:59:16.648  INFO 15952 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1949 ms
+2026-09-20 14:59:16.791  INFO 15952 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-09-20 14:59:16.831  INFO 15952 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.15.Final
+2026-09-20 14:59:16.942  INFO 15952 --- [           main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2026-09-20 14:59:17.047  INFO 15952 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-09-20 14:59:17.154  INFO 15952 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-09-20 14:59:17.168  INFO 15952 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+2026-09-20 14:59:17.174  WARN 15952 --- [           main] org.hibernate.dialect.H2Dialect          : HHH000431: Unable to determine H2 database version, certain features may not work
+2026-09-20 14:59:18.092  INFO 15952 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2026-09-20 14:59:18.102  INFO 15952 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-20 14:59:18.845  WARN 15952 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-09-20 14:59:19.232  INFO 15952 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2026-09-20 14:59:19.244  INFO 15952 --- [           main] b.c.r.radar.RadarApplication             : Started RadarApplication in 4.964 seconds (JVM running for 5.318)
+2026-09-20 14:59:19.346  INFO 15952 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-20 14:59:19.346  INFO 15952 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-20 14:59:19.347  INFO 15952 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-09-20 14:59:24.374  WARN 15952 --- [nio-8080-exec-5] o.a.c.util.SessionIdGeneratorBase        : Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [598] milliseconds.

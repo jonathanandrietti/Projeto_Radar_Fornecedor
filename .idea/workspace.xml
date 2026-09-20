@@ -5,17 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cc3b7731-3a31-48db-b66c-6f5a818a63bd" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/radar/DBLRadar.db" beforeDir="false" afterPath="$PROJECT_DIR$/radar/DBLRadar.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/radar/spring_boot.log" beforeDir="false" afterPath="$PROJECT_DIR$/radar/spring_boot.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/radar/src/main/java/br/com/radarfornecedor/radar/model/Comprador.java" beforeDir="false" afterPath="$PROJECT_DIR$/radar/src/main/java/br/com/radarfornecedor/radar/model/Comprador.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/radar/src/main/java/br/com/radarfornecedor/radar/model/Fornecedor.java" beforeDir="false" afterPath="$PROJECT_DIR$/radar/src/main/java/br/com/radarfornecedor/radar/model/Fornecedor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/radar/src/main/java/br/com/radarfornecedor/radar/model/Representante.java" beforeDir="false" afterPath="$PROJECT_DIR$/radar/src/main/java/br/com/radarfornecedor/radar/model/Representante.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/radar/src/main/java/br/com/radarfornecedor/radar/service/CompradorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/radar/src/main/java/br/com/radarfornecedor/radar/service/CompradorService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/radar/src/main/java/br/com/radarfornecedor/radar/service/FornecedorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/radar/src/main/java/br/com/radarfornecedor/radar/service/FornecedorService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/radar/src/main/java/br/com/radarfornecedor/radar/service/RepresentanteService.java" beforeDir="false" afterPath="$PROJECT_DIR$/radar/src/main/java/br/com/radarfornecedor/radar/service/RepresentanteService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/radar/src/main/resources/static/pages/compradores.html" beforeDir="false" afterPath="$PROJECT_DIR$/radar/src/main/resources/static/pages/compradores.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/radar/src/main/resources/static/pages/fornecedores.html" beforeDir="false" afterPath="$PROJECT_DIR$/radar/src/main/resources/static/pages/fornecedores.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/radar/src/main/resources/static/pages/representantes.html" beforeDir="false" afterPath="$PROJECT_DIR$/radar/src/main/resources/static/pages/representantes.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,10 +20,14 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 2
-}]]></component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$PROJECT_DIR$/../../Program Files/Java/jdk-24/lib/src.zip!/java.base/java/lang/ExceptionInInitializerError.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../Program Files/Java/jdk-24/lib/src.zip!/jdk.compiler/com/sun/tools/javac/code/TypeTag.java" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="3JYNEdaXGt0AB98vOezndfcOFHT" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -42,13 +36,28 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.RadarApplication.executor": "Run",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Visão_Futura/Projeto_Radar_Fornecedor/radar",
+    "last_opened_file_path": "C:/Visão_Futura/Projeto_Radar_Fornecedor",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration name="RadarApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="radar" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="br.com.radarfornecedor.radar.RadarApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -66,6 +75,7 @@
       <option name="presentableId" value="Default" />
       <updated>1789833935716</updated>
       <workItem from="1789833943042" duration="58000" />
+      <workItem from="1789924827140" duration="393000" />
     </task>
     <servers />
   </component>
