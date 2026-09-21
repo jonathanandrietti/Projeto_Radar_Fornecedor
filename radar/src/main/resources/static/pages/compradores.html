@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
-    <script src="/script.js?v=4" defer></script>
+    <script src="/script.js?v=5" defer></script>
 </head>
 <body data-entidade="compradores" data-singular="Compradora" data-plural="Compradoras">
 <div class="flex min-h-screen">
@@ -104,13 +104,11 @@
             <input id="codCidade" type="hidden">
 
             <div class="grid gap-6 md:grid-cols-2">
-                <label class="campo md:col-span-2">Empresa / Razão Social
-                    <input id="nome" required maxlength="100" class="mt-1">
+                <label class="campo md:col-span-2">CNPJ
+                    <input id="cnpj" required maxlength="18" placeholder="00.000.000/0000-00" oninput="mascaraCnpj(this)" onblur="consultarCnpjComprador()" class="mt-1">
                 </label>
-                <label class="campo">CNPJ
-                    <input id="cnpj" required maxlength="18" placeholder="00.000.000/0000-00" oninput="mascaraCnpj(this)" class="mt-1">
-                </label>
-                <label class="campo">Status
+
+                <label class="campo">Status Operacional
                     <select id="status" class="mt-1">
                         <option value="EM_ANALISE">Em análise</option>
                         <option value="APROVADO">Aprovado</option>
@@ -118,17 +116,25 @@
                         <option value="SUSPENSO">Suspenso</option>
                     </select>
                 </label>
-                <label class="campo">Pontuação (0-10)
+
+                <label class="campo">Pontuação de Risco (0-10)
                     <input id="pontuacao" type="number" min="0" max="10" step="0.1" value="0" class="mt-1">
                 </label>
+
+                <label class="campo md:col-span-2">Empresa / Razão Social
+                    <input id="nome" required maxlength="100" class="mt-1">
+                </label>
+
                 <label class="campo">CEP
                     <input id="cep" maxlength="9" placeholder="00000-000" oninput="mascaraCep(this)" class="mt-1">
                 </label>
+
                 <label class="campo">Categoria de Produtos
                     <select id="categoria" class="mt-1 cursor-pointer">
                         <option value="">Selecione uma categoria...</option>
                     </select>
                 </label>
+
                 <label class="campo">Atividade (CNAE)
                     <select id="atividade" class="mt-1 cursor-pointer">
                         <option value="">Selecione uma atividade...</option>
@@ -173,6 +179,8 @@
         </form>
     </div>
 </div>
+<script src="/js/preenchimento-automatico.js?v=2"></script>
 </body>
 </html>
-<script src="/js/preenchimento-automatico.js"></script>
+<script src="/js/preenchimento-automatico.js?v=2"></script>
+

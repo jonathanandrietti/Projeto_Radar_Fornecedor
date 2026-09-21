@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
-    <script src="/script.js?v=4" defer></script>
+    <script src="/script.js?v=5" defer></script>
 </head>
 <body data-entidade="representantes" data-singular="Representante" data-plural="Representantes">
 <div class="flex min-h-screen">
@@ -92,21 +92,20 @@
         </div>
         <form id="formulario" class="space-y-6 p-8" onsubmit="salvar(event)">
             <input id="id" type="hidden">
+            <div class="grid grid-cols-2 gap-6">
+                <label class="campo col-span-2">CNPJ Representante
+                    <input id="cnpj" required class="mt-1" placeholder="00.000.000/0000-00" oninput="mascaraCnpj(this)" onblur="consultarCnpjRepresentante()">
+                </label>
+                <label class="campo">Situação
+                    <select id="status" class="mt-1 cursor-pointer">
+                        <option value="ATIVO">Ativo</option>
+                        <option value="INATIVO">Inativo</option>
+                    </select>
+                </label>
+            </div>
             <label class="campo">Nome Completo do Agente
                 <input id="nome" required class="mt-1" placeholder="Ex: Carlos Alberto Representações">
             </label>
-            <div class="grid grid-cols-2 gap-6">
-                <label class="campo">Telefone / Contato
-                    <input id="contato" type="tel" maxlength="30" class="mt-1" placeholder="(11) 99999-9999">
-                </label>
-                <label class="campo">E-mail
-                    <input id="email" type="email" maxlength="120" class="mt-1" placeholder="contato@empresa.com.br">
-                </label>
-            </div>
-            <div class="grid grid-cols-2 gap-6">
-                <label class="campo">CNPJ Representante
-                    <input id="cnpj" required class="mt-1" placeholder="00.000.000/0000-00" oninput="mascaraCnpj(this)">
-                </label>
                 <label class="campo">CNPJ Fornecedora
                     <input id="cnpjFornecedor" required class="mt-1" placeholder="00.000.000/0000-00" oninput="mascaraCnpj(this)">
                 </label>
@@ -192,4 +191,4 @@
 </div>
 </body>
 </html>
-<script src="/js/preenchimento-automatico.js"></script>
+<script src="/js/preenchimento-automatico.js?v=2"></script>

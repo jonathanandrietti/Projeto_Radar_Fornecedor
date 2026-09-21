@@ -3,6 +3,9 @@ package br.com.radarfornecedor.radar.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import br.com.radarfornecedor.radar.config.CategoriaDeserializer;
+import br.com.radarfornecedor.radar.config.AtividadeDeserializer;
 
 @Entity
 @Table(name = "Compradores")
@@ -62,10 +65,12 @@ public class Comprador {
     // Relacionamento com Categoria e Atividade
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoria_id")
+    @JsonDeserialize(using = CategoriaDeserializer.class)
     private Categoria categoria;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "atividade_id")
+    @JsonDeserialize(using = AtividadeDeserializer.class)
     private Atividade atividade;
 
     public Comprador() {}

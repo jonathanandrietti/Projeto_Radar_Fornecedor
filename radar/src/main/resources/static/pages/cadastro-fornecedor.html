@@ -38,13 +38,13 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <label class="campo md:col-span-2">
-                            <span class="font-black text-[10px] text-slate-400 uppercase">Nome da Empresa *</span>
-                            <input type="text" id="nome" required class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none transition-all" placeholder="Sua Empresa Ltda.">
+                            <span class="font-black text-[10px] text-slate-400 uppercase">CNPJ *</span>
+                            <input type="text" id="cnpj" required class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none transition-all" placeholder="00.000.000/0000-00" oninput="mascararCnpj(this)" onblur="consultarCnpjFornecedor()">
                         </label>
 
-                        <label class="campo">
-                            <span class="font-black text-[10px] text-slate-400 uppercase">CNPJ *</span>
-                            <input type="text" id="cnpj" required class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none transition-all" placeholder="00.000.000/0000-00" oninput="mascararCnpj(this)">
+                        <label class="campo md:col-span-2">
+                            <span class="font-black text-[10px] text-slate-400 uppercase">Nome da Empresa *</span>
+                            <input type="text" id="nome" required class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none transition-all" placeholder="Sua Empresa Ltda.">
                         </label>
 
                         <label class="campo">
@@ -248,6 +248,123 @@
                 valor = valor.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
             }
             input.value = valor;
+        }
+
+        // Consultar CNPJ e preencher automaticamente
+        async function consultarCnpjFornecedor() {
+            const cnpjEl = document.getElementById('cnpj');
+            const nomeEl = document.getElementById('nome');
+            
+            if (!cnpjEl) return;
+            
+            const cnpj = cnpjEl.value.replace(/\D/g, '');
+            if (cnpj.length !== 14) return;
+            
+            try {
+                const resposta = await fetch(`/api/consulta-cnpj/${cnpj}`);
+                
+                if (resposta.ok) {
+                    const dados = await resposta.json();
+                    
+                    // Preencher Nome
+                    if (nomeEl && !nomeEl.value.trim()) {
+                        nomeEl.value = dados.razao_social || dados.nome_fantasia || dados.nomeEmpresa || '';
+                    }
+                    
+                    // Preencher Email (se disponível)
+                    const emailEl = document.getElementById('email');
+                    if (emailEl && !emailEl.value.trim()) {
+                        emailEl.value = dados.email || '';
+                    }
+                    
+                    // Preencher Telefone (se disponível)
+                    const telefoneEl = document.getElementById('telefone');
+                    if (telefoneEl && !telefoneEl.value.trim() && dados.telefone) {
+                        telefoneEl.value = dados.telefone;
+                        mascararTelefone(telefoneEl);
+                    }
+                    
+                    // Preencher CEP
+                    const cepEl = document.getElementById('cep');
+                    if (cepEl && dados.cep) {
+                        cepEl.value = dados.cep;
+                        mascararCep(cepEl);
+                        // Disparar consulta de CEP para preencher endereço
+                        await consultarCepFornecedor();
+                    }
+                    
+                    // Preencher endereço se disponível
+                    const logradouroEl = document.getElementById('logradouro');
+                    if (logradouroEl && !logradouroEl.value.trim() && dados.logradouro) {
+                        logradouroEl.value = dados.logradouro;
+                    }
+                    
+                    const numeroEl = document.getElementById('numero');
+                    if (numeroEl && !numeroEl.value.trim() && dados.numero) {
+                        numeroEl.value = dados.numero;
+                    }
+                    
+                    const bairroEl = document.getElementById('bairro');
+                    if (bairroEl && !bairroEl.value.trim() && dados.bairro) {
+                        bairroEl.value = dados.bairro;
+                    }
+                    
+                    const cidadeEl = document.getElementById('cidade');
+                    if (cidadeEl && !cidadeEl.value.trim() && (dados.municipio || dados.cidade)) {
+                        cidadeEl.value = dados.municipio || dados.cidade || '';
+                    }
+                    
+                    const estadoEl = document.getElementById('estado');
+                    if (estadoEl && !estadoEl.value.trim() && dados.uf) {
+                        estadoEl.value = dados.uf;
+                    }
+                } else {
+                    console.warn('CNPJ não encontrado na API pública');
+                }
+            } catch (err) {
+                console.error('Erro ao consultar CNPJ:', err);
+            }
+        }
+
+        // Consultar CEP e preencher endereço
+        async function consultarCepFornecedor() {
+            const cepEl = document.getElementById('cep');
+            if (!cepEl) return;
+            
+            const cep = cepEl.value.replace(/\D/g, '');
+            if (cep.length !== 8) return;
+            
+            try {
+                const resposta = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+                const dados = await resposta.json();
+                
+                if (dados.erro) {
+                    console.warn('CEP não encontrado');
+                    return;
+                }
+                
+                const logradouroEl = document.getElementById('logradouro');
+                if (logradouroEl && !logradouroEl.value.trim()) {
+                    logradouroEl.value = dados.logradouro || '';
+                }
+                
+                const bairroEl = document.getElementById('bairro');
+                if (bairroEl && !bairroEl.value.trim()) {
+                    bairroEl.value = dados.bairro || '';
+                }
+                
+                const cidadeEl = document.getElementById('cidade');
+                if (cidadeEl && !cidadeEl.value.trim()) {
+                    cidadeEl.value = dados.localidade || '';
+                }
+                
+                const estadoEl = document.getElementById('estado');
+                if (estadoEl && !estadoEl.value.trim()) {
+                    estadoEl.value = dados.uf || '';
+                }
+            } catch (err) {
+                console.error('Erro ao consultar CEP:', err);
+            }
         }
 
         function mascararTelefone(input) {

@@ -1,0 +1,45 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< br.com.radarfornecedor:radar >--------------------
+[INFO] Building  0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ radar ---
+[INFO] Deleting C:\VisÒo_Futura\Projeto_Radar_Fornecedor\radar\target
+[INFO] 
+[INFO] --- resources:3.2.0:resources (default-resources) @ radar ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] Copying 1 resource
+[INFO] Copying 40 resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ radar ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 66 source files to C:\VisÒo_Futura\Projeto_Radar_Fornecedor\radar\target\classes
+[INFO] /C:/VisÒo_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/ConsultaCnpjService.java: Some input files use unchecked or unsafe operations.
+[INFO] /C:/VisÒo_Futura/Projeto_Radar_Fornecedor/radar/src/main/java/br/com/radarfornecedor/radar/service/ConsultaCnpjService.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- resources:3.2.0:testResources (default-testResources) @ radar ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] skip non existing resourceDirectory C:\VisÒo_Futura\Projeto_Radar_Fornecedor\radar\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ radar ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 2 source files to C:\VisÒo_Futura\Projeto_Radar_Fornecedor\radar\target\test-classes
+[INFO] 
+[INFO] --- surefire:2.22.2:test (default-test) @ radar ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.2.2:jar (default-jar) @ radar ---
+[INFO] Building jar: C:\VisÒo_Futura\Projeto_Radar_Fornecedor\radar\target\radar-0.0.1-SNAPSHOT.jar
+[INFO] 
+[INFO] --- spring-boot:2.7.14:repackage (repackage) @ radar ---
+[INFO] Replacing main artifact with repackaged archive
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  21.469 s
+[INFO] Finished at: 2026-09-20T16:40:26-03:00
+[INFO] ------------------------------------------------------------------------

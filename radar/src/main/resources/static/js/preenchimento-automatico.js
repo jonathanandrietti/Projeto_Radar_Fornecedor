@@ -101,11 +101,55 @@ function preencherCamposComCnpj(dados) {
     }
 
     // Campos de atividade (se existem na página)
-    if (document.getElementById('atividade')) {
-        document.getElementById('atividade').value = dados.atividade || '';
+    // Tenta preencher atividade automaticamente via CNAE
+    if (dados.cnae || dados.atividade) {
+        preencherAtividadeAutomatica(dados.cnae, dados.atividade);
     }
     if (document.getElementById('cnae')) {
         document.getElementById('cnae').value = dados.cnae || '';
+    }
+}
+
+/**
+ * Preenche campo de atividade automaticamente tentando encontrar a atividade pelo CNAE
+ * @param {string} cnae - Código CNAE da empresa
+ * @param {string} nomeAtividade - Nome da atividade
+ */
+async function preencherAtividadeAutomatica(cnae, nomeAtividade) {
+    const atividadeEl = document.getElementById('atividade');
+    if (!atividadeEl) return;
+    
+    try {
+        // Busca atividades ativas da API
+        const response = await fetch(API_ATIVIDADES);
+        const atividades = await response.json();
+        
+        // Tenta encontrar por CNAE primeiro
+        if (cnae) {
+            const encontrada = atividades.find(a => a.cnae === cnae || a.cnae === String(cnae).substring(0, 4));
+            if (encontrada) {
+                atividadeEl.value = encontrada.id;
+                console.log('✓ Atividade preenchida automaticamente: ' + encontrada.descricao);
+                return;
+            }
+        }
+        
+        // Se não encontrou por CNAE, tenta por nome
+        if (nomeAtividade) {
+            const encontrada = atividades.find(a => 
+                a.descricao.toLowerCase().includes(nomeAtividade.toLowerCase())
+            );
+            if (encontrada) {
+                atividadeEl.value = encontrada.id;
+                console.log('✓ Atividade preenchida automaticamente: ' + encontrada.descricao);
+                return;
+            }
+        }
+        
+        console.log('ℹ Atividade não encontrada na base. Deixe em branco ou selecione manualmente.');
+        
+    } catch (erro) {
+        console.warn('Erro ao preencher atividade automaticamente:', erro);
     }
 }
 
@@ -229,6 +273,26 @@ async function carregarCategorias(elementId = 'categoria') {
             selectElement.appendChild(option);
         });
 
+        // Adiciona opção "Outros" com separador
+        const separador = document.createElement('option');
+        separador.disabled = true;
+        separador.textContent = '───────────────';
+        selectElement.appendChild(separador);
+
+        const outrosOption = document.createElement('option');
+        outrosOption.value = 'outros';
+        outrosOption.textContent = '➕ Adicionar novo item';
+        outrosOption.className = 'option-adicionar';
+        selectElement.appendChild(outrosOption);
+
+        // Listener para abrir modal ao selecionar "Outros"
+        selectElement.addEventListener('change', function() {
+            if (this.value === 'outros') {
+                abrirModalOutros(elementId);
+                this.value = ''; // Reset select
+            }
+        });
+
     } catch (erro) {
         console.error('Erro ao carregar categorias:', erro);
     }
@@ -270,6 +334,26 @@ async function carregarAtividades(elementId = 'atividade') {
             });
             
             selectElement.appendChild(optgroup);
+        });
+
+        // Adiciona opção "Adicionar novo item" com separador
+        const separador = document.createElement('option');
+        separador.disabled = true;
+        separador.textContent = '───────────────';
+        selectElement.appendChild(separador);
+
+        const outrosOption = document.createElement('option');
+        outrosOption.value = 'outros';
+        outrosOption.textContent = '➕ Adicionar novo item';
+        outrosOption.className = 'option-adicionar';
+        selectElement.appendChild(outrosOption);
+
+        // Listener para abrir modal ao selecionar "Outros"
+        selectElement.addEventListener('change', function() {
+            if (this.value === 'outros') {
+                abrirModalOutros(elementId);
+                this.value = ''; // Reset select
+            }
         });
 
     } catch (erro) {
@@ -425,6 +509,240 @@ function inicializarPreenchimentoAutomatico() {
     carregarAtividades('atividade');
 
     console.log('✓ Preenchimento automático inicializado');
+}
+
+/**
+ * Abre modal inteligente "Outros" que pergunta se quer adicionar Categoria ou Atividade
+ */
+function abrirModalOutros(selectElementId) {
+    let modal = document.getElementById('modal-dialog-outros');
+    if (!modal) {
+        modal = criarModalDialogoOutros();
+        document.body.appendChild(modal);
+    }
+    
+    modal.dataset.selectId = selectElementId;
+    modal.classList.remove('hidden');
+}
+
+/**
+ * Fecha modal de diálogo "Outros"
+ */
+function fecharModalOutros() {
+    const modal = document.getElementById('modal-dialog-outros');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+/**
+ * Cria estrutura HTML do modal de diálogo "Outros"
+ */
+function criarModalDialogoOutros() {
+    const modal = document.createElement('div');
+    modal.id = 'modal-dialog-outros';
+    modal.className = 'fixed inset-0 z-[100] hidden overflow-y-auto bg-slate-950/80 backdrop-blur-sm p-4 flex items-center justify-center';
+    
+    modal.innerHTML = `
+        <div class="mx-auto max-w-sm rounded-2xl bg-white shadow-2xl">
+            <div class="border-b px-8 py-5 bg-amber-50 rounded-t-2xl">
+                <h2 class="text-lg font-black text-slate-800 uppercase tracking-tight">📌 O que deseja cadastrar?</h2>
+            </div>
+            <div class="p-8 space-y-4">
+                <p class="text-slate-600 text-sm mb-6">Escolha uma opção para adicionar um novo item:</p>
+                
+                <button onclick="abrirNovaCategoria()" class="w-full rounded-xl bg-sky-50 border-2 border-sky-200 px-6 py-4 text-left hover:bg-sky-100 hover:border-sky-400 transition-all">
+                    <div class="font-black text-sky-700 mb-1">📦 Nova Categoria</div>
+                    <div class="text-sm text-sky-600">Adicionar tipo de produto/serviço</div>
+                </button>
+                
+                <button onclick="abrirNovaAtividadeFromOutros()" class="w-full rounded-xl bg-amber-50 border-2 border-amber-200 px-6 py-4 text-left hover:bg-amber-100 hover:border-amber-400 transition-all">
+                    <div class="font-black text-amber-700 mb-1">🏢 Nova Atividade (CNAE)</div>
+                    <div class="text-sm text-amber-600">Adicionar código de atividade</div>
+                </button>
+                
+                <button onclick="fecharModalOutros()" class="w-full rounded-xl border-2 border-slate-200 px-6 py-4 text-center font-bold text-slate-600 hover:bg-slate-50 transition-all mt-6">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    `;
+    
+    return modal;
+}
+
+/**
+ * Abre modal de nova categoria após clicar em "Outros"
+ */
+async function abrirNovaCategoria() {
+    fecharModalOutros();
+    const selectId = document.getElementById('modal-dialog-outros').dataset.selectId;
+    abrirModalNovaCategoria(selectId);
+}
+
+/**
+ * Abre modal de nova atividade após clicar em "Outros"
+ */
+async function abrirNovaAtividadeFromOutros() {
+    fecharModalOutros();
+    const selectId = document.getElementById('modal-dialog-outros').dataset.selectId;
+    abrirModalNovaAtividade(selectId);
+}
+
+/**
+ * Abre modal para adicionar nova categoria
+ */
+function abrirModalNovaCategoria(selectElementId) {
+    // Cria modal se não existir
+    let modal = document.getElementById('modal-nova-categoria');
+    if (!modal) {
+        modal = criarModalCategoria();
+        document.body.appendChild(modal);
+    }
+    
+    // Armazena o ID do select para preencher depois
+    modal.dataset.selectId = selectElementId;
+    
+    // Limpa formulário
+    document.getElementById('form-nova-categoria').reset();
+    
+    // Mostra modal
+    modal.classList.remove('hidden');
+}
+
+/**
+ * Fecha modal de nova categoria
+ */
+function fecharModalNovaCategoria() {
+    const modal = document.getElementById('modal-nova-categoria');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+/**
+ * Abre modal para adicionar nova atividade
+ */
+function abrirModalNovaAtividade(selectElementId) {
+    // Cria modal se não existir
+    let modal = document.getElementById('modal-nova-atividade');
+    if (!modal) {
+        modal = criarModalAtividade();
+        document.body.appendChild(modal);
+    }
+    
+    // Armazena o ID do select para preencher depois
+    modal.dataset.selectId = selectElementId;
+    
+    // Limpa formulário
+    document.getElementById('form-nova-atividade').reset();
+    
+    // Mostra modal
+    modal.classList.remove('hidden');
+}
+
+/**
+ * Fecha modal de nova atividade
+ */
+function fecharModalNovaAtividade() {
+    const modal = document.getElementById('modal-nova-atividade');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+/**
+ * Cria estrutura HTML do modal de atividade
+ */
+function criarModalAtividade() {
+    const modal = document.createElement('div');
+    modal.id = 'modal-nova-atividade';
+    modal.className = 'fixed inset-0 z-[100] hidden overflow-y-auto bg-slate-950/80 backdrop-blur-sm p-4';
+    
+    modal.innerHTML = `
+        <div class="mx-auto my-8 max-w-md rounded-2xl bg-white shadow-2xl">
+            <div class="flex items-center justify-between border-b px-8 py-5 bg-amber-50 rounded-t-2xl">
+                <h2 class="text-lg font-black text-slate-800 uppercase tracking-tight">Nova Atividade (CNAE)</h2>
+                <button onclick="fecharModalNovaAtividade()" class="text-2xl text-slate-400 hover:text-slate-600">&times;</button>
+            </div>
+            <form id="form-nova-atividade" class="space-y-5 p-8" onsubmit="salvarNovaAtividade(event)">
+                <label class="campo block">
+                    <span class="font-black text-[10px] text-slate-400 uppercase">Código CNAE *</span>
+                    <input id="atividade-cnae" type="text" required maxlength="10" class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none" placeholder="Ex: 6201">
+                </label>
+                
+                <label class="campo block">
+                    <span class="font-black text-[10px] text-slate-400 uppercase">Descrição da Atividade *</span>
+                    <input id="atividade-descricao" type="text" required maxlength="255" class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none" placeholder="Ex: Atividades de consultoria">
+                </label>
+                
+                <label class="campo block">
+                    <span class="font-black text-[10px] text-slate-400 uppercase">Seção</span>
+                    <input id="atividade-secao" type="text" maxlength="5" class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none" placeholder="Ex: M">
+                </label>
+                
+                <label class="campo block">
+                    <span class="font-black text-[10px] text-slate-400 uppercase">Divisão</span>
+                    <input id="atividade-divisao" type="text" maxlength="5" class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none" placeholder="Ex: 62">
+                </label>
+                
+                <div class="flex justify-end gap-4 pt-4">
+                    <button type="button" onclick="fecharModalNovaAtividade()" class="rounded-xl border border-slate-200 px-6 py-3 font-bold text-slate-500 hover:bg-slate-50">CANCELAR</button>
+                    <button type="submit" class="rounded-xl bg-sky-600 px-8 py-3 font-black text-white shadow-lg shadow-sky-100 hover:bg-sky-700">ADICIONAR</button>
+                </div>
+            </form>
+        </div>
+    `;
+    
+    return modal;
+}
+
+/**
+ * Salva nova atividade
+ */
+async function salvarNovaAtividade(event) {
+    event.preventDefault();
+    
+    const cnae = document.getElementById('atividade-cnae').value.trim();
+    const descricao = document.getElementById('atividade-descricao').value.trim();
+    const secao = document.getElementById('atividade-secao').value.trim();
+    const divisao = document.getElementById('atividade-divisao').value.trim();
+    
+    if (!cnae || !descricao) {
+        alert('Código CNAE e Descrição são obrigatórios');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE}/atividades`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cnae, descricao, secao, divisao, ativa: true })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Erro ao salvar atividade');
+        }
+        
+        const novaAtividade = await response.json();
+        mostrarSucesso('Atividade adicionada com sucesso!');
+        
+        // Recarrega lista de atividades no select
+        const selectId = document.getElementById('modal-nova-atividade').dataset.selectId;
+        await carregarAtividades(selectId);
+        
+        // Seleciona a nova atividade no select
+        const selectElement = document.getElementById(selectId);
+        if (selectElement) {
+            selectElement.value = novaAtividade.id;
+        }
+        
+        fecharModalNovaAtividade();
+        
+    } catch (erro) {
+        console.error('Erro ao salvar atividade:', erro);
+        mostrarErro('Erro ao salvar atividade: ' + erro.message);
+    }
 }
 
 // Inicializa quando o DOM está pronto

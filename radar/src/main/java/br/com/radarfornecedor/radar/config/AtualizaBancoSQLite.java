@@ -31,6 +31,13 @@ public class AtualizaBancoSQLite implements ApplicationRunner {
     }
 
     private void executarAtualizacoes() {
+        // CLEANUP: Remover versões antigas não completadas para re-executar
+        try {
+            jdbcTemplate.update("DELETE FROM schema_migrations WHERE versao IN (30, 31)");
+        } catch (Exception e) {
+            // Tabela pode não existir ainda
+        }
+        
         // Versao 10
         aplicarAtualizacao(10, "Cria tabelas Paises e Cidades", () -> {
             String sql1 = "CREATE TABLE IF NOT EXISTS Paises " +
@@ -64,6 +71,107 @@ public class AtualizaBancoSQLite implements ApplicationRunner {
             executarSql(sql1);
             executarSql(sql2);
             executarSql(sql3);
+        });
+
+        // Versao 30 - Adiciona Categorias e Atividades (SEM DELETAR DADOS EXISTENTES)
+        aplicarAtualizacao(30, "Cria tabelas de Categorias e Atividades com dados iniciais", () -> {
+            // Criar tabelas se não existirem (usar nomes com capital como nas entities)
+            String sqlCategorias = "CREATE TABLE IF NOT EXISTS Categorias " +
+                                  "(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL UNIQUE, descricao TEXT, icone TEXT, ativa INTEGER DEFAULT 1, criadaEm TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, atualizadaEm TEXT DEFAULT CURRENT_TIMESTAMP)";
+            String sqlAtividades = "CREATE TABLE IF NOT EXISTS Atividades " +
+                                  "(id INTEGER PRIMARY KEY AUTOINCREMENT, cnae TEXT UNIQUE, descricao TEXT NOT NULL UNIQUE, secao TEXT, divisao TEXT, ativa INTEGER DEFAULT 1, criadaEm TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, atualizadaEm TEXT DEFAULT CURRENT_TIMESTAMP)";
+            executarSql(sqlCategorias);
+            executarSql(sqlAtividades);
+            
+            // Inserir dados iniciais em Categorias (INSERT OR IGNORE evita conflito se já existem)
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (1, 'Eletrônicos', 1)");
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (2, 'Alimentos', 1)");
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (3, 'Vestuário', 1)");
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (4, 'Automóvel', 1)");
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (5, 'Motocicletas', 1)");
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (6, 'Moda e Têxtil', 1)");
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (7, 'Embalagens', 1)");
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (8, 'Tecnologia', 1)");
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (9, 'Construção', 1)");
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (10, 'Móvel e Escritório', 1)");
+            
+            // Inserir dados iniciais em Atividades
+            executarSql("INSERT OR IGNORE INTO Atividades (id, descricao, ativa) VALUES (1, 'Comércio Varejista', 1)");
+            executarSql("INSERT OR IGNORE INTO Atividades (id, descricao, ativa) VALUES (2, 'Comércio Atacadista', 1)");
+            executarSql("INSERT OR IGNORE INTO Atividades (id, descricao, ativa) VALUES (3, 'Fabricação', 1)");
+            executarSql("INSERT OR IGNORE INTO Atividades (id, descricao, ativa) VALUES (4, 'Distribuição', 1)");
+            executarSql("INSERT OR IGNORE INTO Atividades (id, descricao, ativa) VALUES (5, 'Importação', 1)");
+            executarSql("INSERT OR IGNORE INTO Atividades (id, descricao, ativa) VALUES (6, 'Exportação', 1)");
+        });
+
+        // Versao 31 - Reconstrói tabelas Categorias e Atividades com schema completo
+        aplicarAtualizacao(31, "Reconstrói tabelas com todas as colunas necessárias", () -> {
+            try {
+                // Backup de dados existentes (se houver)
+                executarSql("CREATE TEMPORARY TABLE cat_backup AS SELECT * FROM Categorias");
+                executarSql("CREATE TEMPORARY TABLE ati_backup AS SELECT * FROM Atividades");
+            } catch (Exception e) {
+                // Tabelas podem não existir ainda
+            }
+            
+            // Dropar tabelas antigas se existem
+            try {
+                executarSql("DROP TABLE IF EXISTS Categorias");
+                executarSql("DROP TABLE IF EXISTS Atividades");
+            } catch (Exception e) {
+                // Ignorar se tabelas não existem
+            }
+            
+            // Recriar tabelas com schema completo
+            String sqlCategorias = "CREATE TABLE Categorias (" +
+                                  "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                  "nome TEXT NOT NULL UNIQUE, " +
+                                  "descricao TEXT, " +
+                                  "icone TEXT, " +
+                                  "ativa INTEGER DEFAULT 1, " +
+                                  "criadaEm TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
+                                  "atualizadaEm TEXT DEFAULT CURRENT_TIMESTAMP" +
+                                  ")";
+            String sqlAtividades = "CREATE TABLE Atividades (" +
+                                  "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                  "cnae TEXT UNIQUE, " +
+                                  "descricao TEXT NOT NULL UNIQUE, " +
+                                  "secao TEXT, " +
+                                  "divisao TEXT, " +
+                                  "ativa INTEGER DEFAULT 1, " +
+                                  "criadaEm TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
+                                  "atualizadaEm TEXT DEFAULT CURRENT_TIMESTAMP" +
+                                  ")";
+            
+            executarSql(sqlCategorias);
+            executarSql(sqlAtividades);
+            
+            // Restaurar dados de backup se existirem
+            try {
+                executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) SELECT id, nome, ativa FROM cat_backup");
+                executarSql("INSERT OR IGNORE INTO Atividades (id, descricao, ativa) SELECT id, nome, ativa FROM ati_backup");
+            } catch (Exception e) {
+                // Backup pode não ter dados
+            }
+            
+            // Inserir dados iniciais
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (1, 'Eletrônicos', 1)");
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (2, 'Alimentos', 1)");
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (3, 'Vestuário', 1)");
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (4, 'Automóvel', 1)");
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (5, 'Motocicletas', 1)");
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (6, 'Moda e Têxtil', 1)");
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (7, 'Embalagens', 1)");
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (8, 'Tecnologia', 1)");
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (9, 'Construção', 1)");
+            executarSql("INSERT OR IGNORE INTO Categorias (id, nome, ativa) VALUES (10, 'Móvel e Escritório', 1)");
+            
+            executarSql("INSERT OR IGNORE INTO Atividades (id, descricao, ativa) VALUES (1, 'Comércio Varejista', 1)");
+            executarSql("INSERT OR IGNORE INTO Atividades (id, descricao, ativa) VALUES (2, 'Comércio Atacadista', 1)");
+            executarSql("INSERT OR IGNORE INTO Atividades (id, descricao, ativa) VALUES (3, 'Fabricação', 1)");
+            executarSql("INSERT OR IGNORE INTO Atividades (id, descricao, ativa) VALUES (4, 'Distribuição', 1)");
+            executarSql("INSERT OR IGNORE INTO Atividades (id, descricao, ativa) VALUES (5, 'Importação', 1)");
+            executarSql("INSERT OR IGNORE INTO Atividades (id, descricao, ativa) VALUES (6, 'Exportação', 1)");
         });
     }
 

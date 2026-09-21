@@ -188,6 +188,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     exibirInfoUsuario();
     aplicarControlesDeAcesso();
     
+    // Carregar categorias e atividades para selects (usando funções do preenchimento-automatico.js)
+    if (typeof carregarCategorias === 'function') {
+        carregarCategorias('categoria');
+    }
+    if (typeof carregarAtividades === 'function') {
+        carregarAtividades('atividade');
+    }
+    
     // Bind CNPJ blur listener dynamically
     const cnpjEl = document.getElementById('cnpj');
     if (cnpjEl) {
@@ -529,6 +537,17 @@ function editar(id) {
         ultimoCnpjBuscado = '';
     }
     
+    // Preencher categoria e atividade (se existem)
+    const categoriaEl = document.getElementById('categoria');
+    if (categoriaEl && item.categoria) {
+        categoriaEl.value = item.categoria.id || '';
+    }
+    
+    const atividadeEl = document.getElementById('atividade');
+    if (atividadeEl && item.atividade) {
+        atividadeEl.value = item.atividade.id || '';
+    }
+    
     document.getElementById('titulo-form').textContent = `Editar ${configuracao.singular.toLowerCase()}`;
     document.getElementById('modal').classList.remove('hidden');
 }
@@ -565,7 +584,7 @@ async function salvar(evento) {
         dados = {
             nome: nome.value.trim(),
             status: document.getElementById('status').value,
-contato: document.getElementById('contato')?.value.trim() || '',
+            contato: document.getElementById('contato')?.value.trim() || '',
             email: document.getElementById('email')?.value.trim() || '',
             cnpj: cnpj.value.replace(/\D/g, ''),
             cnpjFornecedor: cnpjFornecedor.value.replace(/\D/g, ''),
@@ -580,6 +599,16 @@ contato: document.getElementById('contato')?.value.trim() || '',
             latitude: document.getElementById('latitude')?.value ? Number(document.getElementById('latitude').value) : null,
             longitude: document.getElementById('longitude')?.value ? Number(document.getElementById('longitude').value) : null
         };
+        
+        // Adicionar categoria e atividade se selecionadas (OPCIONAIS)
+        const categoriaRepEl = document.getElementById('categoria');
+        const atividadeRepEl = document.getElementById('atividade');
+        if (categoriaRepEl && categoriaRepEl.value && categoriaRepEl.value !== '') {
+            dados.categoria = { id: Number(categoriaRepEl.value) };
+        }
+        if (atividadeRepEl && atividadeRepEl.value && atividadeRepEl.value !== '') {
+            dados.atividade = { id: Number(atividadeRepEl.value) };
+        }
     } else if (configuracao.entidade === 'clientes') {
         const nome = document.getElementById('nome');
         const cpfCnpj = document.getElementById('cpfCnpj');
@@ -613,7 +642,7 @@ contato: document.getElementById('contato')?.value.trim() || '',
             latitude: document.getElementById('latitude')?.value ? Number(document.getElementById('latitude').value) : null,
             longitude: document.getElementById('longitude')?.value ? Number(document.getElementById('longitude').value) : null
         };
-} else { // Fallback para fornecedores e compradores
+    } else { // Fornecedores e Compradores
         const nome = document.getElementById('nome');
         const cnpj = document.getElementById('cnpj');
 
@@ -638,20 +667,48 @@ contato: document.getElementById('contato')?.value.trim() || '',
         if(pontuacao) dados.pontuacaoRisco = Number(pontuacao.value || 0);
         const prazoEntrega = document.getElementById('prazoEntregaDias');
         if (prazoEntrega) dados.prazoEntregaDias = Number(prazoEntrega.value || 0);
+        
+        // Adicionar categoria e atividade se existirem e forem selecionadas (OPCIONAIS)
+        const categoriaEl = document.getElementById('categoria');
+        const atividadeEl = document.getElementById('atividade');
+        if (categoriaEl && categoriaEl.value && categoriaEl.value !== '') {
+            dados.categoria = { id: Number(categoriaEl.value) };
+        }
+        if (atividadeEl && atividadeEl.value && atividadeEl.value !== '') {
+            dados.atividade = { id: Number(atividadeEl.value) };
+        }
     }
 
     const id = document.getElementById('id').value;
 
     try {
-        const resposta = await fetch(id ? `${endpoint}/${id}` : endpoint, {method: id ? 'PUT' : 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(dados)});
+        console.log('[DEBUG] Dados a serem salvos:', JSON.stringify(dados, null, 2));
+        console.log('[DEBUG] ID:', id);
+        console.log('[DEBUG] Endpoint:', id ? `${endpoint}/${id}` : endpoint);
+        console.log('[DEBUG] Método:', id ? 'PUT' : 'POST');
+        
+        const resposta = await fetch(id ? `${endpoint}/${id}` : endpoint, {
+            method: id ? 'PUT' : 'POST', 
+            headers: {'Content-Type':'application/json'}, 
+            body: JSON.stringify(dados)
+        });
+        
+        console.log('[DEBUG] Status da resposta:', resposta.status);
+        
         if (!resposta.ok) {
             const erroMsg = await resposta.text();
+            console.error('[DEBUG] Erro na resposta:', resposta.status, erroMsg);
             throw new Error(erroMsg || 'Não foi possível salvar. Verifique se os dados são válidos.');
         }
+        
+        const resultado = await resposta.json();
+        console.log('[DEBUG] Resultado do salvamento:', resultado);
+        
         fecharFormulario();
         mostrarAlerta(`${configuracao.singular} salvo com sucesso.`);
         carregar();
     } catch (erro) {
+        console.error('[DEBUG] Erro geral:', erro);
         mostrarAlerta(erro.message, true);
     }
 }
@@ -802,6 +859,113 @@ async function consultarCnpj() {
     }
 }
 
+// Função específica para comprador/representante consultar CNPJ
+async function consultarCnpjComprador() {
+    const cnpjEl = document.getElementById('cnpj');
+    const nomeEl = document.getElementById('nome');
+    
+    if (!cnpjEl) return;
+    
+    const cnpj = cnpjEl.value.replace(/\D/g, '');
+    if (cnpj.length !== 14) return;
+    
+    try {
+        console.log('Consultando CNPJ comprador/representante:', cnpj);
+        
+        // Tentar API interna primeiro
+        let dados = null;
+        try {
+            const respostaInterna = await fetch(`/api/consulta-cnpj/${cnpj}`);
+            if (respostaInterna.ok) {
+                dados = await respostaInterna.json();
+            }
+        } catch (e) {
+            console.warn('Falha na consulta interna, tentando API pública');
+        }
+        
+        // Se não conseguiu internamente, tentar API pública
+        if (!dados) {
+            try {
+                const respostaBrasilApi = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
+                if (respostaBrasilApi.ok) {
+                    const dadosBrasilApi = await respostaBrasilApi.json();
+                    dados = {
+                        razao_social: dadosBrasilApi.razao_social,
+                        nome_fantasia: dadosBrasilApi.nome_fantasia,
+                        cep: dadosBrasilApi.cep,
+                        logradouro: dadosBrasilApi.logradouro,
+                        numero: dadosBrasilApi.numero,
+                        complemento: dadosBrasilApi.complemento,
+                        bairro: dadosBrasilApi.bairro,
+                        municipio: dadosBrasilApi.municipio,
+                        uf: dadosBrasilApi.uf
+                    };
+                }
+            } catch (e) {
+                console.warn('Falha na API pública:', e);
+            }
+        }
+        
+        if (!dados) {
+            mostrarAlerta('CNPJ não encontrado em nenhuma base de dados.', true);
+            return;
+        }
+        
+        console.log('Dados obtidos:', dados);
+        
+        // Preencher Nome
+        if (nomeEl && !nomeEl.value.trim()) {
+            nomeEl.value = dados.razao_social || dados.nome_fantasia || '';
+        }
+        
+        // Preencher CEP
+        const cepEl = document.getElementById('cep');
+        if (cepEl && dados.cep) {
+            cepEl.value = dados.cep;
+            mascaraCep(cepEl);
+            // Disparar consulta de CEP
+            await consultarCep();
+        }
+        
+        // Preencher campos de endereço
+        const logradouroEl = document.getElementById('logradouro');
+        if (logradouroEl && !logradouroEl.value.trim() && dados.logradouro) {
+            logradouroEl.value = dados.logradouro;
+        }
+        
+        const numeroEl = document.getElementById('numero');
+        if (numeroEl && !numeroEl.value.trim() && dados.numero) {
+            numeroEl.value = dados.numero;
+        }
+        
+        const complementoEl = document.getElementById('complemento');
+        if (complementoEl && !complementoEl.value.trim() && dados.complemento) {
+            complementoEl.value = dados.complemento;
+        }
+        
+        const bairroEl = document.getElementById('bairro');
+        if (bairroEl && !bairroEl.value.trim() && dados.bairro) {
+            bairroEl.value = dados.bairro;
+        }
+        
+        const cidadeEl = document.getElementById('cidade');
+        if (cidadeEl && !cidadeEl.value.trim() && (dados.municipio || dados.localidade)) {
+            cidadeEl.value = dados.municipio || dados.localidade || '';
+        }
+        
+        const estadoEl = document.getElementById('estado');
+        if (estadoEl && !estadoEl.value.trim() && dados.uf) {
+            estadoEl.value = dados.uf;
+        }
+        
+        mostrarAlerta('Informações do CNPJ preenchidas automaticamente.');
+        
+    } catch (erro) {
+        console.error('Erro ao consultar CNPJ:', erro);
+        mostrarAlerta('Erro ao consultar CNPJ. Preencha os dados manualmente.', true);
+    }
+}
+
 function mascaraCep(input) {
     let valor = input.value.replace(/\D/g, '').slice(0, 8);
     input.value = valor.replace(/^(\d{5})(\d)/, '$1-$2');
@@ -860,5 +1024,282 @@ async function buscarFornecedorPorCnpj() {
     } catch (erro) {
         console.error('Erro ao buscar fornecedor pelo CNPJ:', erro);
         mostrarAlerta('Erro ao verificar o CNPJ do fornecedor.', true);
+    }
+}
+
+// Função específica para representante consultar CNPJ
+async function consultarCnpjRepresentante() {
+    const cnpjEl = document.getElementById('cnpj');
+    const nomeEl = document.getElementById('nome');
+    
+    if (!cnpjEl) return;
+    
+    const cnpj = cnpjEl.value.replace(/\D/g, '');
+    if (cnpj.length !== 14) return;
+    
+    try {
+        console.log('Consultando CNPJ representante:', cnpj);
+        
+        // Tentar API interna primeiro
+        let dados = null;
+        try {
+            const respostaInterna = await fetch(`/api/consulta-cnpj/${cnpj}`);
+            if (respostaInterna.ok) {
+                dados = await respostaInterna.json();
+            }
+        } catch (e) {
+            console.warn('Falha na consulta interna, tentando API pública');
+        }
+        
+        // Se não conseguiu internamente, tentar API pública
+        if (!dados) {
+            try {
+                const respostaBrasilApi = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
+                if (respostaBrasilApi.ok) {
+                    const dadosBrasilApi = await respostaBrasilApi.json();
+                    dados = {
+                        razao_social: dadosBrasilApi.razao_social,
+                        nome_fantasia: dadosBrasilApi.nome_fantasia,
+                        cep: dadosBrasilApi.cep,
+                        logradouro: dadosBrasilApi.logradouro,
+                        numero: dadosBrasilApi.numero,
+                        complemento: dadosBrasilApi.complemento,
+                        bairro: dadosBrasilApi.bairro,
+                        municipio: dadosBrasilApi.municipio,
+                        uf: dadosBrasilApi.uf
+                    };
+                }
+            } catch (e) {
+                console.warn('Falha na API pública:', e);
+            }
+        }
+        
+        if (!dados) {
+            mostrarAlerta('CNPJ não encontrado em nenhuma base de dados.', true);
+            return;
+        }
+        
+        console.log('Dados obtidos:', dados);
+        
+        // Preencher Nome (será nome fantasia da empresa para o representante)
+        if (nomeEl && !nomeEl.value.trim()) {
+            nomeEl.value = dados.nome_fantasia || dados.razao_social || '';
+        }
+        
+        // Preencher CEP
+        const cepEl = document.getElementById('cep');
+        if (cepEl && dados.cep) {
+            cepEl.value = dados.cep;
+            mascaraCep(cepEl);
+            // Disparar consulta de CEP
+            await consultarCep();
+        }
+        
+        // Preencher campos de endereço
+        const logradouroEl = document.getElementById('logradouro');
+        if (logradouroEl && !logradouroEl.value.trim() && dados.logradouro) {
+            logradouroEl.value = dados.logradouro;
+        }
+        
+        const numeroEl = document.getElementById('numero');
+        if (numeroEl && !numeroEl.value.trim() && dados.numero) {
+            numeroEl.value = dados.numero;
+        }
+        
+        const complementoEl = document.getElementById('complemento');
+        if (complementoEl && !complementoEl.value.trim() && dados.complemento) {
+            complementoEl.value = dados.complemento;
+        }
+        
+        const bairroEl = document.getElementById('bairro');
+        if (bairroEl && !bairroEl.value.trim() && dados.bairro) {
+            bairroEl.value = dados.bairro;
+        }
+        
+        const cidadeEl = document.getElementById('cidade');
+        if (cidadeEl && !cidadeEl.value.trim() && (dados.municipio || dados.localidade)) {
+            cidadeEl.value = dados.municipio || dados.localidade || '';
+        }
+        
+        const estadoEl = document.getElementById('estado');
+        if (estadoEl && !estadoEl.value.trim() && dados.uf) {
+            estadoEl.value = dados.uf;
+        }
+        
+        mostrarAlerta('Informações do CNPJ preenchidas automaticamente.');
+        
+    } catch (erro) {
+        console.error('Erro ao consultar CNPJ:', erro);
+        mostrarAlerta('Erro ao consultar CNPJ. Preencha os dados manualmente.', true);
+    }
+}
+
+// Funções para carregar categorias e atividades nos formulários
+async function carregarCategoriasNoFormulario() {
+    const selectElement = document.getElementById('categoria');
+    if (!selectElement) return;
+
+    try {
+        const response = await fetch('/api/categorias/ativas');
+        const categorias = await response.json();
+
+        // Limpa opções existentes
+        selectElement.innerHTML = '<option value="">Selecione uma categoria...</option>';
+
+        // Adiciona categorias
+        categorias.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.nome || '';
+            selectElement.appendChild(option);
+        });
+
+        // Adiciona opção "Adicionar nova categoria" com separador
+        const separador = document.createElement('option');
+        separador.disabled = true;
+        separador.textContent = '───────────────';
+        selectElement.appendChild(separador);
+
+        const novaOption = document.createElement('option');
+        novaOption.value = 'nova';
+        novaOption.textContent = '➕ Adicionar nova categoria';
+        selectElement.appendChild(novaOption);
+
+        // Listener para abrir modal
+        selectElement.addEventListener('change', function() {
+            if (this.value === 'nova') {
+                abrirModalAdicionarCategoria(selectElement);
+                this.value = '';
+            }
+        });
+
+    } catch (erro) {
+        console.error('Erro ao carregar categorias:', erro);
+    }
+}
+
+async function carregarAtividadesNoFormulario() {
+    const selectElement = document.getElementById('atividade');
+    if (!selectElement) return;
+
+    try {
+        const response = await fetch('/api/atividades/ativas');
+        const atividades = await response.json();
+
+        // Limpa opções existentes
+        selectElement.innerHTML = '<option value="">Selecione uma atividade...</option>';
+
+        // Agrupa por seção
+        const porSecao = {};
+        atividades.forEach(at => {
+            const secao = at.secao || 'Outras';
+            if (!porSecao[secao]) porSecao[secao] = [];
+            porSecao[secao].push(at);
+        });
+
+        // Adiciona grupos
+        Object.keys(porSecao).sort().forEach(secao => {
+            const optgroup = document.createElement('optgroup');
+            optgroup.label = `Seção ${secao}`;
+            
+            porSecao[secao].forEach(at => {
+                const option = document.createElement('option');
+                option.value = at.id;
+                option.textContent = `${at.cnae ? at.cnae + ' - ' : ''}${at.descricao}`;
+                optgroup.appendChild(option);
+            });
+            
+            selectElement.appendChild(optgroup);
+        });
+
+        // Adiciona opção "Adicionar nova atividade"
+        const separador = document.createElement('option');
+        separador.disabled = true;
+        separador.textContent = '───────────────';
+        selectElement.appendChild(separador);
+
+        const novaOption = document.createElement('option');
+        novaOption.value = 'nova';
+        novaOption.textContent = '➕ Adicionar nova atividade';
+        selectElement.appendChild(novaOption);
+
+        // Listener para abrir modal
+        selectElement.addEventListener('change', function() {
+            if (this.value === 'nova') {
+                abrirModalAdicionarAtividade(selectElement);
+                this.value = '';
+            }
+        });
+
+    } catch (erro) {
+        console.error('Erro ao carregar atividades:', erro);
+    }
+}
+
+async function abrirModalAdicionarCategoria(selectElement) {
+    const nome = prompt('Digite o nome da nova categoria:');
+    if (!nome || !nome.trim()) return;
+
+    try {
+        const response = await fetch('/api/categorias', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                nome: nome.trim(), 
+                descricao: '', 
+                icone: '', 
+                ativa: true 
+            })
+        });
+
+        if (!response.ok) throw new Error('Erro ao salvar');
+
+        const novaCategoria = await response.json();
+        mostrarAlerta('Categoria adicionada com sucesso!');
+
+        // Recarrega categorias
+        await carregarCategoriasNoFormulario();
+
+        // Seleciona a nova categoria
+        selectElement.value = novaCategoria.id;
+
+    } catch (erro) {
+        mostrarAlerta('Erro ao adicionar categoria: ' + erro.message, true);
+    }
+}
+
+async function abrirModalAdicionarAtividade(selectElement) {
+    const cnae = prompt('Digite o código CNAE:');
+    if (!cnae || !cnae.trim()) return;
+
+    const descricao = prompt('Digite a descrição da atividade:');
+    if (!descricao || !descricao.trim()) return;
+
+    try {
+        const response = await fetch('/api/atividades', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                cnae: cnae.trim(), 
+                descricao: descricao.trim(), 
+                secao: '', 
+                divisao: '', 
+                ativa: true 
+            })
+        });
+
+        if (!response.ok) throw new Error('Erro ao salvar');
+
+        const novaAtividade = await response.json();
+        mostrarAlerta('Atividade adicionada com sucesso!');
+
+        // Recarrega atividades
+        await carregarAtividadesNoFormulario();
+
+        // Seleciona a nova atividade
+        selectElement.value = novaAtividade.id;
+
+    } catch (erro) {
+        mostrarAlerta('Erro ao adicionar atividade: ' + erro.message, true);
     }
 }
