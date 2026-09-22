@@ -38,47 +38,36 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::               (v2.7.14)
 
-2026-09-22 18:17:55.889  INFO 18936 --- [           main] b.c.r.radar.RadarApplication             : Starting RadarApplication using Java 11.0.28 on NoteDEV with PID 18936 (C:\Visão_Futura\Projeto_Radar_Fornecedor\radar\target\classes started by Inceptor in C:\Visão_Futura\Projeto_Radar_Fornecedor\radar)
-2026-09-22 18:17:55.892  INFO 18936 --- [           main] b.c.r.radar.RadarApplication             : No active profile set, falling back to 1 default profile: "default"
-2026-09-22 18:17:56.688  INFO 18936 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-09-22 18:17:56.785  INFO 18936 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 87 ms. Found 11 JPA repository interfaces.
-2026-09-22 18:17:57.804  INFO 18936 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
-2026-09-22 18:17:57.821  INFO 18936 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-09-22 18:17:57.821  INFO 18936 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.78]
-2026-09-22 18:17:58.004  INFO 18936 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-09-22 18:17:58.004  INFO 18936 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2062 ms
-2026-09-22 18:17:58.047  INFO 18936 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-09-22 18:17:58.271  INFO 18936 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-09-22 18:17:58.284  INFO 18936 --- [           main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:./DBLRadar'
-2026-09-22 18:17:58.394  INFO 18936 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-09-22 18:17:58.449  INFO 18936 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.15.Final
-2026-09-22 18:17:58.576  INFO 18936 --- [           main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
-2026-09-22 18:17:58.672  INFO 18936 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
-2026-09-22 18:17:59.415  INFO 18936 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-2026-09-22 18:17:59.423  INFO 18936 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-09-22 18:18:00.394  WARN 18936 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-09-22 18:18:00.655  INFO 18936 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
-2026-09-22 18:18:00.662  INFO 18936 --- [           main] b.c.r.radar.RadarApplication             : Started RadarApplication in 5.289 seconds (JVM running for 5.728)
+2026-09-22 19:06:44.159  INFO 4316 --- [           main] b.c.r.radar.RadarApplication             : Starting RadarApplication using Java 11.0.28 on NoteDEV with PID 4316 (C:\Visão_Futura\Projeto_Radar_Fornecedor\radar\target\classes started by Inceptor in C:\Visão_Futura\Projeto_Radar_Fornecedor\radar)
+2026-09-22 19:06:44.162  INFO 4316 --- [           main] b.c.r.radar.RadarApplication             : No active profile set, falling back to 1 default profile: "default"
+2026-09-22 19:06:44.774  INFO 4316 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-22 19:06:44.851  INFO 4316 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 70 ms. Found 11 JPA repository interfaces.
+2026-09-22 19:06:45.557  INFO 4316 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-09-22 19:06:45.565  INFO 4316 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-22 19:06:45.565  INFO 4316 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.78]
+2026-09-22 19:06:45.663  INFO 4316 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-09-22 19:06:45.663  INFO 4316 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1457 ms
+2026-09-22 19:06:45.689  INFO 4316 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-09-22 19:06:45.861  INFO 4316 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-09-22 19:06:45.872  INFO 4316 --- [           main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:./DBLRadar'
+2026-09-22 19:06:45.998  INFO 4316 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-09-22 19:06:46.095  INFO 4316 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.15.Final
+2026-09-22 19:06:46.231  INFO 4316 --- [           main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2026-09-22 19:06:46.349  INFO 4316 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+2026-09-22 19:06:47.202  INFO 4316 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2026-09-22 19:06:47.211  INFO 4316 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-22 19:06:48.166  WARN 4316 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-09-22 19:06:48.502  INFO 4316 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2026-09-22 19:06:48.516  INFO 4316 --- [           main] b.c.r.radar.RadarApplication             : Started RadarApplication in 4.723 seconds (JVM running for 5.091)
 [MIGRATIONS] Banco já tem todas as migrations aplicadas (v30-32)
 [APPLICATION STARTUP] Iniciando backup automático do banco de dados...
 [BACKUP SERVICE] Comando BACKUP executado com sucesso.
-[BACKUP SERVICE] Backup criado: BackUpBanco\backup_2026-09-22_181800.zip
-[BACKUP SERVICE] Backup antigo removido: backup_2026-09-22_144922.zip
+[BACKUP SERVICE] Backup criado: BackUpBanco\backup_2026-09-22_190648.zip
+[BACKUP SERVICE] Backup antigo removido: backup_2026-09-22_190240.zip
 [APPLICATION STARTUP] Backup automático concluído com sucesso.
-2026-09-22 18:18:15.545  INFO 18936 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-09-22 18:18:15.546  INFO 18936 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-09-22 18:18:15.548  INFO 18936 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
-2026-09-22 18:19:01.155  WARN 18936 --- [nio-8080-exec-6] o.a.c.util.SessionIdGeneratorBase        : Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [531] milliseconds.
-[LOGIN] Usuário 'admin' autenticado com sucesso. Senha validada com BCrypt.
-[CNPJ LOOKUP] Iniciando busca para CNPJ: 17245234002730
-[CNPJ LOOKUP] Status HTTP: 200
-[CNPJ LOOKUP] CNPJ encontrado: CIA DE FIACAO E TECIDOS CEDRO E CACHOEIRA
-[SOLICITACAO CADASTRO] Nova solicitação criada: fCia (CNPJ)
-[CADASTRO CONTROLLER] Solicitação criada: ID=1
-[LOGIN] Solicitação pendente para: fCia
-[CNPJ LOOKUP] Iniciando busca para CNPJ: 40494083000137
-[CNPJ LOOKUP] Status HTTP: 200
-[CNPJ LOOKUP] CNPJ encontrado: SANTA RITA EMBALAGENS DE PAPELAO LTDA
-[SOLICITACAO CADASTRO] Nova solicitação criada: fSanta (CNPJ)
-[CADASTRO CONTROLLER] Solicitação criada: ID=2
-[LOGIN] Usuário 'admin' autenticado com sucesso. Senha validada com BCrypt.
+2026-09-22 19:07:06.166  INFO 4316 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-22 19:07:06.166  INFO 4316 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-22 19:07:06.169  INFO 4316 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-09-22 19:07:11.225  WARN 4316 --- [nio-8080-exec-5] o.a.c.util.SessionIdGeneratorBase        : Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [712] milliseconds.
+[LOGIN] Usuário 'fTeka' autenticado com sucesso. Senha validada com BCrypt.
+[LOGIN] Usuário 'fTeka' autenticado com sucesso. Senha validada com BCrypt.

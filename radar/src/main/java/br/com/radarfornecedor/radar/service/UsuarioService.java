@@ -30,6 +30,7 @@ public class UsuarioService {
             admin.setSenha(passwordEncoder.encode("admin")); // Criptografa a senha
             admin.setTipo(TipoUsuario.ADMIN);
             admin.setAtivo(true);
+            admin.setCadastroCompleto(true); // Admin já está completo
             usuarioRepository.save(admin);
             System.out.println("[USUARIO SERVICE] Usuário admin criado com sucesso (admin/admin)");
             System.out.println("[USUARIO SERVICE] Senha criptografada com BCrypt");

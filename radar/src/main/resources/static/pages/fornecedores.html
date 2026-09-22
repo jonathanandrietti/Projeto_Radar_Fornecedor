@@ -210,3 +210,30 @@
 </body>
 </html>
 <script src="/js/preenchimento-automatico.js?v=2"></script>
+
+<script>
+// Detectar se está em modo de finalização de cadastro
+document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const finalizar = urlParams.get('finalizar');
+    
+    if (finalizar === 'true') {
+        console.log('[FORNECEDORES] Modo finalização de cadastro detectado');
+        
+        // Mostrar alerta destacado
+        const alerta = document.getElementById('alerta');
+        if (alerta) {
+            alerta.innerHTML = '<i class="fa-solid fa-circle-info mr-2"></i> <strong>Bem-vindo!</strong> Complete seu cadastro preenchendo os dados abaixo.';
+            alerta.className = 'mb-5 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm shadow-sm text-amber-800';
+            alerta.classList.remove('hidden');
+        }
+        
+        // Abrir formulário automaticamente
+        setTimeout(() => {
+            if (typeof abrirFormulario === 'function') {
+                abrirFormulario();
+            }
+        }, 500);
+    }
+});
+</script>

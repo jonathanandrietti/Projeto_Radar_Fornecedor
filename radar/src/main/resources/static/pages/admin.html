@@ -314,12 +314,11 @@
         const total = usuariosRegistros.length;
         const ativos = usuariosRegistros.filter(u => u.ativo).length;
         const inativos = total - ativos;
-        const admins = usuariosRegistros.filter(u => u.tipo === 'ADMIN').length;
 
         document.getElementById('total-usuarios').textContent = total;
         document.getElementById('usuarios-ativos').textContent = ativos;
         document.getElementById('usuarios-inativos').textContent = inativos;
-        document.getElementById('total-admins').textContent = admins;
+        // Removido: total-admins (não existe no HTML)
     }
 
     function abrirModalUsuario() {
@@ -424,18 +423,24 @@
     async function carregarSolicitacoes() {
         try {
             const resposta = await fetch('/api/cadastro/pendentes');
-            if (!resposta.ok) return;
+            if (!resposta.ok) {
+                const msg = await resposta.text();
+                console.error('[ADMIN] Erro ao carregar solicitações:', msg);
+                mostrarAlerta('Erro ao carregar solicitações: ' + msg, true);
+                return;
+            }
             const dados = await resposta.json();
             solicitacoesRegistros = dados.solicitacoes || [];
             filtrarSolicitacoes();
             atualizarContadorSolicitacoes();
         } catch (erro) {
             console.error('[ADMIN] Erro ao carregar solicitações:', erro);
+            mostrarAlerta('Erro ao comunicar com o servidor: ' + erro.message, true);
         }
     }
 
     function atualizarContadorSolicitacoes() {
-        const total = solicitacoesRegistros.filter(s => s.status === 'PENDENTE').length;
+        const total = solicitacoesRegistros.filter(s => s.aprovado === false || s.aprovado === null).length;
         document.getElementById('total-pendentes').textContent = total;
     }
 

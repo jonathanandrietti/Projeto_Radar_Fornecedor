@@ -118,6 +118,12 @@
                     const user = await response.json();
                     localStorage.setItem('usuario', JSON.stringify(user));
                     
+                    // ✅ ADMIN sempre vai para página de administração
+                    if (user.tipo === 'ADMIN') {
+                        window.location.href = '/pages/admin.html';
+                        return;
+                    }
+                    
                     // ✅ Se cadastro incompleto, vai para página de finalização
                     if (user.cadastroCompleto === false) {
                         // Determinar qual página de finalização baseado nos perfis
@@ -135,18 +141,18 @@
                         return;
                     }
                     
-                    const tipo = user.tipo;
-                    let url = '';
-                    
-                    switch (tipo) {
-                        case 'ADMIN': url = '/pages/admin.html'; break;
-                        case 'COMPRADOR': url = '/pages/compradores.html'; break;
-                        case 'REPRESENTANTE': url = '/pages/representantes.html'; break;
-                        case 'CLIENTE': url = '/pages/clientes.html'; break;
-                        default: url = '/pages/fornecedores.html';
+                    // ✅ Cadastro completo - vai para página principal do perfil
+                    if (user.fornecedor) {
+                        window.location.href = '/pages/fornecedores.html';
+                    } else if (user.comprador) {
+                        window.location.href = '/pages/compradores.html';
+                    } else if (user.representante) {
+                        window.location.href = '/pages/representantes.html';
+                    } else if (user.cliente) {
+                        window.location.href = '/pages/clientes.html';
+                    } else {
+                        window.location.href = '/pages/produtos.html';
                     }
-                    
-                    window.location.href = url;
                 } else {
                     // Ler a mensagem de erro do servidor
                     const errorData = await response.json();

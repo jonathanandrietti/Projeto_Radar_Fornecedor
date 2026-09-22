@@ -2,9 +2,11 @@ package br.com.radarfornecedor.radar.service;
 
 import br.com.radarfornecedor.radar.model.SolicitacaoCadastro;
 import br.com.radarfornecedor.radar.model.Usuario;
+import br.com.radarfornecedor.radar.model.Fornecedor;
 import br.com.radarfornecedor.radar.model.TipoUsuario;
 import br.com.radarfornecedor.radar.repository.SolicitacaoCadastroRepository;
 import br.com.radarfornecedor.radar.repository.UsuarioRepository;
+import br.com.radarfornecedor.radar.repository.FornecedorRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +19,16 @@ public class SolicitacaoCadastroService {
 
     private final SolicitacaoCadastroRepository solicitacaoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final FornecedorRepository fornecedorRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
     public SolicitacaoCadastroService(
             SolicitacaoCadastroRepository solicitacaoRepository,
-            UsuarioRepository usuarioRepository) {
+            UsuarioRepository usuarioRepository,
+            FornecedorRepository fornecedorRepository) {
         this.solicitacaoRepository = solicitacaoRepository;
         this.usuarioRepository = usuarioRepository;
+        this.fornecedorRepository = fornecedorRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
@@ -75,6 +80,7 @@ public class SolicitacaoCadastroService {
         usuario.setTipo(TipoUsuario.CLIENTE); // Padrão: CLIENTE
         usuario.setAtivo(true);
         usuario.setAguardandoAprovacao(false); // ✅ Aprovado - pode fazer login
+        usuario.setCadastroCompleto(false); // ✅ Precisa completar cadastro na primeira vez
         
         // Transferir perfis da solicitação para o usuário
         usuario.setFornecedor(solicitacao.getFornecedor());
@@ -84,6 +90,9 @@ public class SolicitacaoCadastroService {
 
         Usuario usuarioSalvo = usuarioRepository.save(usuario);
 
+        // ✅ IMPORTANTE: Criar registro inicial nas tabelas de negócio
+        criarRegistrosIniciais(solicitacao, usuarioSalvo);
+
         // Atualizar solicitação
         solicitacao.setAprovado(true);
         solicitacao.setAprovadaEm(LocalDateTime.now());
@@ -91,6 +100,49 @@ public class SolicitacaoCadastroService {
 
         System.out.println("[SOLICITACAO CADASTRO] Solicitação aprovada: " + solicitacao.getUsuario());
         return usuarioSalvo;
+    }
+
+    /**
+     * Criar registros iniciais nas tabelas de negócio baseado nos perfis
+     */
+    private void criarRegistrosIniciais(SolicitacaoCadastro solicitacao, Usuario usuario) {
+        System.out.println("[SOLICITACAO CADASTRO] Criando registros iniciais para " + usuario.getUsername());
+        
+        if (solicitacao.getFornecedor()) {
+            System.out.println("[SOLICITACAO CADASTRO] - Criando Fornecedor");
+            criarFornecedorInicial(solicitacao, usuario);
+        }
+        
+        if (solicitacao.getComprador()) {
+            System.out.println("[SOLICITACAO CADASTRO] - Criando Comprador");
+            // TODO: Implementar criarCompradorInicial quando a entidade estiver pronta
+        }
+        
+        if (solicitacao.getRepresentante()) {
+            System.out.println("[SOLICITACAO CADASTRO] - Criando Representante");
+            // TODO: Implementar criarRepresentanteInicial quando a entidade estiver pronta
+        }
+        
+        if (solicitacao.getCliente()) {
+            System.out.println("[SOLICITACAO CADASTRO] - Criando Cliente");
+            // TODO: Implementar criarClienteInicial quando a entidade estiver pronta
+        }
+    }
+
+    /**
+     * Criar registro inicial de Fornecedor com dados básicos da solicitação
+     */
+    private void criarFornecedorInicial(SolicitacaoCadastro solicitacao, Usuario usuario) {
+        Fornecedor fornecedor = new Fornecedor();
+        fornecedor.setNome(solicitacao.getNomeEmpresaOuPessoa());
+        fornecedor.setCnpj(solicitacao.getCnpjOuCpf().replaceAll("\\D", "")); // Remove formatação
+        fornecedor.setEmail(solicitacao.getEmail());
+        fornecedor.setTelefone(solicitacao.getTelefoneFIXO());
+        fornecedor.setStatus("PENDENTE"); // Status inicial
+        fornecedor.setPontuacaoRisco(0.0);
+        
+        fornecedorRepository.save(fornecedor);
+        System.out.println("[SOLICITACAO CADASTRO] Fornecedor criado: " + fornecedor.getNome());
     }
 
     /**
