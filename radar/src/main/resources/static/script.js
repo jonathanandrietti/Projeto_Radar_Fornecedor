@@ -853,6 +853,11 @@ async function consultarCnpj() {
         
         mostrarAlerta('Informações do CNPJ preenchidas automaticamente.');
         
+        // Tenta preencher atividade automaticamente via CNAE se a função estiver disponível
+        if (typeof preencherAtividadeAutomatica === 'function' && (dados.cnae || dados.atividade)) {
+            preencherAtividadeAutomatica(dados.cnae, dados.atividade);
+        }
+        
     } catch (erro) {
         console.error('Erro ao consultar CNPJ:', erro);
         mostrarAlerta('Não foi possível obter dados do CNPJ da API pública. Preencha os campos manualmente.', true);
@@ -959,6 +964,11 @@ async function consultarCnpjComprador() {
         }
         
         mostrarAlerta('Informações do CNPJ preenchidas automaticamente.');
+        
+        // Tenta preencher atividade automaticamente via CNAE se a função estiver disponível
+        if (typeof preencherAtividadeAutomatica === 'function' && (dados.cnae || dados.atividade)) {
+            preencherAtividadeAutomatica(dados.cnae, dados.atividade);
+        }
         
     } catch (erro) {
         console.error('Erro ao consultar CNPJ:', erro);
@@ -1127,6 +1137,11 @@ async function consultarCnpjRepresentante() {
         }
         
         mostrarAlerta('Informações do CNPJ preenchidas automaticamente.');
+        
+        // Tenta preencher atividade automaticamente via CNAE se a função estiver disponível
+        if (typeof preencherAtividadeAutomatica === 'function' && (dados.cnae || dados.atividade)) {
+            preencherAtividadeAutomatica(dados.cnae, dados.atividade);
+        }
         
     } catch (erro) {
         console.error('Erro ao consultar CNPJ:', erro);

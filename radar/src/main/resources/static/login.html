@@ -57,6 +57,11 @@
                 </button>
             </form>
 
+            <!-- Botão CADASTRO FORA do form para não fazer submit -->
+            <a href="/pages/cadastro.html" class="w-full block text-center bg-gradient-to-r from-[#d4af37] to-[#c29a2f] text-slate-900 font-black py-3.5 rounded-2xl shadow-[0_10px_20px_rgba(212,175,55,0.18)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.22)] active:scale-[0.99] uppercase tracking-[0.18em] text-xs sm:text-sm focus:outline-none focus:ring-4 focus:ring-[#d4af37]/30">
+                <i class="fa-solid fa-user-plus mr-2"></i> CADASTRO
+            </a>
+
             <div class="mt-8 pt-6 border-t border-slate-200 text-center">
                 <p class="mb-5 text-[10px] text-slate-500 uppercase font-black tracking-[0.25em]">Módulos Disponíveis</p>
                 <div class="grid grid-cols-2 gap-3 sm:gap-4">
@@ -113,6 +118,23 @@
                     const user = await response.json();
                     localStorage.setItem('usuario', JSON.stringify(user));
                     
+                    // ✅ Se cadastro incompleto, vai para página de finalização
+                    if (user.cadastroCompleto === false) {
+                        // Determinar qual página de finalização baseado nos perfis
+                        if (user.fornecedor) {
+                            window.location.href = '/pages/fornecedores.html?finalizar=true';
+                        } else if (user.comprador) {
+                            window.location.href = '/pages/compradores.html?finalizar=true';
+                        } else if (user.representante) {
+                            window.location.href = '/pages/representantes.html?finalizar=true';
+                        } else if (user.cliente) {
+                            window.location.href = '/pages/clientes.html?finalizar=true';
+                        } else {
+                            window.location.href = '/pages/produtos.html'; // Padrão
+                        }
+                        return;
+                    }
+                    
                     const tipo = user.tipo;
                     let url = '';
                     
@@ -126,6 +148,12 @@
                     
                     window.location.href = url;
                 } else {
+                    // Ler a mensagem de erro do servidor
+                    const errorData = await response.json();
+                    const mensagem = errorData.erro || 'Erro ao fazer login';
+                    
+                    // Atualizar mensagem de erro dinamicamente
+                    erro.innerHTML = `<i class="fa-solid fa-circle-exclamation mr-1"></i> ${mensagem}`;
                     erro.classList.remove('hidden');
                 }
             } catch (err) {

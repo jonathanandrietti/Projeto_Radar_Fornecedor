@@ -604,10 +604,54 @@ function abrirModalNovaCategoria(selectElementId) {
     modal.dataset.selectId = selectElementId;
     
     // Limpa formulário
-    document.getElementById('form-nova-categoria').reset();
+    const form = document.getElementById('form-nova-categoria');
+    if (form) {
+        form.reset();
+    }
     
     // Mostra modal
     modal.classList.remove('hidden');
+}
+
+/**
+ * Cria estrutura HTML do modal de categoria
+ */
+function criarModalCategoria() {
+    const modal = document.createElement('div');
+    modal.id = 'modal-nova-categoria';
+    modal.className = 'fixed inset-0 z-[100] hidden overflow-y-auto bg-slate-950/80 backdrop-blur-sm p-4';
+    
+    modal.innerHTML = `
+        <div class="mx-auto my-8 max-w-md rounded-2xl bg-white shadow-2xl">
+            <div class="flex items-center justify-between border-b px-8 py-5 bg-sky-50 rounded-t-2xl">
+                <h2 class="text-lg font-black text-slate-800 uppercase tracking-tight">Nova Categoria</h2>
+                <button onclick="fecharModalNovaCategoria()" class="text-2xl text-slate-400 hover:text-slate-600">&times;</button>
+            </div>
+            <form id="form-nova-categoria" class="space-y-5 p-8" onsubmit="salvarNovaCategoria(event)">
+                <label class="campo block">
+                    <span class="font-black text-[10px] text-slate-400 uppercase">Nome da Categoria *</span>
+                    <input id="categoria-nome" type="text" required maxlength="100" class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none" placeholder="Ex: Eletrônicos">
+                </label>
+                
+                <label class="campo block">
+                    <span class="font-black text-[10px] text-slate-400 uppercase">Descrição</span>
+                    <textarea id="categoria-descricao" maxlength="255" rows="3" class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none resize-none" placeholder="Ex: Produtos eletrônicos em geral"></textarea>
+                </label>
+                
+                <label class="campo block">
+                    <span class="font-black text-[10px] text-slate-400 uppercase">Ícone (Emoji)</span>
+                    <input id="categoria-icone" type="text" maxlength="10" class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none" placeholder="Ex: 📱">
+                </label>
+                
+                <div class="flex justify-end gap-4 pt-4">
+                    <button type="button" onclick="fecharModalNovaCategoria()" class="rounded-xl border border-slate-200 px-6 py-3 font-bold text-slate-500 hover:bg-slate-50">CANCELAR</button>
+                    <button type="submit" class="rounded-xl bg-sky-600 px-8 py-3 font-black text-white shadow-lg shadow-sky-100 hover:bg-sky-700">ADICIONAR</button>
+                </div>
+            </form>
+        </div>
+    `;
+    
+    return modal;
 }
 
 /**
@@ -742,6 +786,54 @@ async function salvarNovaAtividade(event) {
     } catch (erro) {
         console.error('Erro ao salvar atividade:', erro);
         mostrarErro('Erro ao salvar atividade: ' + erro.message);
+    }
+}
+
+/**
+ * Salva nova categoria
+ */
+async function salvarNovaCategoria(event) {
+    event.preventDefault();
+    
+    const nome = document.getElementById('categoria-nome').value.trim();
+    const descricao = document.getElementById('categoria-descricao').value.trim();
+    const icone = document.getElementById('categoria-icone').value.trim();
+    
+    if (!nome) {
+        alert('Nome da categoria é obrigatório');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE}/categorias`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nome, descricao, icone, ativa: true })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Erro ao salvar categoria');
+        }
+        
+        const novaCategoria = await response.json();
+        mostrarSucesso('Categoria adicionada com sucesso!');
+        
+        // Recarrega lista de categorias no select
+        const selectId = document.getElementById('modal-nova-categoria').dataset.selectId;
+        await carregarCategorias(selectId);
+        
+        // Seleciona a nova categoria no select
+        const selectElement = document.getElementById(selectId);
+        if (selectElement) {
+            selectElement.value = novaCategoria.id;
+        }
+        
+        fecharModalNovaCategoria();
+        
+    } catch (erro) {
+        console.error('Erro ao salvar categoria:', erro);
+        mostrarErro('Erro ao salvar categoria: ' + erro.message);
     }
 }
 

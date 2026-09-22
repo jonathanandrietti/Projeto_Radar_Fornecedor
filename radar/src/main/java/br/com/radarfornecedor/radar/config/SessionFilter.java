@@ -21,8 +21,14 @@ public class SessionFilter implements Filter {
 
         String uri = httpRequest.getRequestURI();
 
-        // Protect any request under /pages/
-        if (uri.startsWith("/pages/")) {
+        // Permitir acesso a H2 Console e arquivos públicos SEM autenticação
+        if (uri.startsWith("/h2-console") || uri.startsWith("/api/login") || uri.startsWith("/api/validacao")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        // Protect any request under /pages/, EXCEPT cadastro.html (public registration page)
+        if (uri.startsWith("/pages/") && !uri.endsWith("cadastro.html")) {
             HttpSession session = httpRequest.getSession(false);
             if (session == null || session.getAttribute("usuario") == null) {
                 // Not logged in, redirect to login page

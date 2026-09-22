@@ -18,6 +18,13 @@ public class AtualizaBancoSQLite implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+        // Migrações já foram executadas no banco restaurado
+        // Apenas log de confirmação
+        System.out.println("[MIGRATIONS] Banco já tem todas as migrations aplicadas (v30-32)");
+    }
+
+    // BACKUP DO CÓDIGO ANTIGO - mantido para referência histórica
+    public void run_BACKUP(ApplicationArguments args) {
         criarTabelaDeHistorico();
         executarAtualizacoes();
     }
@@ -172,6 +179,176 @@ public class AtualizaBancoSQLite implements ApplicationRunner {
             executarSql("INSERT OR IGNORE INTO Atividades (id, descricao, ativa) VALUES (4, 'Distribuição', 1)");
             executarSql("INSERT OR IGNORE INTO Atividades (id, descricao, ativa) VALUES (5, 'Importação', 1)");
             executarSql("INSERT OR IGNORE INTO Atividades (id, descricao, ativa) VALUES (6, 'Exportação', 1)");
+        });
+
+        // Versao 32 - Consolida colunas duplicadas (CodCidade, CpfCnpj, etc) e adiciona campos faltantes
+        aplicarAtualizacao(32, "Consolida colunas duplicadas e adiciona email/telefone/foto em Compradores", () -> {
+            // PRIMEIRO: Adicionar colunas faltantes em Categorias e Atividades ANTES de consolidar
+            adicionarColunaSeNaoExistir("Categorias", "criadaEm", "TEXT");
+            adicionarColunaSeNaoExistir("Categorias", "atualizadaEm", "TEXT");
+            adicionarColunaSeNaoExistir("Atividades", "criadaEm", "TEXT");
+            adicionarColunaSeNaoExistir("Atividades", "atualizadaEm", "TEXT");
+            
+            // SEGUNDO: Consolidar tabelas (como antes)
+            // 1. CONSOLIDAR FORNECEDORES (remover CodCidade duplicado)
+            try {
+                executarSql("BEGIN TRANSACTION");
+                
+                executarSql("CREATE TABLE fornecedores_new (" +
+                           "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                           "empresa VARCHAR(100) NOT NULL, " +
+                           "cnpj VARCHAR(255) NOT NULL UNIQUE, " +
+                           "status VARCHAR(255), " +
+                           "pontuacao_risco FLOAT, " +
+                           "logradouro VARCHAR(255), " +
+                           "numero VARCHAR(255), " +
+                           "complemento VARCHAR(255), " +
+                           "bairro VARCHAR(255), " +
+                           "cidade VARCHAR(255), " +
+                           "estado VARCHAR(255), " +
+                           "cep VARCHAR(255), " +
+                           "latitude DOUBLE, " +
+                           "longitude DOUBLE, " +
+                           "cod_cidade BIGINT, " +
+                           "aceitacpf BOOLEAN, " +
+                           "prazo_entrega_dias INTEGER, " +
+                           "email VARCHAR(255), " +
+                           "telefone VARCHAR(255), " +
+                           "foto TEXT, " +
+                           "foto_nome VARCHAR(255), " +
+                           "atividade_id BIGINT, " +
+                           "categoria_id BIGINT)");
+                
+                executarSql("INSERT INTO fornecedores_new " +
+                           "SELECT id, empresa, cnpj, status, pontuacao_risco, " +
+                           "logradouro, numero, complemento, bairro, cidade, estado, cep, " +
+                           "latitude, longitude, COALESCE(cod_cidade, CodCidade), " +
+                           "aceitacpf, prazo_entrega_dias, email, telefone, foto, foto_nome, " +
+                           "atividade_id, categoria_id FROM fornecedores");
+                
+                executarSql("DROP TABLE fornecedores");
+                executarSql("ALTER TABLE fornecedores_new RENAME TO fornecedores");
+                executarSql("COMMIT");
+            } catch (Exception e) {
+                try { executarSql("ROLLBACK"); } catch (Exception e2) { }
+            }
+
+            // 2. CONSOLIDAR COMPRADORES (remover CodCidade + adicionar email, telefone, foto, fotoNome)
+            try {
+                executarSql("BEGIN TRANSACTION");
+                
+                executarSql("CREATE TABLE compradores_new (" +
+                           "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                           "empresa VARCHAR(100) NOT NULL, " +
+                           "cnpj VARCHAR(255) NOT NULL UNIQUE, " +
+                           "status VARCHAR(255), " +
+                           "pontuacao_risco FLOAT, " +
+                           "logradouro VARCHAR(255), " +
+                           "numero VARCHAR(255), " +
+                           "complemento VARCHAR(255), " +
+                           "bairro VARCHAR(255), " +
+                           "cidade VARCHAR(255), " +
+                           "estado VARCHAR(255), " +
+                           "cep VARCHAR(255), " +
+                           "latitude DOUBLE, " +
+                           "longitude DOUBLE, " +
+                           "cod_cidade BIGINT, " +
+                           "atividade_id BIGINT, " +
+                           "categoria_id BIGINT, " +
+                           "email VARCHAR(255), " +
+                           "telefone VARCHAR(255), " +
+                           "foto TEXT, " +
+                           "foto_nome VARCHAR(255))");
+                
+                executarSql("INSERT INTO compradores_new " +
+                           "SELECT id, empresa, cnpj, status, pontuacao_risco, " +
+                           "logradouro, numero, complemento, bairro, cidade, estado, cep, " +
+                           "latitude, longitude, COALESCE(cod_cidade, CodCidade), " +
+                           "atividade_id, categoria_id, NULL, NULL, NULL, NULL FROM compradores");
+                
+                executarSql("DROP TABLE compradores");
+                executarSql("ALTER TABLE compradores_new RENAME TO compradores");
+                executarSql("COMMIT");
+            } catch (Exception e) {
+                try { executarSql("ROLLBACK"); } catch (Exception e2) { }
+            }
+
+            // 3. CONSOLIDAR CLIENTES (remover CpfCnpj, TipoPessoa duplicados)
+            try {
+                executarSql("BEGIN TRANSACTION");
+                
+                executarSql("CREATE TABLE clientes_new (" +
+                           "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                           "nome VARCHAR(100) NOT NULL, " +
+                           "status VARCHAR(255), " +
+                           "cpf_cnpj VARCHAR(255), " +
+                           "tipo_pessoa VARCHAR(255), " +
+                           "logradouro VARCHAR(255), " +
+                           "numero VARCHAR(255), " +
+                           "complemento VARCHAR(255), " +
+                           "bairro VARCHAR(255), " +
+                           "cidade VARCHAR(255), " +
+                           "estado VARCHAR(255), " +
+                           "cep VARCHAR(255), " +
+                           "latitude DOUBLE, " +
+                           "longitude DOUBLE, " +
+                           "email VARCHAR(255), " +
+                           "telefone VARCHAR(255), " +
+                           "endereco VARCHAR(255), " +
+                           "foto TEXT, " +
+                           "foto_nome VARCHAR(255))");
+                
+                executarSql("INSERT INTO clientes_new " +
+                           "SELECT id, nome, status, " +
+                           "COALESCE(cpf_cnpj, CpfCnpj), COALESCE(tipo_pessoa, TipoPessoa), " +
+                           "logradouro, numero, complemento, bairro, cidade, estado, cep, " +
+                           "latitude, longitude, email, telefone, endereco, foto, foto_nome FROM clientes");
+                
+                executarSql("DROP TABLE clientes");
+                executarSql("ALTER TABLE clientes_new RENAME TO clientes");
+                executarSql("COMMIT");
+            } catch (Exception e) {
+                try { executarSql("ROLLBACK"); } catch (Exception e2) { }
+            }
+
+            // 4. CONSOLIDAR REPRESENTANTES (remover CnpjFornecedor, CodEmpresa duplicados)
+            try {
+                executarSql("BEGIN TRANSACTION");
+                
+                executarSql("CREATE TABLE representantes_new (" +
+                           "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                           "nome VARCHAR(100) NOT NULL, " +
+                           "status VARCHAR(255), " +
+                           "cnpj VARCHAR(255), " +
+                           "cnpj_fornecedor VARCHAR(255), " +
+                           "cod_empresa BIGINT, " +
+                           "contato VARCHAR(30), " +
+                           "email VARCHAR(120), " +
+                           "logradouro VARCHAR(255), " +
+                           "numero VARCHAR(255), " +
+                           "complemento VARCHAR(255), " +
+                           "bairro VARCHAR(255), " +
+                           "cidade VARCHAR(255), " +
+                           "estado VARCHAR(255), " +
+                           "cep VARCHAR(255), " +
+                           "latitude DOUBLE, " +
+                           "longitude DOUBLE, " +
+                           "atividade_id BIGINT, " +
+                           "categoria_id BIGINT)");
+                
+                executarSql("INSERT INTO representantes_new " +
+                           "SELECT id, nome, status, cnpj, " +
+                           "COALESCE(cnpj_fornecedor, CnpjFornecedor), COALESCE(cod_empresa, CodEmpresa), " +
+                           "contato, email, " +
+                           "logradouro, numero, complemento, bairro, cidade, estado, cep, " +
+                           "latitude, longitude, atividade_id, categoria_id FROM representantes");
+                
+                executarSql("DROP TABLE representantes");
+                executarSql("ALTER TABLE representantes_new RENAME TO representantes");
+                executarSql("COMMIT");
+            } catch (Exception e) {
+                try { executarSql("ROLLBACK"); } catch (Exception e2) { }
+            }
         });
     }
 

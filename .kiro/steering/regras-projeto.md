@@ -90,3 +90,82 @@ O servidor roda na porta `8080`. URL base: `http://localhost:8080`
 - Cor dourada do projeto: `#d4af37` (usado em ícones e destaques do menu lateral)
 - Todos os ícones de navegação no `menu-lateral.html` devem usar `text-[#d4af37]`
 - Não substituir a paleta de cores por outras sem aprovação do usuário
+
+---
+
+## Regra 06 — Banco de Dados: NUNCA Deletar, Sempre Preservar Dados
+
+### CRÍTICO — Política de Dados em Produção
+
+**PROIBIDO:**
+- ❌ `spring.jpa.hibernate.ddl-auto=create-drop` (deleta banco a cada execução)
+- ❌ `spring.jpa.hibernate.ddl-auto=create` (deleta dados ao reiniciar)
+- ❌ Criar novo banco de dados no lugar do existente
+- ❌ `DROP TABLE`, `TRUNCATE TABLE` sem backup prévio
+
+**OBRIGATÓRIO:**
+- ✅ `spring.jpa.hibernate.ddl-auto=update` em **TODAS** as máquinas (produção, staging, dev)
+- ✅ Usar `ALTER TABLE` para modificações de schema — Hibernate sincroniza automaticamente
+- ✅ Se precisar excluir uma coluna/tabela destrutiva: fazer BACKUP → copiar dados → recriar estrutura → restaurar dados
+- ✅ Confirmar com o usuário antes de executar qualquer operação destrutiva
+
+### Por que?
+Milhares de dados produtivos não podem ser perdidos por erro de programação. Isso paralisa a operação até restauração.
+
+---
+
+## Regra 07 — Cache de Arquivos Estáticos e Spring Boot
+
+Após editar arquivos estáticos (`.html`, `.css`, `.js`):
+
+1. **Copiar para `/target/classes/static/`** (regra 02)
+2. **Hard refresh no navegador:** `Ctrl+Shift+R` (Chrome/Edge) ou `Cmd+Shift+R` (Mac)
+3. **Spring Boot cache:** Desabilitar globalmente em `application.properties`:
+   ```properties
+   spring.web.resources.cache.period=0
+   spring.web.resources.cache.cachecontrol.no-cache=true
+   spring.web.resources.cache.cachecontrol.no-store=true
+   spring.web.resources.cache.cachecontrol.must-revalidate=true
+   ```
+
+Se mudanças ainda não aparecem após copy + hard refresh:
+- Fechar abas abertas do projeto no navegador
+- Fechar todo o navegador (não apenas a aba)
+- Reabrir `http://localhost:8080`
+
+---
+
+## Regra 08 — Fluxo de Edição: Qual Arquivo Editar?
+
+| Edição | Arquivo Principal | Copiar Para | Servidor | Refresh |
+|--------|-------------------|------------|----------|---------|
+| **Java** (`.java`) | `src/main/java/` | — | **REINICIAR** | Normal |
+| **HTML/CSS/JS** | `src/main/resources/static/` | `target/classes/static/` | Sem reiniciar | **Hard** `Ctrl+Shift+R` |
+| **application.properties** | `src/main/resources/` | — | **REINICIAR** | — |
+| **Entidades JPA** | `src/main/java/model/` | — | **REINICIAR** | — |
+
+---
+
+## Regra 09 — Sistema de Cadastro com Aprovação Admin
+
+### Fluxo Garantido:
+1. Cliente clica **CADASTRO** em `login.html` → abre `pages/cadastro.html`
+2. Preenche CNPJ/CPF, dados contato, usuário, senha
+3. Envia POST `/api/cadastro/solicitar`
+4. Status: `aguardandoAprovacao=true` em banco
+5. Admin vê notificação de pendências em dashboard
+6. Admin aprova: POST `/api/cadastro/aprovar/{id}` → `aguardandoAprovacao=false`
+7. Email enviado ao cliente confirmando aprovação
+8. Cliente loga com usuário/senha de pré-cadastro
+9. Sistema redireciona para finalizar cadastro (completar dados adicionais)
+
+### Validações:
+- CNPJ: algoritmo + busca ReceitaWS
+- CPF: algoritmo + preenchimento manual de dados
+- Senha: criptografada com BCrypt em banco
+- Login: valida senha hasheada com BCryptPasswordEncoder
+
+### Banco:
+- Tabela `SolicitacaoCadastro` armazena requisições pendentes
+- Tabela `Usuario` com flag `aguardandoAprovacao` (boolean)
+- Nenhum dado é deletado — apenas status alterado

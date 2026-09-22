@@ -1,0 +1,16 @@
+InspectDatabase.java:27: error: unmappable character (0x8D) for encoding windows-1252
+            System.out.println("INSPE├ç├âO CONCLU├?DA");
+                                                  ^
+InspectDatabase.java:32: error: unmappable character (0x9D) for encoding windows-1252
+            System.err.println("Ô?î ERRO: " + e.getMessage());
+                                 ^
+InspectDatabase.java:71: error: unmappable character (0x8F) for encoding windows-1252
+                System.out.println("  ÔÜá´©?  Nenhuma tabela encontrada!");
+                                           ^
+InspectDatabase.java:111: error: unmappable character (0x8F) for encoding windows-1252
+                System.out.println("  ÔÜá´©?  Migra├º├Áes n├úo foram registradas!");
+                                           ^
+InspectDatabase.java:131: error: unmappable character (0x8F) for encoding windows-1252
+                        String status = count == 0 ? "ÔÜá´©?  VAZIA" : "Ô£ô";
+                                                           ^
+5 errors

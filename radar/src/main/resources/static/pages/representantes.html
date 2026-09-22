@@ -107,7 +107,7 @@
                 <input id="nome" required class="mt-1" placeholder="Ex: Carlos Alberto Representações">
             </label>
                 <label class="campo">CNPJ Fornecedora
-                    <input id="cnpjFornecedor" required class="mt-1" placeholder="00.000.000/0000-00" oninput="mascaraCnpj(this)">
+                    <input id="cnpjFornecedor" required class="mt-1" placeholder="00.000.000/0000-00" oninput="mascaraCnpj(this)" onblur="buscarFornecedorPorCnpj()">
                 </label>
             </div>
             <div class="grid grid-cols-2 gap-6">

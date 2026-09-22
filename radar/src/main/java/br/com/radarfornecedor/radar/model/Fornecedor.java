@@ -79,11 +79,11 @@ public class Fornecedor {
     private String fotoNome;
 
     // Relacionamento com Categoria e Atividade
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "atividade_id")
     private Atividade atividade;
 

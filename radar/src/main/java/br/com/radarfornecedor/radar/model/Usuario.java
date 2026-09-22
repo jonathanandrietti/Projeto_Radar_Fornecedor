@@ -41,6 +41,12 @@ public class Usuario {
     @Column(name = "Cliente")
     private Boolean cliente = false;
 
+    @Column(name = "AguardandoAprovacao", nullable = false)
+    private Boolean aguardandoAprovacao = false; // Flag para usuários em pré-cadastro
+
+    @Column(name = "CadastroCompleto", nullable = false)
+    private Boolean cadastroCompleto = false; // Flag para indicar se finalizou cadastro
+
     public Usuario() {}
 
     public Usuario(String username, String senha, TipoUsuario tipo) {
@@ -75,4 +81,10 @@ public class Usuario {
 
     public Boolean getCliente() { return cliente; }
     public void setCliente(Boolean cliente) { this.cliente = cliente; }
+
+    public Boolean getAguardandoAprovacao() { return aguardandoAprovacao; }
+    public void setAguardandoAprovacao(Boolean aguardandoAprovacao) { this.aguardandoAprovacao = aguardandoAprovacao; }
+
+    public Boolean getCadastroCompleto() { return cadastroCompleto; }
+    public void setCadastroCompleto(Boolean cadastroCompleto) { this.cadastroCompleto = cadastroCompleto; }
 }

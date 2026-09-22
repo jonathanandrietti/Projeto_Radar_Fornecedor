@@ -68,13 +68,75 @@
                     <p id="usuarios-inativos" class="mt-4 text-3xl font-black text-rose-700">0</p>
                     <p class="mt-1 text-xs text-slate-500">usuários inativos</p>
                 </div>
-                <div class="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm kpi-card">
+                <div class="rounded-2xl border border-amber-200 bg-amber-50/90 p-4 shadow-sm kpi-card cursor-pointer hover:border-amber-300 transition" onclick="abrirAbaAprovacoes()">
                     <div class="flex items-center justify-between">
-                        <p class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Administradores</p>
-                        <span class="rounded-lg bg-sky-100 p-2 text-sky-700"><i class="fa-solid fa-shield-halved"></i></span>
+                        <p class="text-[10px] font-black uppercase tracking-[0.18em] text-amber-600">Solicitações Pendentes</p>
+                        <span class="rounded-lg bg-amber-200 p-2 text-amber-700"><i class="fa-solid fa-hourglass-end"></i></span>
                     </div>
-                    <p id="total-admins" class="mt-4 text-3xl font-black text-sky-700">0</p>
-                    <p class="mt-1 text-xs text-slate-500">administradores</p>
+                    <p id="total-pendentes" class="mt-4 text-3xl font-black text-amber-700">0</p>
+                    <p class="mt-1 text-xs text-amber-600">🔔 Clique para ver detalhes</p>
+                </div>
+            </section>
+
+            <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+                <div class="flex flex-col gap-4 border-b border-slate-200 bg-slate-50/60 p-4 sm:flex-row sm:items-center">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input id="busca" oninput="filtrarUsuarios()" class="w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 py-3 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:border-sky-300 focus:ring-2 focus:ring-sky-100" placeholder="Buscar por username ou perfil...">
+                    </div>
+                    <button onclick="carregarUsuarios()" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white p-3 text-slate-500 transition-colors duration-200 hover:border-sky-200 hover:text-sky-700" title="Atualizar usuários">
+                        <i class="fa-solid fa-rotate text-lg"></i>
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 text-[10px] font-black uppercase tracking-[0.18em] text-slate-500 border-b border-slate-200">
+                            <tr>
+                                <th class="p-4">ID</th>
+                                <th class="p-4">Usuário</th>
+                                <th class="p-4">Perfil</th>
+                                <th class="p-4 text-center">Status</th>
+                                <th class="p-4 text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="linhas-usuarios" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SEÇÃO DE SOLICITAÇÕES DE CADASTRO -->
+            <section class="mb-10">
+                <div class="mb-6 flex items-center gap-2">
+                    <span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
+                    <p class="text-[10px] font-black uppercase tracking-[0.24em] text-amber-700">Solicitações de Cadastro</p>
+                </div>
+                
+                <div class="overflow-hidden rounded-2xl border border-amber-200 bg-white shadow-xl">
+                    <div class="flex flex-col gap-4 border-b border-amber-200 bg-amber-50/60 p-4 sm:flex-row sm:items-center">
+                        <div class="relative flex-1">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-amber-400"></i>
+                            <input id="busca-solicitacoes" oninput="filtrarSolicitacoes()" class="w-full rounded-xl border border-amber-200 bg-white pl-11 pr-4 py-3 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:border-amber-300 focus:ring-2 focus:ring-amber-100" placeholder="Buscar por usuário, CNPJ/CPF ou email...">
+                        </div>
+                        <button onclick="carregarSolicitacoes()" class="inline-flex items-center justify-center rounded-xl border border-amber-200 bg-white p-3 text-amber-500 transition-colors duration-200 hover:border-amber-300 hover:text-amber-700" title="Atualizar solicitações">
+                            <i class="fa-solid fa-rotate text-lg"></i>
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-amber-50 text-[10px] font-black uppercase tracking-[0.18em] text-amber-700 border-b border-amber-200">
+                                <tr>
+                                    <th class="p-4">ID</th>
+                                    <th class="p-4">CNPJ/CPF</th>
+                                    <th class="p-4">Usuário</th>
+                                    <th class="p-4">Email</th>
+                                    <th class="p-4 text-center">Status</th>
+                                    <th class="p-4 text-center">Data</th>
+                                    <th class="p-4 text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="linhas-solicitacoes" class="divide-y divide-amber-100"></tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
@@ -165,6 +227,7 @@
         aplicarControlesDeAcesso();
         verificarPermissaoAdmin();
         carregarUsuarios();
+        carregarSolicitacoes();
     });
 
     function verificarPermissaoAdmin() {
@@ -354,6 +417,122 @@
             mostrarAlerta('Erro ao comunicar com o servidor.', true);
         }
     }
+
+    // ===== SOLICITAÇÕES DE CADASTRO =====
+    let solicitacoesRegistros = [];
+
+    async function carregarSolicitacoes() {
+        try {
+            const resposta = await fetch('/api/cadastro/pendentes');
+            if (!resposta.ok) return;
+            const dados = await resposta.json();
+            solicitacoesRegistros = dados.solicitacoes || [];
+            filtrarSolicitacoes();
+            atualizarContadorSolicitacoes();
+        } catch (erro) {
+            console.error('[ADMIN] Erro ao carregar solicitações:', erro);
+        }
+    }
+
+    function atualizarContadorSolicitacoes() {
+        const total = solicitacoesRegistros.filter(s => s.status === 'PENDENTE').length;
+        document.getElementById('total-pendentes').textContent = total;
+    }
+
+    function filtrarSolicitacoes() {
+        const termo = (document.getElementById('busca-solicitacoes').value || '').toLowerCase();
+        const exibidos = solicitacoesRegistros.filter(s =>
+            [s.cnpjOuCpf, s.usuario, s.email].some(v => String(v || '').toLowerCase().includes(termo))
+        );
+        const tbody = document.getElementById('linhas-solicitacoes');
+        if (!tbody) return;
+        tbody.innerHTML = exibidos.length
+            ? exibidos.map(linhaSolicitacaoCadastro).join('')
+            : '<tr><td colspan="7" class="p-10 text-center text-slate-500">Nenhuma solicitação encontrada.</td></tr>';
+    }
+
+    function linhaSolicitacaoCadastro(s) {
+        // Determinar status baseado na flag "aprovado"
+        const status = s.aprovado === true ? 'APROVADO' : 
+                      s.aprovado === false && s.rejeitadaEm ? 'REJEITADO' : 
+                      'PENDENTE';
+        
+        const statusColor = status === 'PENDENTE' ? 'bg-amber-100 text-amber-700' :
+                           status === 'APROVADO' ? 'bg-emerald-100 text-emerald-700' :
+                           'bg-rose-100 text-rose-700';
+        
+        const statusBadge = `<span class="rounded-full px-2.5 py-1 text-[10px] font-bold ${statusColor}">${status}</span>`;
+        
+        // Formatar data
+        const data = s.criadaEm ? new Date(s.criadaEm).toLocaleDateString('pt-BR', {hour: '2-digit', minute: '2-digit'}) : '-';
+        
+        // Mostrar botões apenas se PENDENTE
+        const acoes = status === 'PENDENTE' ?
+            `<button onclick="aprovarSolicitacao(${s.id})" class="mr-2 text-emerald-600 hover:text-emerald-800 transition" title="Aprovar"><i class="fa-solid fa-check"></i></button>
+             <button onclick="rejeitarSolicitacao(${s.id})" class="text-rose-600 hover:text-rose-800 transition" title="Rejeitar"><i class="fa-solid fa-times"></i></button>` :
+            `<span class="text-slate-400 text-xs">${status}</span>`;
+
+        return `<tr class="hover:bg-amber-50">
+            <td class="p-4 font-medium text-slate-500">${s.id}</td>
+            <td class="p-4 font-mono text-xs">${escapar(s.cnpjOuCpf)}</td>
+            <td class="p-4 font-bold text-slate-800">${escapar(s.usuario)}</td>
+            <td class="p-4 text-sm text-slate-600">${escapar(s.email)}</td>
+            <td class="p-4 text-center">${statusBadge}</td>
+            <td class="p-4 text-sm text-slate-600">${data}</td>
+            <td class="p-4 text-center">${acoes}</td>
+        </tr>`;
+    }
+
+    async function aprovarSolicitacao(id) {
+        if (!confirm('Deseja aprovar esta solicitação de cadastro?')) return;
+
+        try {
+            const resposta = await fetch(`/api/cadastro/aprovar/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (!resposta.ok) {
+                const msg = await resposta.text();
+                mostrarAlerta(msg || 'Erro ao aprovar solicitação.', true);
+                return;
+            }
+
+            mostrarAlerta('✓ Solicitação aprovada com sucesso! Email enviado ao usuário.');
+            carregarSolicitacoes();
+            carregarUsuarios();
+        } catch (erro) {
+            mostrarAlerta('Erro ao comunicar com o servidor.', true);
+        }
+    }
+
+    async function rejeitarSolicitacao(id) {
+        if (!confirm('Deseja REJEITAR esta solicitação? O usuário será notificado.')) return;
+
+        try {
+            const resposta = await fetch(`/api/cadastro/rejeitar/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (!resposta.ok) {
+                const msg = await resposta.text();
+                mostrarAlerta(msg || 'Erro ao rejeitar solicitação.', true);
+                return;
+            }
+
+            mostrarAlerta('✓ Solicitação rejeitada. Email de recusa enviado.');
+            carregarSolicitacoes();
+        } catch (erro) {
+            mostrarAlerta('Erro ao comunicar com o servidor.', true);
+        }
+    }
+
+    function abrirAbaAprovacoes() {
+        document.getElementById('busca-solicitacoes').focus();
+        document.querySelector('section:has(#linhas-solicitacoes)').scrollIntoView({behavior: 'smooth'});
+    }
+
 </script>
 </body>
 </html>

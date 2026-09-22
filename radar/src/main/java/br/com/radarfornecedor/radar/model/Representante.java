@@ -68,12 +68,12 @@ public class Representante {
     private Double longitude;
 
     // Relacionamento com Categoria e Atividade
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "categoria_id")
     @JsonDeserialize(using = CategoriaDeserializer.class)
     private Categoria categoria;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "atividade_id")
     @JsonDeserialize(using = AtividadeDeserializer.class)
     private Atividade atividade;
