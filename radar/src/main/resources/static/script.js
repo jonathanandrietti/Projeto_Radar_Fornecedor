@@ -187,6 +187,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     exibirInfoUsuario();
     aplicarControlesDeAcesso();
+    await verificarEIniciarFinalizacaoCadastro();
     
     // Carregar categorias e atividades para selects (usando funções do preenchimento-automatico.js)
     if (typeof carregarCategorias === 'function') {
@@ -705,6 +706,28 @@ async function salvar(evento) {
         console.log('[DEBUG] Resultado do salvamento:', resultado);
         
         fecharFormulario();
+        
+        // Se estiver em modo de finalização de cadastro, executa o fluxo correspondente
+        const urlParams = new URLSearchParams(window.location.search);
+        const finalizar = urlParams.get('finalizar');
+        if (finalizar === 'true') {
+            console.log('[FINALIZACAO DE CADASTRO] Registro salvo! Chamando endpoint de finalização...');
+            const resFinalizar = await fetch('/api/cadastro/finalizar', {
+                method: 'POST'
+            });
+            if (resFinalizar.ok) {
+                const userAtualizado = await resFinalizar.json();
+                localStorage.setItem('usuario', JSON.stringify(userAtualizado));
+                console.log('[FINALIZACAO DE CADASTRO] Cadastro finalizado com sucesso!', userAtualizado);
+                
+                alert('Seu cadastro foi concluído com sucesso!');
+                window.location.href = window.location.pathname; // Recarrega limpo sem ?finalizar=true
+                return;
+            } else {
+                console.error('[FINALIZACAO DE CADASTRO] Falha ao finalizar cadastro no servidor.');
+            }
+        }
+
         mostrarAlerta(`${configuracao.singular} salvo com sucesso.`);
         carregar();
     } catch (erro) {
@@ -1317,4 +1340,100 @@ async function abrirModalAdicionarAtividade(selectElement) {
     } catch (erro) {
         mostrarAlerta('Erro ao adicionar atividade: ' + erro.message, true);
     }
+}
+
+/**
+ * Função para verificar se está em modo de finalização de cadastro e iniciar o processo de auto-preenchimento
+ */
+async function verificarEIniciarFinalizacaoCadastro() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const finalizar = urlParams.get('finalizar');
+    
+    if (finalizar !== 'true') return;
+    
+    console.log('[FINALIZACAO DE CADASTRO] Iniciando modo de finalização de cadastro...');
+    
+    // 1. Mostrar alerta destacado se houver
+    const alerta = document.getElementById('alerta');
+    if (alerta) {
+        alerta.innerHTML = '<i class="fa-solid fa-circle-info mr-2"></i> <strong>Bem-vindo!</strong> Complete seu cadastro preenchendo os dados abaixo para começar a utilizar o sistema.';
+        alerta.className = 'mb-5 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm shadow-sm text-amber-800';
+        alerta.classList.remove('hidden');
+    }
+    
+    // 2. Abrir formulário automaticamente
+    setTimeout(async () => {
+        if (typeof abrirFormulario === 'function') {
+            abrirFormulario();
+        }
+        
+        // 3. Buscar dados de pré-cadastro (solicitação) da API
+        try {
+            console.log('[FINALIZACAO DE CADASTRO] Carregando dados da solicitação...');
+            const response = await fetch('/api/cadastro/dados-solicitacao');
+            if (response.ok) {
+                const dados = await response.json();
+                console.log('[FINALIZACAO DE CADASTRO] Dados obtidos:', dados);
+                
+                // Preencher CNPJ/CPF
+                const cnpjEl = document.getElementById('cnpj');
+                const cpfCnpjEl = document.getElementById('cpfCnpj');
+                const valorCnpjOuCpf = dados.cnpjOuCpf || '';
+                
+                if (cnpjEl && valorCnpjOuCpf) {
+                    cnpjEl.value = valorCnpjOuCpf;
+                    if (typeof mascaraCnpj === 'function') {
+                        mascaraCnpj(cnpjEl);
+                    }
+                    
+                    // Disparar consulta automática de CNPJ/CPF para carregar o resto das informações da BrasilAPI!
+                    console.log('[FINALIZACAO DE CADASTRO] Disparando consulta de CNPJ automática...');
+                    if (configuracao.entidade === 'fornecedores') {
+                        if (typeof consultarCnpj === 'function') {
+                            await consultarCnpj();
+                        }
+                    } else if (configuracao.entidade === 'compradores') {
+                        if (typeof consultarCnpjComprador === 'function') {
+                            await consultarCnpjComprador();
+                        }
+                    } else if (configuracao.entidade === 'representantes') {
+                        if (typeof consultarCnpjRepresentante === 'function') {
+                            await consultarCnpjRepresentante();
+                        }
+                    }
+                } else if (cpfCnpjEl && valorCnpjOuCpf) {
+                    cpfCnpjEl.value = valorCnpjOuCpf.slice(0, 11);
+                }
+                
+                // Preencher nome, email e outros campos remanescentes se já não estiverem preenchidos pela API pública
+                const nomeEl = document.getElementById('nome');
+                if (nomeEl && !nomeEl.value.trim() && dados.nomeEmpresaOuPessoa) {
+                    nomeEl.value = dados.nomeEmpresaOuPessoa;
+                }
+                
+                const emailEl = document.getElementById('email');
+                if (emailEl && !emailEl.value.trim() && dados.email) {
+                    emailEl.value = dados.email;
+                }
+                
+                const telefoneEl = document.getElementById('telefone');
+                if (telefoneEl && !telefoneEl.value.trim()) {
+                    const tel = dados.telefoneFIXO || dados.celular || '';
+                    if (tel) {
+                        telefoneEl.value = tel;
+                    }
+                }
+                
+                const contatoEl = document.getElementById('contato');
+                if (contatoEl && !contatoEl.value.trim() && dados.nomeContato) {
+                    contatoEl.value = dados.nomeContato;
+                }
+                
+            } else {
+                console.warn('[FINALIZACAO DE CADASTRO] Não foi possível obter dados do pré-cadastro.');
+            }
+        } catch (e) {
+            console.error('[FINALIZACAO DE CADASTRO] Erro ao carregar dados do pré-cadastro:', e);
+        }
+    }, 500);
 }

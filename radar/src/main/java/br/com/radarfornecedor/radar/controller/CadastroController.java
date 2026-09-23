@@ -3,6 +3,7 @@ package br.com.radarfornecedor.radar.controller;
 import br.com.radarfornecedor.radar.model.SolicitacaoCadastro;
 import br.com.radarfornecedor.radar.model.Usuario;
 import br.com.radarfornecedor.radar.service.SolicitacaoCadastroService;
+import br.com.radarfornecedor.radar.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,9 +16,11 @@ import java.util.Optional;
 public class CadastroController {
 
     private final SolicitacaoCadastroService solicitacaoService;
+    private final UsuarioService usuarioService;
 
-    public CadastroController(SolicitacaoCadastroService solicitacaoService) {
+    public CadastroController(SolicitacaoCadastroService solicitacaoService, UsuarioService usuarioService) {
         this.solicitacaoService = solicitacaoService;
+        this.usuarioService = usuarioService;
     }
 
     /**
@@ -140,5 +143,49 @@ public class CadastroController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("erro", e.getMessage()));
         }
+    }
+
+    /**
+     * Retorna os dados da solicitação de cadastro do usuário logado na sessão.
+     */
+    @GetMapping("/dados-solicitacao")
+    public ResponseEntity<?> obterDadosSolicitacao(javax.servlet.http.HttpSession session) {
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuario");
+        if (usuarioLogado == null) {
+            return ResponseEntity.status(401).body(Map.of("erro", "Usuário não autenticado"));
+        }
+        
+        Optional<SolicitacaoCadastro> solicitacaoOpt = solicitacaoService.buscarPorUsuario(usuarioLogado.getUsername());
+        if (solicitacaoOpt.isEmpty()) {
+            return ResponseEntity.status(404).body(Map.of("erro", "Solicitação de cadastro não encontrada"));
+        }
+        
+        return ResponseEntity.ok(solicitacaoOpt.get());
+    }
+
+    /**
+     * Finaliza o cadastro marcando cadastroCompleto = true e atualizando a sessão.
+     */
+    @PostMapping("/finalizar")
+    public ResponseEntity<?> finalizarCadastro(javax.servlet.http.HttpSession session) {
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuario");
+        if (usuarioLogado == null) {
+            return ResponseEntity.status(401).body(Map.of("erro", "Usuário não autenticado"));
+        }
+        
+        Optional<Usuario> usuarioOpt = usuarioService.buscarPorId(usuarioLogado.getId());
+        if (usuarioOpt.isEmpty()) {
+            return ResponseEntity.status(404).body(Map.of("erro", "Usuário não encontrado"));
+        }
+        
+        Usuario usuario = usuarioOpt.get();
+        usuario.setCadastroCompleto(true);
+        Usuario usuarioSalvo = usuarioService.salvar(usuario);
+        
+        // Atualizar usuário na sessão
+        session.setAttribute("usuario", usuarioSalvo);
+        
+        System.out.println("[CADASTRO CONTROLLER] Cadastro finalizado para o usuário: " + usuario.getUsername());
+        return ResponseEntity.ok(usuarioSalvo);
     }
 }
