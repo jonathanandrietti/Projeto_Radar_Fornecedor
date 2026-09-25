@@ -50,6 +50,9 @@ public class SolicitacaoCadastro {
     @Column(nullable = false)
     private Boolean cliente = false;
 
+    @Column(name = "AceitouTermos")
+    private Boolean aceitouTermos = true; // Padrão TRUE para compatibilidade com registros antigos
+
     // Credenciais
     @Column(nullable = false, unique = true)
     private String usuario;
@@ -177,6 +180,14 @@ public class SolicitacaoCadastro {
 
     public void setCliente(Boolean cliente) {
         this.cliente = cliente;
+    }
+
+    public Boolean getAceitouTermos() {
+        return aceitouTermos;
+    }
+
+    public void setAceitouTermos(Boolean aceitouTermos) {
+        this.aceitouTermos = aceitouTermos;
     }
 
     public String getUsuario() {

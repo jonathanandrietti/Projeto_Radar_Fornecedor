@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações de Email | Radar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <script src="/script.js?v=5" defer></script>
+</head>
+<body data-standalone="true">
+<div class="flex min-h-screen">
+    <aside id="menu-lateral" class="w-64 hidden md:block"></aside>
+
+    <div class="flex-1 flex flex-col md:ml-64 main-content-overlay">
+        <header class="bg-black/80 backdrop-blur-md text-white shadow-lg sticky top-0 z-40 border-b border-slate-800">
+            <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
+                <a href="/pages/admin.html" class="flex items-center gap-3 font-black text-lg md:hidden">
+                    <i class="fa-solid fa-satellite-dish text-sky-400"></i> RADAR
+                </a>
+                <div class="flex items-center gap-4 text-sm font-semibold ml-auto">
+                    <div id="user-info" class="flex items-center gap-3"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="mx-auto w-full max-w-6xl px-6 py-8 flex-1">
+            <div id="alerta" class="mb-5 hidden rounded-xl border px-4 py-3 text-sm shadow-sm"></div>
+
+            <!-- Card de Ajuda/Instruções -->
+            <div class="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6">
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-lightbulb text-white text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-blue-900 mb-3">💡 Como configurar Gmail/Google Workspace</h3>
+                        <ol class="text-sm text-blue-800 space-y-2 list-decimal list-inside">
+                            <li><strong>Ative a verificação em 2 etapas</strong> na sua conta Google</li>
+                            <li>Acesse: <a href="https://myaccount.google.com/apppasswords" target="_blank" class="underline font-semibold hover:text-blue-600">myaccount.google.com/apppasswords</a></li>
+                            <li>Crie uma <strong>"Senha de app"</strong> com nome "Radar Fornecedor"</li>
+                            <li>Copie a senha gerada (16 caracteres sem espaços)</li>
+                            <li>Use essa senha no campo <strong>"Senha SMTP"</strong> abaixo</li>
+                        </ol>
+                        <div class="mt-4 p-3 bg-white border border-blue-300 rounded-lg">
+                            <p class="text-xs text-blue-700"><strong>⚠️ NÃO use sua senha normal do Gmail!</strong> Use apenas a "Senha de app" gerada.</p>
+                        </div>
+                        <div class="mt-3 p-3 bg-red-50 border border-red-300 rounded-lg">
+                            <p class="text-xs font-bold text-red-800 mb-2">🔒 Se der erro "534 Web Login Required":</p>
+                            <p class="text-xs text-red-700">
+                                1. Abra: <a href="https://accounts.google.com/b/0/DisplayUnlockCaptcha" target="_blank" class="underline font-bold">accounts.google.com/DisplayUnlockCaptcha</a><br>
+                                2. Clique em "Continuar"<br>
+                                3. Ou use "Senha de app" (recomendado)
+                            </p>
+                        </div>
+                        <div class="mt-3 p-3 bg-amber-50 border border-amber-300 rounded-lg">
+                            <p class="text-xs font-bold text-amber-800 mb-2">📝 Exemplo de configuração Gmail:</p>
+                            <code class="text-xs text-amber-900 block font-mono bg-white p-2 rounded border border-amber-200">
+                                Host: smtp.gmail.com<br>
+                                Porta: 587<br>
+                                Usuário: seu.email@gmail.com<br>
+                                Senha: xxxx xxxx xxxx xxxx (senha de app)<br>
+                                TLS: ✓ Ativado
+                            </code>
+                        </div>
+                        <details class="mt-3">
+                            <summary class="cursor-pointer text-sm font-semibold text-blue-700 hover:text-blue-900">
+                                📋 Outros provedores de email (clique para expandir)
+                            </summary>
+                            <div class="mt-3 text-xs text-blue-800 space-y-2 bg-white p-3 rounded border border-blue-200">
+                                <p><strong>Outlook/Hotmail:</strong> smtp-mail.outlook.com | Porta 587 | TLS ✓</p>
+                                <p><strong>Office 365:</strong> smtp.office365.com | Porta 587 | TLS ✓</p>
+                                <p><strong>Yahoo:</strong> smtp.mail.yahoo.com | Porta 587 | TLS ✓</p>
+                                <p><strong>ProtonMail:</strong> smtp.protonmail.ch | Porta 587 | TLS ✓</p>
+                                <p class="text-blue-600 font-semibold">💡 Alguns provedores exigem "senhas de app" ou configurações especiais de segurança.</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <div class="flex items-center gap-2 mb-2">
+                    <a href="/pages/admin.html" class="text-slate-500 hover:text-slate-700">
+                        <i class="fa-solid fa-arrow-left mr-2"></i>Voltar
+                    </a>
+                </div>
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="h-2.5 w-2.5 rounded-full bg-[#d4af37]"></span>
+                    <p class="text-[10px] font-black uppercase tracking-[0.24em] text-[#a57b00]">Configurações do Sistema</p>
+                </div>
+                <h1 class="text-3xl font-black tracking-tight text-slate-900">Configurações de Email</h1>
+                <p class="mt-2 text-sm text-slate-600 font-medium">Gerencie templates de email e configurações SMTP</p>
+            </div>
+
+            <form id="formConfig" class="space-y-8">
+                <!-- Ativar/Desativar Sistema de Email -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">Sistema de Email</h2>
+                            <p class="text-sm text-slate-600">Ativar ou desativar envio automático de emails</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="emailAtivo" class="sr-only peer">
+                            <div class="w-14 h-7 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#d4af37]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#d4af37]"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Configurações SMTP -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <h2 class="text-lg font-bold text-slate-900 mb-4">Servidor SMTP</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Host SMTP *</label>
+                            <input type="text" id="smtpHost" placeholder="smtp.gmail.com" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4af37]">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Porta *</label>
+                            <input type="number" id="smtpPort" placeholder="587" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4af37]">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Usuário SMTP *</label>
+                            <input type="text" id="smtpUsuario" placeholder="seu@email.com" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4af37]">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Senha SMTP *</label>
+                            <div class="relative">
+                                <input type="password" id="smtpSenha" placeholder="Cole aqui a senha de app" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4af37] pr-32">
+                                <button type="button" onclick="usarSenhaSalva()" id="btnUsarSenhaSalva" class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 font-semibold hidden">
+                                    Usar senha salva
+                                </button>
+                            </div>
+                            <p class="text-xs text-amber-600 mt-1 font-semibold" id="avisoSenha">⚠️ Digite a senha para testar (ou clique em "Usar senha salva")</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Email Remetente *</label>
+                            <input type="email" id="emailRemetente" placeholder="noreply@empresa.com" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4af37]">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Nome Remetente *</label>
+                            <input type="text" id="nomeRemetente" placeholder="Radar Fornecedor" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4af37]">
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center">
+                        <input type="checkbox" id="smtpTls" checked class="w-4 h-4 text-[#d4af37]">
+                        <label for="smtpTls" class="ml-2 text-sm text-slate-700">Usar TLS/STARTTLS</label>
+                    </div>
+                    
+                    <!-- Botões de Teste dentro da seção SMTP -->
+                    <div class="mt-6 pt-6 border-t border-slate-200">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <button type="button" onclick="testarConexaoSmtp()" class="bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-plug"></i>
+                                Testar Conexão SMTP
+                            </button>
+                            <button type="button" onclick="enviarEmailTeste()" class="bg-emerald-600 text-white font-bold py-3 rounded-lg hover:bg-emerald-700 transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                Enviar Email de Teste
+                            </button>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-2 text-center">Teste a conexão primeiro, depois envie um email de teste</p>
+                    </div>
+                    
+                    <!-- Mensagem de feedback do teste -->
+                    <div id="mensagemFeedbackSmtp" class="hidden mt-4 p-4 rounded-lg text-sm font-semibold"></div>
+                </div>
+
+                <!-- Templates de Email -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <h2 class="text-lg font-bold text-slate-900 mb-4">Templates de Email</h2>
+                    
+                    <div class="space-y-6">
+                        <!-- Cumprimento -->
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Cumprimento Inicial</label>
+                            <input type="text" id="cumprimento" placeholder="Prezado(a)" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4af37]">
+                            <p class="text-xs text-slate-500 mt-1">Ex: "Prezado(a)", "Olá", "Caro(a)"</p>
+                        </div>
+
+                        <!-- Mensagem de Aprovação -->
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Mensagem de Aprovação</label>
+                            <textarea id="mensagemAprovacao" rows="4" placeholder="Através deste canal informamos que sua solicitação foi APROVADA." class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4af37]"></textarea>
+                            <p class="text-xs text-slate-500 mt-1">Suporta HTML: &lt;strong&gt;, &lt;em&gt;, &lt;br&gt;, etc.</p>
+                        </div>
+
+                        <!-- Mensagem de Rejeição -->
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Mensagem de Rejeição</label>
+                            <textarea id="mensagemRejeicao" rows="4" placeholder="Através deste canal informamos que sua solicitação NÃO FOI APROVADA." class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4af37]"></textarea>
+                        </div>
+
+                        <!-- Mensagem de Pré-Cadastro (Solicitação Recebida) -->
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Mensagem de Pré-Cadastro (Solicitação Recebida)</label>
+                            <textarea id="mensagemPreCadastro" rows="4" placeholder="Sua solicitação foi recebida! Aguarde a aprovação." class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4af37]"></textarea>
+                            <p class="text-xs text-slate-500 mt-1">Enviado IMEDIATAMENTE após o usuário solicitar cadastro, antes da aprovação do admin</p>
+                        </div>
+
+                        <!-- Mensagem de Cadastro Completo -->
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Mensagem de Cadastro Completo</label>
+                            <textarea id="mensagemCadastroCompleto" rows="4" placeholder="Seu cadastro foi finalizado com sucesso!" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4af37]"></textarea>
+                        </div>
+
+                        <!-- Assinatura -->
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Assinatura</label>
+                            <textarea id="assinatura" rows="3" placeholder="A equipe HAIE agradece seu contato!" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4af37]"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Imagens -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <h2 class="text-lg font-bold text-slate-900 mb-4">Imagens (URLs)</h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Logo (URL)</label>
+                            <input type="url" id="logoUrl" placeholder="https://exemplo.com/logo.png" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4af37]">
+                            <p class="text-xs text-slate-500 mt-1">Será exibida no topo do email</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Imagem de Rodapé (URL)</label>
+                            <input type="url" id="rodapeImagemUrl" placeholder="https://exemplo.com/rodape.png" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4af37]">
+                            <p class="text-xs text-slate-500 mt-1">Será exibida no final do email</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensagem de feedback ANTES dos botões -->
+                <div id="mensagemFeedback" class="hidden mb-4 p-4 rounded-lg text-sm font-semibold"></div>
+
+                <!-- Botões -->
+                <div class="flex gap-4">
+                    <button type="submit" class="flex-1 bg-sky-600 text-white font-bold py-3 rounded-lg hover:bg-sky-700 transition">
+                        <i class="fa-solid fa-save mr-2"></i> Salvar Configurações
+                    </button>
+                    <button type="button" onclick="visualizarEmail()" class="bg-slate-200 text-slate-700 font-bold px-6 py-3 rounded-lg hover:bg-slate-300 transition">
+                        <i class="fa-solid fa-eye mr-2"></i> Visualizar Template
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
+</div>
+
+<script>
+    let senhaSalvaNoBanco = null; // Guarda referência se há senha no banco
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+        await carregarMenuLateral();
+        exibirInfoUsuario();
+        aplicarControlesDeAcesso();
+        verificarPermissaoAdmin();
+        carregarConfiguracao();
+    });
+
+    function verificarPermissaoAdmin() {
+        try {
+            const usuarioJson = localStorage.getItem('usuario');
+            if (!usuarioJson) { window.location.href = '/login.html'; return; }
+            const user = JSON.parse(usuarioJson);
+            if (user.tipo !== 'ADMIN') {
+                alert('Acesso restrito. Apenas administradores.');
+                window.location.href = '/';
+            }
+        } catch (e) {
+            window.location.href = '/login.html';
+        }
+    }
+
+    async function carregarConfiguracao() {
+        try {
+            const resposta = await fetch('/api/configuracoes-email');
+            if (!resposta.ok) {
+                mostrarAlerta('Erro ao carregar configurações', true);
+                return;
+            }
+
+            const config = await resposta.json();
+            
+            // Verificar se há senha salva no banco
+            senhaSalvaNoBanco = config.smtpSenha ? true : false;
+            
+            document.getElementById('emailAtivo').checked = config.emailAtivo || false;
+            document.getElementById('smtpHost').value = config.smtpHost || 'smtp.gmail.com';
+            document.getElementById('smtpPort').value = config.smtpPort || 587;
+            document.getElementById('smtpUsuario').value = config.smtpUsuario || '';
+            
+            // ✅ NOVO: Mostrar asteriscos se há senha salva
+            const senhaInput = document.getElementById('smtpSenha');
+            const btnVisualizarSenha = document.getElementById('btnUsarSenhaSalva');
+            const avisoSenha = document.getElementById('avisoSenha');
+            
+            if (senhaSalvaNoBanco) {
+                senhaInput.value = '••••••••••••••••'; // 16 bullet points
+                senhaInput.dataset.senhaOculta = 'true'; // Flag indicando que tem senha salva
+                senhaInput.placeholder = 'Senha salva (clique em Visualizar para ver)';
+                btnVisualizarSenha.innerHTML = '<i class="fa-solid fa-eye"></i> Visualizar';
+                btnVisualizarSenha.classList.remove('hidden');
+                avisoSenha.innerHTML = '🔒 Senha salva no banco. <strong>Clique em "Visualizar"</strong> para ver ou digite nova senha.';
+            } else {
+                senhaInput.value = '';
+                senhaInput.placeholder = 'Cole aqui a senha de app';
+                btnVisualizarSenha.classList.add('hidden');
+                avisoSenha.innerHTML = '⚠️ Digite a senha para testar';
+            }
+            
+            document.getElementById('emailRemetente').value = config.emailRemetente || config.smtpUsuario || '';
+            document.getElementById('nomeRemetente').value = config.nomeRemetente || 'Radar Fornecedor';
+            document.getElementById('smtpTls').checked = config.smtpTls !== false;
+            document.getElementById('cumprimento').value = config.cumprimento || 'Prezado(a)';
+            document.getElementById('mensagemAprovacao').value = config.mensagemAprovacao || 'Através deste canal informamos que sua solicitação foi <strong>APROVADA</strong>.';
+            document.getElementById('mensagemRejeicao').value = config.mensagemRejeicao || 'Através deste canal informamos que sua solicitação <strong>NÃO FOI APROVADA</strong>.';
+            document.getElementById('mensagemPreCadastro').value = config.mensagemPreCadastro || 'Sua solicitação de cadastro foi <strong>RECEBIDA COM SUCESSO</strong>!<br><br>Aguarde a análise da nossa equipe. Você receberá um email assim que sua solicitação for aprovada.<br><br>Se aprovado, você poderá acessar o sistema com o usuário e senha que cadastrou.';
+            document.getElementById('mensagemCadastroCompleto').value = config.mensagemCadastroCompleto || 'Seu cadastro foi finalizado com sucesso!';
+            document.getElementById('assinatura').value = config.assinatura || 'A equipe HAIE agradece seu contato!';
+            document.getElementById('logoUrl').value = config.logoUrl || '';
+            document.getElementById('rodapeImagemUrl').value = config.rodapeImagemUrl || '';
+            
+            console.log('[CONFIG EMAIL] Configuração carregada:', {
+                host: config.smtpHost,
+                porta: config.smtpPort,
+                usuario: config.smtpUsuario,
+                remetente: config.emailRemetente,
+                temSenha: config.smtpSenha ? 'SIM (ocultada)' : 'NÃO'
+            });
+
+        } catch (erro) {
+            console.error('[CONFIG EMAIL] Erro:', erro);
+            mostrarAlerta('Erro ao carregar configurações', true);
+        }
+    }
+
+    document.getElementById('formConfig').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const config = {
+            emailAtivo: document.getElementById('emailAtivo').checked,
+            smtpHost: document.getElementById('smtpHost').value,
+            smtpPort: parseInt(document.getElementById('smtpPort').value),
+            smtpUsuario: document.getElementById('smtpUsuario').value,
+            smtpSenha: document.getElementById('smtpSenha').value,
+            emailRemetente: document.getElementById('emailRemetente').value,
+            nomeRemetente: document.getElementById('nomeRemetente').value,
+            smtpTls: document.getElementById('smtpTls').checked,
+            cumprimento: document.getElementById('cumprimento').value,
+            mensagemAprovacao: document.getElementById('mensagemAprovacao').value,
+            mensagemRejeicao: document.getElementById('mensagemRejeicao').value,
+            mensagemPreCadastro: document.getElementById('mensagemPreCadastro').value,
+            mensagemCadastroCompleto: document.getElementById('mensagemCadastroCompleto').value,
+            assinatura: document.getElementById('assinatura').value,
+            logoUrl: document.getElementById('logoUrl').value,
+            rodapeImagemUrl: document.getElementById('rodapeImagemUrl').value
+        };
+
+        try {
+            const resposta = await fetch('/api/configuracoes-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(config)
+            });
+
+            if (!resposta.ok) {
+                const erro = await resposta.json();
+                mostrarFeedback(erro.erro || 'Erro ao salvar', true);
+                return;
+            }
+
+            mostrarFeedback('✓ Configurações salvas com sucesso!', false);
+            
+            // Limpar senha
+            document.getElementById('smtpSenha').value = '';
+
+        } catch (erro) {
+            console.error('[CONFIG EMAIL] Erro:', erro);
+            mostrarFeedback('Erro ao salvar configurações', true);
+        }
+    });
+
+    async function usarSenhaSalva() {
+        const senhaInput = document.getElementById('smtpSenha');
+        const btnVisualizarSenha = document.getElementById('btnUsarSenhaSalva');
+        
+        // Se está mostrando asteriscos, buscar senha real do banco
+        if (senhaInput.dataset.senhaOculta === 'true') {
+            try {
+                mostrarFeedbackSmtp('🔄 Buscando senha...', false, true);
+                
+                const resposta = await fetch('/api/configuracoes-email/buscar-senha-teste', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const resultado = await resposta.json();
+
+                if (resposta.ok && resultado.temSenha) {
+                    senhaInput.value = resultado.senha;
+                    senhaInput.type = 'text';
+                    senhaInput.dataset.senhaOculta = 'false';
+                    btnVisualizarSenha.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Ocultar';
+                    mostrarFeedbackSmtp('✅ Senha visível. Clique em "Ocultar" para esconder novamente.', false);
+                } else {
+                    mostrarFeedbackSmtp('❌ Nenhuma senha salva no banco', true);
+                }
+            } catch (erro) {
+                mostrarFeedbackSmtp('❌ Erro ao buscar senha: ' + erro.message, true);
+            }
+        } else {
+            // Se está mostrando senha real, ocultar novamente
+            senhaInput.value = '••••••••••••••••';
+            senhaInput.type = 'password';
+            senhaInput.dataset.senhaOculta = 'true';
+            btnVisualizarSenha.innerHTML = '<i class="fa-solid fa-eye"></i> Visualizar';
+            mostrarFeedbackSmtp('🔒 Senha ocultada. A senha salva continua disponível para testes.', false);
+        }
+    }
+
+    async function testarConexaoSmtp() {
+        // Capturar senha do campo
+        let senhaInput = document.getElementById('smtpSenha');
+        let senha = senhaInput.value;
+        
+        // ✅ NOVO: Se tem asteriscos, buscar senha real do banco
+        if (senha === '••••••••••••••••' || senhaInput.dataset.senhaOculta === 'true') {
+            console.log('[TESTE] Senha está oculta. Buscando senha real do banco...');
+            
+            try {
+                const resposta = await fetch('/api/configuracoes-email/buscar-senha-teste', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const resultado = await resposta.json();
+
+                if (resposta.ok && resultado.temSenha) {
+                    senha = resultado.senha;
+                    console.log('[TESTE] Senha real obtida do banco:', senha.length + ' caracteres');
+                } else {
+                    mostrarFeedbackSmtp('❌ Nenhuma senha salva no banco. Digite a senha antes de testar.', true);
+                    senhaInput.focus();
+                    return;
+                }
+            } catch (erro) {
+                mostrarFeedbackSmtp('❌ Erro ao buscar senha: ' + erro.message, true);
+                return;
+            }
+        }
+        
+        console.log('[TESTE] Senha digitada:', senha ? senha.length + ' caracteres' : 'VAZIO');
+        
+        if (!senha || senha.trim() === '') {
+            mostrarFeedbackSmtp('❌ Preencha a Senha SMTP antes de testar!\n\nO campo está vazio. Digite a senha de app do Gmail.', true);
+            senhaInput.focus();
+            return;
+        }
+
+        const dados = {
+            smtpHost: document.getElementById('smtpHost').value,
+            smtpPort: parseInt(document.getElementById('smtpPort').value),
+            smtpUsuario: document.getElementById('smtpUsuario').value,
+            smtpSenha: senha,
+            smtpTls: document.getElementById('smtpTls').checked
+        };
+
+        console.log('[TESTE] Dados sendo enviados:', {
+            host: dados.smtpHost,
+            porta: dados.smtpPort,
+            usuario: dados.smtpUsuario,
+            senhaLength: dados.smtpSenha ? dados.smtpSenha.length : 0,
+            senhaPrimeiros3: dados.smtpSenha ? dados.smtpSenha.substring(0, 3) + '...' : 'VAZIO',
+            senhaUltimos3: dados.smtpSenha ? '...' + dados.smtpSenha.substring(dados.smtpSenha.length - 3) : 'VAZIO',
+            tls: dados.smtpTls
+        });
+
+        // Validações
+        if (!dados.smtpHost) {
+            mostrarFeedbackSmtp('❌ Preencha o Host SMTP antes de testar', true);
+            return;
+        }
+        if (!dados.smtpPort) {
+            mostrarFeedbackSmtp('❌ Preencha a Porta SMTP antes de testar', true);
+            return;
+        }
+        if (!dados.smtpUsuario) {
+            mostrarFeedbackSmtp('❌ Preencha o Usuário SMTP antes de testar', true);
+            return;
+        }
+
+        // Mostrar loading
+        mostrarFeedbackSmtp('🔌 Testando conexão SMTP... aguarde', false, true);
+
+        try {
+            const resposta = await fetch('/api/configuracoes-email/testar-conexao', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            });
+
+            const resultado = await resposta.json();
+
+            if (resposta.ok && resultado.sucesso) {
+                mostrarFeedbackSmtp(`✅ CONEXÃO SMTP FUNCIONANDO!
+
+✓ Conectado ao servidor ${dados.smtpHost}:${dados.smtpPort}
+✓ Autenticação aceita para ${dados.smtpUsuario}
+✓ TLS: ${dados.smtpTls ? 'Ativado' : 'Desativado'}
+
+Agora você pode enviar um email de teste!`, false);
+            } else {
+                let mensagemErro = resultado.erro || 'Falha ao conectar';
+                
+                // Detectar erros específicos
+                if (mensagemErro.includes('Username and Password not accepted') || 
+                    mensagemErro.includes('BadCredentials') ||
+                    mensagemErro.includes('535')) {
+                    mensagemErro = `❌ AUTENTICAÇÃO REJEITADA!
+
+Usuário: ${dados.smtpUsuario}
+Senha: ${dados.smtpSenha ? dados.smtpSenha.length + ' caracteres' : 'VAZIO'}
+
+🔍 VERIFICAÇÕES:
+✓ Gerou "Senha de app" no Google?
+✓ Verificação em 2 etapas ativa?
+✓ Senha de 16 caracteres completa?
+✓ Email correto no campo Usuário?
+
+💡 TESTE: Gere NOVA senha de app`;
+                } else if (mensagemErro.includes('534') || 
+                           mensagemErro.includes('WebLoginRequired') ||
+                           mensagemErro.includes('web browser')) {
+                    mensagemErro = `❌ GOOGLE BLOQUEOU POR SEGURANÇA!
+
+🔒 Erro 534-5.7.9: "Web Login Required"
+
+📌 SOLUÇÃO RÁPIDA:
+1. Abra: https://accounts.google.com/b/0/DisplayUnlockCaptcha
+2. Clique em "Continuar"
+3. OU acesse sua conta Gmail pelo navegador
+4. Volte aqui e teste novamente
+
+💡 ALTERNATIVA:
+• Use "Senha de app" (mais seguro)
+• Não use sua senha normal do Gmail
+
+Este erro acontece quando o Google não reconhece
+o acesso vindo de uma aplicação.`;
+                } else if (mensagemErro.includes('Could not connect') || 
+                           mensagemErro.includes('Connection timed out')) {
+                    mensagemErro = `⏱️ NÃO CONSEGUIU CONECTAR!
+
+Host: ${dados.smtpHost}
+Porta: ${dados.smtpPort}
+
+Verifique:
+• Host está correto?
+• Porta está correta? (Gmail: 587)
+• Firewall bloqueando?
+• Internet funcionando?`;
+                } else if (mensagemErro.includes('Connection refused')) {
+                    mensagemErro = `🚫 CONEXÃO RECUSADA!
+
+Porta ${dados.smtpPort} não aceita conexões.
+
+Gmail usa:
+• Porta 587 com TLS ✓
+• NÃO use 465 ou 25`;
+                }
+                
+                mostrarFeedbackSmtp(mensagemErro, true);
+            }
+
+        } catch (erro) {
+            console.error('[TESTE CONEXAO] Erro:', erro);
+            mostrarFeedbackSmtp('❌ Erro ao testar: ' + erro.message, true);
+        }
+    }
+
+    async function enviarEmailTeste() {
+        const emailDestino = prompt('Digite o email de destino para o teste:');
+        
+        if (!emailDestino) {
+            mostrarFeedbackSmtp('❌ Email de destino é obrigatório', true);
+            return;
+        }
+
+        // Validar email básico
+        if (!emailDestino.includes('@')) {
+            mostrarFeedbackSmtp('❌ Email inválido', true);
+            return;
+        }
+
+        // Capturar senha
+        let senha = document.getElementById('smtpSenha').value;
+        const senhaInput = document.getElementById('smtpSenha');
+        
+        // ✅ NOVO: Se tem asteriscos, buscar senha real do banco
+        if (senha === '••••••••••••••••' || senhaInput.dataset.senhaOculta === 'true') {
+            console.log('[TESTE EMAIL] Senha está oculta. Buscando senha real do banco...');
+            
+            try {
+                const resposta = await fetch('/api/configuracoes-email/buscar-senha-teste', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const resultado = await resposta.json();
+
+                if (resposta.ok && resultado.temSenha) {
+                    senha = resultado.senha;
+                    console.log('[TESTE EMAIL] Senha real obtida do banco:', senha.length + ' caracteres');
+                } else {
+                    mostrarFeedbackSmtp('❌ Nenhuma senha salva no banco. Digite a senha antes de enviar.', true);
+                    senhaInput.focus();
+                    return;
+                }
+            } catch (erro) {
+                mostrarFeedbackSmtp('❌ Erro ao buscar senha: ' + erro.message, true);
+                return;
+            }
+        }
+        
+        if (!senha || senha.trim() === '') {
+            mostrarFeedbackSmtp('❌ Preencha a Senha SMTP antes de enviar', true);
+            return;
+        }
+
+        const dados = {
+            smtpHost: document.getElementById('smtpHost').value,
+            smtpPort: parseInt(document.getElementById('smtpPort').value),
+            smtpUsuario: document.getElementById('smtpUsuario').value,
+            smtpSenha: senha,
+            smtpTls: document.getElementById('smtpTls').checked,
+            emailRemetente: document.getElementById('emailRemetente').value,
+            nomeRemetente: document.getElementById('nomeRemetente').value,
+            logoUrl: document.getElementById('logoUrl').value,
+            rodapeImagemUrl: document.getElementById('rodapeImagemUrl').value,
+            emailDestino: emailDestino
+        };
+
+        // Validações
+        if (!dados.smtpHost) {
+            mostrarFeedbackSmtp('❌ Preencha o Host SMTP antes de testar', true);
+            return;
+        }
+        if (!dados.smtpPort) {
+            mostrarFeedbackSmtp('❌ Preencha a Porta SMTP antes de testar', true);
+            return;
+        }
+        if (!dados.smtpUsuario) {
+            mostrarFeedbackSmtp('❌ Preencha o Usuário SMTP antes de testar', true);
+            return;
+        }
+
+        // Mostrar loading
+        mostrarFeedbackSmtp('📤 Enviando email de teste para ' + emailDestino + '... aguarde', false, true);
+
+        try {
+            const resposta = await fetch('/api/configuracoes-email/testar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            });
+
+            const resultado = await resposta.json();
+
+            if (resposta.ok && resultado.sucesso) {
+                mostrarFeedbackSmtp('✅ ' + resultado.mensagem, false);
+            } else {
+                let mensagemErro = resultado.erro || 'Falha ao enviar email de teste';
+                
+                // Detectar erro de autenticação do Gmail
+                if (mensagemErro.includes('Username and Password not accepted') || 
+                    mensagemErro.includes('BadCredentials') ||
+                    mensagemErro.includes('535')) {
+                    mensagemErro = `❌ AUTENTICAÇÃO REJEITADA PELO GMAIL!
+
+🔍 VERIFICAÇÕES:
+✓ Você gerou uma "Senha de app"? (não use senha normal!)
+✓ Verificação em 2 etapas está ativa?
+✓ Copiou a senha de 16 caracteres COMPLETA?
+✓ Email no campo "Usuário SMTP" está correto?
+
+📌 PASSO A PASSO:
+1. Acesse: myaccount.google.com/apppasswords
+2. Gere nova senha com nome "Radar Fornecedor"
+3. Copie TODOS os 16 caracteres (sem espaços)
+4. Cole no campo "Senha SMTP"
+5. Teste novamente`;
+                } else if (mensagemErro.includes('Connection timed out') || 
+                           mensagemErro.includes('timeout')) {
+                    mensagemErro = `⏱️ TEMPO ESGOTADO!
+
+Verifique:
+• Host SMTP: ${dados.smtpHost} está correto?
+• Porta: ${dados.smtpPort} está correta? (Gmail usa 587)
+• Firewall ou antivírus bloqueando?
+• Internet funcionando?`;
+                } else if (mensagemErro.includes('Connection refused')) {
+                    mensagemErro = `🚫 CONEXÃO RECUSADA!
+
+Verifique:
+• Porta SMTP: ${dados.smtpPort} está correta?
+  (Gmail usa 587, NÃO 465)
+• Host: ${dados.smtpHost} está correto?
+• TLS: ${dados.smtpTls ? 'Ativado ✓' : 'Desativado ✗'}`;
+                }
+                
+                mostrarFeedbackSmtp(mensagemErro, true);
+            }
+
+        } catch (erro) {
+            console.error('[TESTE EMAIL] Erro:', erro);
+            mostrarFeedbackSmtp('❌ Erro ao testar conexão: ' + erro.message, true);
+        }
+    }
+
+    function visualizarEmail() {
+        const cumprimento = document.getElementById('cumprimento').value;
+        const mensagem = document.getElementById('mensagemAprovacao').value;
+        const assinatura = document.getElementById('assinatura').value;
+        const logoUrl = document.getElementById('logoUrl').value;
+        const rodapeUrl = document.getElementById('rodapeImagemUrl').value;
+
+        let html = '<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">';
+        
+        if (logoUrl) {
+            html += `<div style="text-align: center; margin-bottom: 20px;"><img src="${logoUrl}" alt="Logo" style="max-width: 200px;"></div>`;
+        }
+        
+        html += `<p>${cumprimento} <strong>João Silva</strong>,</p>`;
+        html += `<p>${mensagem}</p>`;
+        html += `<p>${assinatura}</p>`;
+        
+        if (rodapeUrl) {
+            html += `<div style="text-align: center; margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;"><img src="${rodapeUrl}" alt="Rodapé" style="max-width: 100%;"></div>`;
+        }
+        
+        html += '</div>';
+
+        const janela = window.open('', '_blank');
+        janela.document.write(html);
+        janela.document.close();
+    }
+
+    function mostrarFeedbackSmtp(msg, erro = false, loading = false) {
+        const feedback = document.getElementById('mensagemFeedbackSmtp');
+        
+        if (loading) {
+            feedback.className = 'mt-4 p-4 rounded-lg text-sm font-semibold border-2 border-blue-300 bg-blue-50 text-blue-700 animate-pulse';
+        } else if (erro) {
+            feedback.className = 'mt-4 p-4 rounded-lg text-sm border-2 border-red-300 bg-red-50 text-red-700 font-mono';
+        } else {
+            feedback.className = 'mt-4 p-4 rounded-lg text-sm font-semibold border-2 border-emerald-300 bg-emerald-50 text-emerald-700';
+        }
+        
+        // Preservar quebras de linha
+        feedback.innerHTML = msg.replace(/\n/g, '<br>');
+        feedback.style.whiteSpace = 'pre-line';
+        feedback.classList.remove('hidden');
+        
+        if (!loading) {
+            if (erro) {
+                // Erros PERMANECEM visíveis - não desaparecem
+            } else {
+                // Sucessos ficam 20 segundos
+                setTimeout(() => feedback.classList.add('hidden'), 20000);
+            }
+        }
+    }
+
+    function mostrarFeedback(msg, erro = false, loading = false) {
+        const feedback = document.getElementById('mensagemFeedback');
+        const alerta = document.getElementById('alerta');
+        
+        // Ocultar alerta antigo
+        alerta.classList.add('hidden');
+        
+        if (loading) {
+            feedback.className = 'mb-4 p-4 rounded-lg text-sm font-semibold border-2 border-blue-300 bg-blue-50 text-blue-700 animate-pulse';
+        } else if (erro) {
+            feedback.className = 'mb-4 p-4 rounded-lg text-sm font-semibold border-2 border-red-300 bg-red-50 text-red-700';
+        } else {
+            feedback.className = 'mb-4 p-4 rounded-lg text-sm font-semibold border-2 border-emerald-300 bg-emerald-50 text-emerald-700';
+        }
+        
+        // Preservar quebras de linha
+        feedback.innerHTML = msg.replace(/\n/g, '<br>');
+        feedback.style.whiteSpace = 'pre-line';
+        feedback.classList.remove('hidden');
+        
+        if (!loading) {
+            if (erro) {
+                // Erros permanecem
+            } else {
+                // Sucesso 15 segundos
+                setTimeout(() => feedback.classList.add('hidden'), 15000);
+            }
+        }
+    }
+
+    function mostrarAlerta(msg, erro = false) {
+        mostrarFeedback(msg, erro);
+    }
+</script>
+</body>
+</html>

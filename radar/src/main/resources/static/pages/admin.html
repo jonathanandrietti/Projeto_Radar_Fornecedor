@@ -76,46 +76,28 @@
                     <p id="total-pendentes" class="mt-4 text-3xl font-black text-amber-700">0</p>
                     <p class="mt-1 text-xs text-amber-600">🔔 Clique para ver detalhes</p>
                 </div>
-            </section>
-
-            <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
-                <div class="flex flex-col gap-4 border-b border-slate-200 bg-slate-50/60 p-4 sm:flex-row sm:items-center">
-                    <div class="relative flex-1">
-                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input id="busca" oninput="filtrarUsuarios()" class="w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 py-3 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:border-sky-300 focus:ring-2 focus:ring-sky-100" placeholder="Buscar por username ou perfil...">
+                <div class="rounded-2xl border border-[#d4af37] bg-gradient-to-br from-[#fff9e6] to-[#fef3d0] p-4 shadow-sm kpi-card cursor-pointer hover:border-[#c29a2f] transition" onclick="window.location.href='/pages/configuracoes-email.html'">
+                    <div class="flex items-center justify-between">
+                        <p class="text-[10px] font-black uppercase tracking-[0.18em] text-[#a57b00]">Configurações de Email</p>
+                        <span class="rounded-lg bg-[#d4af37] p-2 text-white"><i class="fa-solid fa-envelope-open-text"></i></span>
                     </div>
-                    <button onclick="carregarUsuarios()" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white p-3 text-slate-500 transition-colors duration-200 hover:border-sky-200 hover:text-sky-700" title="Atualizar usuários">
-                        <i class="fa-solid fa-rotate text-lg"></i>
-                    </button>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 text-[10px] font-black uppercase tracking-[0.18em] text-slate-500 border-b border-slate-200">
-                            <tr>
-                                <th class="p-4">ID</th>
-                                <th class="p-4">Usuário</th>
-                                <th class="p-4">Perfil</th>
-                                <th class="p-4 text-center">Status</th>
-                                <th class="p-4 text-center">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="linhas-usuarios" class="divide-y divide-slate-100"></tbody>
-                    </table>
+                    <p class="mt-4 text-base font-bold text-[#a57b00]">Templates & SMTP</p>
+                    <p class="mt-1 text-xs text-[#a57b00]">⚙️ Clique para configurar</p>
                 </div>
             </section>
 
-            <!-- SEÇÃO DE SOLICITAÇÕES DE CADASTRO -->
+            <!-- SEÇÃO DE SOLICITAÇÕES PENDENTES -->
             <section class="mb-10">
                 <div class="mb-6 flex items-center gap-2">
                     <span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
-                    <p class="text-[10px] font-black uppercase tracking-[0.24em] text-amber-700">Solicitações de Cadastro</p>
+                    <p class="text-[10px] font-black uppercase tracking-[0.24em] text-amber-700">Solicitações Pendentes</p>
                 </div>
                 
                 <div class="overflow-hidden rounded-2xl border border-amber-200 bg-white shadow-xl">
                     <div class="flex flex-col gap-4 border-b border-amber-200 bg-amber-50/60 p-4 sm:flex-row sm:items-center">
                         <div class="relative flex-1">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-amber-400"></i>
-                            <input id="busca-solicitacoes" oninput="filtrarSolicitacoes()" class="w-full rounded-xl border border-amber-200 bg-white pl-11 pr-4 py-3 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:border-amber-300 focus:ring-2 focus:ring-amber-100" placeholder="Buscar por usuário, CNPJ/CPF ou email...">
+                            <input id="busca-solicitacoes-pendentes" oninput="filtrarSolicitacoesPendentes()" class="w-full rounded-xl border border-amber-200 bg-white pl-11 pr-4 py-3 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:border-amber-300 focus:ring-2 focus:ring-amber-100" placeholder="Buscar por usuário, CNPJ/CPF ou email...">
                         </div>
                         <button onclick="carregarSolicitacoes()" class="inline-flex items-center justify-center rounded-xl border border-amber-200 bg-white p-3 text-amber-500 transition-colors duration-200 hover:border-amber-300 hover:text-amber-700" title="Atualizar solicitações">
                             <i class="fa-solid fa-rotate text-lg"></i>
@@ -134,9 +116,53 @@
                                     <th class="p-4 text-center">Ações</th>
                                 </tr>
                             </thead>
-                            <tbody id="linhas-solicitacoes" class="divide-y divide-amber-100"></tbody>
+                            <tbody id="linhas-solicitacoes-pendentes" class="divide-y divide-amber-100"></tbody>
                         </table>
                     </div>
+                </div>
+            </section>
+
+            <!-- SEÇÃO DE SOLICITAÇÕES REJEITADAS (HISTÓRICO) -->
+            <section class="mb-10">
+                <div class="mb-6 flex items-center gap-2">
+                    <span class="h-2.5 w-2.5 rounded-full bg-rose-500"></span>
+                    <p class="text-[10px] font-black uppercase tracking-[0.24em] text-rose-700">Solicitações Rejeitadas (Histórico)</p>
+                </div>
+                
+                <div class="overflow-hidden rounded-2xl border border-rose-200 bg-white shadow-xl">
+                    <div class="flex flex-col gap-4 border-b border-rose-200 bg-rose-50/60 p-4 sm:flex-row sm:items-center">
+                        <div class="relative flex-1">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-rose-400"></i>
+                            <input id="busca-solicitacoes-rejeitadas" oninput="filtrarSolicitacoesRejeitadas()" class="w-full rounded-xl border border-rose-200 bg-white pl-11 pr-4 py-3 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:border-rose-300 focus:ring-2 focus:ring-rose-100" placeholder="Buscar por usuário, CNPJ/CPF ou email...">
+                        </div>
+                        <button onclick="carregarSolicitacoes()" class="inline-flex items-center justify-center rounded-xl border border-rose-200 bg-white p-3 text-rose-500 transition-colors duration-200 hover:border-rose-300 hover:text-rose-700" title="Atualizar solicitações">
+                            <i class="fa-solid fa-rotate text-lg"></i>
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-rose-50 text-[10px] font-black uppercase tracking-[0.18em] text-rose-700 border-b border-rose-200">
+                                <tr>
+                                    <th class="p-4">ID</th>
+                                    <th class="p-4">CNPJ/CPF</th>
+                                    <th class="p-4">Usuário</th>
+                                    <th class="p-4">Email</th>
+                                    <th class="p-4 text-center">Status</th>
+                                    <th class="p-4 text-center">Data Rejeição</th>
+                                    <th class="p-4 text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="linhas-solicitacoes-rejeitadas" class="divide-y divide-rose-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEÇÃO DE USUÁRIOS CADASTRADOS -->
+            <section class="mb-10">
+                <div class="mb-6 flex items-center gap-2">
+                    <span class="h-2.5 w-2.5 rounded-full bg-sky-500"></span>
+                    <p class="text-[10px] font-black uppercase tracking-[0.24em] text-sky-700">Usuários Cadastrados</p>
                 </div>
             </section>
 
@@ -418,7 +444,8 @@
     }
 
     // ===== SOLICITAÇÕES DE CADASTRO =====
-    let solicitacoesRegistros = [];
+    let solicitacoesPendentes = [];
+    let solicitacoesRejeitadas = [];
 
     async function carregarSolicitacoes() {
         try {
@@ -430,8 +457,14 @@
                 return;
             }
             const dados = await resposta.json();
-            solicitacoesRegistros = dados.solicitacoes || [];
-            filtrarSolicitacoes();
+            const todasSolicitacoes = dados.solicitacoes || [];
+            
+            // ✅ SEPARAR: Pendentes vs Rejeitadas
+            solicitacoesPendentes = todasSolicitacoes.filter(s => !s.aprovado && !s.rejeitadaEm);
+            solicitacoesRejeitadas = todasSolicitacoes.filter(s => s.rejeitadaEm);
+            
+            filtrarSolicitacoesPendentes();
+            filtrarSolicitacoesRejeitadas();
             atualizarContadorSolicitacoes();
         } catch (erro) {
             console.error('[ADMIN] Erro ao carregar solicitações:', erro);
@@ -440,42 +473,28 @@
     }
 
     function atualizarContadorSolicitacoes() {
-        const total = solicitacoesRegistros.filter(s => s.aprovado === false || s.aprovado === null).length;
-        document.getElementById('total-pendentes').textContent = total;
+        document.getElementById('total-pendentes').textContent = solicitacoesPendentes.length;
     }
 
-    function filtrarSolicitacoes() {
-        const termo = (document.getElementById('busca-solicitacoes').value || '').toLowerCase();
-        const exibidos = solicitacoesRegistros.filter(s =>
+    // ===== GRID DE SOLICITAÇÕES PENDENTES =====
+    function filtrarSolicitacoesPendentes() {
+        const termo = (document.getElementById('busca-solicitacoes-pendentes')?.value || '').toLowerCase();
+        const exibidos = solicitacoesPendentes.filter(s =>
             [s.cnpjOuCpf, s.usuario, s.email].some(v => String(v || '').toLowerCase().includes(termo))
         );
-        const tbody = document.getElementById('linhas-solicitacoes');
+        const tbody = document.getElementById('linhas-solicitacoes-pendentes');
         if (!tbody) return;
         tbody.innerHTML = exibidos.length
-            ? exibidos.map(linhaSolicitacaoCadastro).join('')
-            : '<tr><td colspan="7" class="p-10 text-center text-slate-500">Nenhuma solicitação encontrada.</td></tr>';
+            ? exibidos.map(linhaSolicitacaoPendente).join('')
+            : '<tr><td colspan="7" class="p-10 text-center text-amber-500">✓ Nenhuma solicitação pendente no momento.</td></tr>';
     }
 
-    function linhaSolicitacaoCadastro(s) {
-        // Determinar status baseado na flag "aprovado"
-        const status = s.aprovado === true ? 'APROVADO' : 
-                      s.aprovado === false && s.rejeitadaEm ? 'REJEITADO' : 
-                      'PENDENTE';
-        
-        const statusColor = status === 'PENDENTE' ? 'bg-amber-100 text-amber-700' :
-                           status === 'APROVADO' ? 'bg-emerald-100 text-emerald-700' :
-                           'bg-rose-100 text-rose-700';
-        
-        const statusBadge = `<span class="rounded-full px-2.5 py-1 text-[10px] font-bold ${statusColor}">${status}</span>`;
-        
-        // Formatar data
+    function linhaSolicitacaoPendente(s) {
+        const statusBadge = `<span class="rounded-full px-2.5 py-1 text-[10px] font-bold bg-amber-100 text-amber-700">PENDENTE</span>`;
         const data = s.criadaEm ? new Date(s.criadaEm).toLocaleDateString('pt-BR', {hour: '2-digit', minute: '2-digit'}) : '-';
         
-        // Mostrar botões apenas se PENDENTE
-        const acoes = status === 'PENDENTE' ?
-            `<button onclick="aprovarSolicitacao(${s.id})" class="mr-2 text-emerald-600 hover:text-emerald-800 transition" title="Aprovar"><i class="fa-solid fa-check"></i></button>
-             <button onclick="rejeitarSolicitacao(${s.id})" class="text-rose-600 hover:text-rose-800 transition" title="Rejeitar"><i class="fa-solid fa-times"></i></button>` :
-            `<span class="text-slate-400 text-xs">${status}</span>`;
+        const acoes = `<button onclick="aprovarSolicitacao(${s.id})" class="mr-2 text-emerald-600 hover:text-emerald-800 transition" title="Aprovar"><i class="fa-solid fa-check"></i></button>
+             <button onclick="rejeitarSolicitacao(${s.id})" class="text-rose-600 hover:text-rose-800 transition" title="Rejeitar"><i class="fa-solid fa-times"></i></button>`;
 
         return `<tr class="hover:bg-amber-50">
             <td class="p-4 font-medium text-slate-500">${s.id}</td>
@@ -484,6 +503,37 @@
             <td class="p-4 text-sm text-slate-600">${escapar(s.email)}</td>
             <td class="p-4 text-center">${statusBadge}</td>
             <td class="p-4 text-sm text-slate-600">${data}</td>
+            <td class="p-4 text-center">${acoes}</td>
+        </tr>`;
+    }
+
+    // ===== GRID DE SOLICITAÇÕES REJEITADAS =====
+    function filtrarSolicitacoesRejeitadas() {
+        const termo = (document.getElementById('busca-solicitacoes-rejeitadas')?.value || '').toLowerCase();
+        const exibidos = solicitacoesRejeitadas.filter(s =>
+            [s.cnpjOuCpf, s.usuario, s.email].some(v => String(v || '').toLowerCase().includes(termo))
+        );
+        const tbody = document.getElementById('linhas-solicitacoes-rejeitadas');
+        if (!tbody) return;
+        tbody.innerHTML = exibidos.length
+            ? exibidos.map(linhaSolicitacaoRejeitada).join('')
+            : '<tr><td colspan="7" class="p-10 text-center text-slate-500">Nenhuma solicitação rejeitada.</td></tr>';
+    }
+
+    function linhaSolicitacaoRejeitada(s) {
+        const statusBadge = `<span class="rounded-full px-2.5 py-1 text-[10px] font-bold bg-rose-100 text-rose-700">REJEITADO</span>`;
+        const dataRejeicao = s.rejeitadaEm ? new Date(s.rejeitadaEm).toLocaleDateString('pt-BR', {hour: '2-digit', minute: '2-digit'}) : '-';
+        
+        // ✅ NOVO: Botão para reativar (volta para pendente)
+        const acoes = `<button onclick="reativarSolicitacao(${s.id})" class="text-amber-600 hover:text-amber-800 transition" title="Reativar para aprovação"><i class="fa-solid fa-rotate-left"></i> Reativar</button>`;
+        
+        return `<tr class="hover:bg-rose-50">
+            <td class="p-4 font-medium text-slate-500">${s.id}</td>
+            <td class="p-4 font-mono text-xs">${escapar(s.cnpjOuCpf)}</td>
+            <td class="p-4 font-bold text-slate-800">${escapar(s.usuario)}</td>
+            <td class="p-4 text-sm text-slate-600">${escapar(s.email)}</td>
+            <td class="p-4 text-center">${statusBadge}</td>
+            <td class="p-4 text-sm text-slate-600">${dataRejeicao}</td>
             <td class="p-4 text-center">${acoes}</td>
         </tr>`;
     }
@@ -512,12 +562,29 @@
     }
 
     async function rejeitarSolicitacao(id) {
-        if (!confirm('Deseja REJEITAR esta solicitação? O usuário será notificado.')) return;
+        // ✅ NOVO: Pedir motivo da rejeição
+        const motivo = prompt('⚠️ ATENÇÃO: Você está REJEITANDO esta solicitação.\n\nDigite o MOTIVO da rejeição (será enviado por email ao usuário):');
+        
+        // Se cancelou ou deixou vazio, abortar
+        if (motivo === null) {
+            return; // Cancelou
+        }
+        
+        if (motivo.trim() === '') {
+            alert('❌ Motivo é obrigatório para rejeitar uma solicitação.');
+            return;
+        }
+
+        // Confirmação final
+        if (!confirm(`Confirma a REJEIÇÃO desta solicitação?\n\nMotivo: "${motivo}"\n\nO usuário será notificado por email.`)) {
+            return;
+        }
 
         try {
             const resposta = await fetch(`/api/cadastro/rejeitar/${id}`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ motivo: motivo.trim() })
             });
 
             if (!resposta.ok) {
@@ -526,7 +593,29 @@
                 return;
             }
 
-            mostrarAlerta('✓ Solicitação rejeitada. Email de recusa enviado.');
+            mostrarAlerta('✓ Solicitação rejeitada. Email de rejeição enviado ao usuário.');
+            carregarSolicitacoes();
+        } catch (erro) {
+            mostrarAlerta('Erro ao comunicar com o servidor.', true);
+        }
+    }
+
+    async function reativarSolicitacao(id) {
+        if (!confirm('Deseja REATIVAR esta solicitação rejeitada?\n\nEla voltará para a lista de PENDENTES e poderá ser aprovada.')) return;
+
+        try {
+            const resposta = await fetch(`/api/cadastro/reativar/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (!resposta.ok) {
+                const msg = await resposta.text();
+                mostrarAlerta(msg || 'Erro ao reativar solicitação.', true);
+                return;
+            }
+
+            mostrarAlerta('✓ Solicitação reativada! Ela voltou para a lista de pendentes.');
             carregarSolicitacoes();
         } catch (erro) {
             mostrarAlerta('Erro ao comunicar com o servidor.', true);
@@ -534,8 +623,12 @@
     }
 
     function abrirAbaAprovacoes() {
-        document.getElementById('busca-solicitacoes').focus();
-        document.querySelector('section:has(#linhas-solicitacoes)').scrollIntoView({behavior: 'smooth'});
+        const secaoPendentes = document.querySelector('section:has(#linhas-solicitacoes-pendentes)');
+        if (secaoPendentes) {
+            secaoPendentes.scrollIntoView({behavior: 'smooth'});
+            const inputBusca = document.getElementById('busca-solicitacoes-pendentes');
+            if (inputBusca) inputBusca.focus();
+        }
     }
 
 </script>

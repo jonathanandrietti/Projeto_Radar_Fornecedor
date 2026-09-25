@@ -2,6 +2,7 @@ package br.com.radarfornecedor.radar.controller;
 
 import br.com.radarfornecedor.radar.model.SolicitacaoCadastro;
 import br.com.radarfornecedor.radar.model.Usuario;
+import br.com.radarfornecedor.radar.service.EmailService;
 import br.com.radarfornecedor.radar.service.SolicitacaoCadastroService;
 import br.com.radarfornecedor.radar.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,12 @@ public class CadastroController {
 
     private final SolicitacaoCadastroService solicitacaoService;
     private final UsuarioService usuarioService;
+    private final EmailService emailService;
 
-    public CadastroController(SolicitacaoCadastroService solicitacaoService, UsuarioService usuarioService) {
+    public CadastroController(SolicitacaoCadastroService solicitacaoService, UsuarioService usuarioService, EmailService emailService) {
         this.solicitacaoService = solicitacaoService;
         this.usuarioService = usuarioService;
+        this.emailService = emailService;
     }
 
     /**
@@ -62,6 +65,16 @@ public class CadastroController {
             SolicitacaoCadastro novasolicitacao = solicitacaoService.criarSolicitacao(solicitacao);
 
             System.out.println("[CADASTRO CONTROLLER] Solicitação criada: ID=" + novasolicitacao.getId());
+            
+            // ✅ NOVO: Enviar email de confirmação de pré-cadastro
+            try {
+                emailService.enviarEmailPreCadastro(novasolicitacao.getEmail(), novasolicitacao.getNomeContato());
+                System.out.println("[CADASTRO CONTROLLER] Email de pré-cadastro enviado para: " + novasolicitacao.getEmail());
+            } catch (Exception emailErro) {
+                System.err.println("[CADASTRO CONTROLLER] Erro ao enviar email de pré-cadastro: " + emailErro.getMessage());
+                // Não bloqueia o cadastro se o email falhar
+            }
+            
             return ResponseEntity.ok(Map.of(
                     "mensagem", "Solicitação de cadastro enviada com sucesso",
                     "id", novasolicitacao.getId(),
@@ -116,9 +129,10 @@ public class CadastroController {
      * Admin: Rejeitar solicitação
      */
     @PostMapping("/rejeitar/{id}")
-    public ResponseEntity<?> rejeitarSolicitacao(@PathVariable Long id) {
+    public ResponseEntity<?> rejeitarSolicitacao(@PathVariable Long id, @RequestBody(required = false) Map<String, String> body) {
         try {
-            solicitacaoService.rejeitarSolicitacao(id, "Rejeitada pelo administrador");
+            String motivo = body != null ? body.get("motivo") : "Rejeitada pelo administrador";
+            solicitacaoService.rejeitarSolicitacao(id, motivo);
             System.out.println("[CADASTRO CONTROLLER] Solicitação rejeitada: ID=" + id);
             return ResponseEntity.ok(Map.of("mensagem", "Solicitação rejeitada com sucesso"));
         } catch (RuntimeException e) {
@@ -126,6 +140,23 @@ public class CadastroController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body(Map.of("erro", "Erro ao rejeitar: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * Admin: Reativar solicitação rejeitada (volta para pendente)
+     */
+    @PostMapping("/reativar/{id}")
+    public ResponseEntity<?> reativarSolicitacao(@PathVariable Long id) {
+        try {
+            solicitacaoService.reativarSolicitacao(id);
+            System.out.println("[CADASTRO CONTROLLER] Solicitação reativada: ID=" + id);
+            return ResponseEntity.ok(Map.of("mensagem", "Solicitação reativada e voltou para pendentes"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body(Map.of("erro", e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of("erro", "Erro ao reativar: " + e.getMessage()));
         }
     }
 

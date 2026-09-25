@@ -20,15 +20,18 @@ public class SolicitacaoCadastroService {
     private final SolicitacaoCadastroRepository solicitacaoRepository;
     private final UsuarioRepository usuarioRepository;
     private final FornecedorRepository fornecedorRepository;
+    private final EmailService emailService;
     private final BCryptPasswordEncoder passwordEncoder;
 
     public SolicitacaoCadastroService(
             SolicitacaoCadastroRepository solicitacaoRepository,
             UsuarioRepository usuarioRepository,
-            FornecedorRepository fornecedorRepository) {
+            FornecedorRepository fornecedorRepository,
+            EmailService emailService) {
         this.solicitacaoRepository = solicitacaoRepository;
         this.usuarioRepository = usuarioRepository;
         this.fornecedorRepository = fornecedorRepository;
+        this.emailService = emailService;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
@@ -98,6 +101,13 @@ public class SolicitacaoCadastroService {
         solicitacao.setAprovadaEm(LocalDateTime.now());
         solicitacaoRepository.save(solicitacao);
 
+        // ✅ Enviar email de aprovação
+        try {
+            emailService.enviarEmailAprovacao(solicitacao.getEmail(), solicitacao.getNomeContato());
+        } catch (Exception e) {
+            System.err.println("[SOLICITACAO CADASTRO] Erro ao enviar email de aprovação: " + e.getMessage());
+        }
+
         System.out.println("[SOLICITACAO CADASTRO] Solicitação aprovada: " + solicitacao.getUsuario());
         return usuarioSalvo;
     }
@@ -165,7 +175,42 @@ public class SolicitacaoCadastroService {
         solicitacao.setRejeitadaEm(LocalDateTime.now());
         solicitacaoRepository.save(solicitacao);
 
+        // ✅ Enviar email de rejeição
+        try {
+            emailService.enviarEmailRejeicao(solicitacao.getEmail(), solicitacao.getNomeContato(), motivo);
+        } catch (Exception e) {
+            System.err.println("[SOLICITACAO CADASTRO] Erro ao enviar email de rejeição: " + e.getMessage());
+        }
+
         System.out.println("[SOLICITACAO CADASTRO] Solicitação rejeitada: " + solicitacao.getUsuario() + " - Motivo: " + motivo);
+    }
+
+    /**
+     * Reativar solicitação rejeitada (volta para pendente)
+     */
+    public void reativarSolicitacao(Long solicitacaoId) {
+        Optional<SolicitacaoCadastro> solicitacaoOpt = solicitacaoRepository.findById(solicitacaoId);
+        if (solicitacaoOpt.isEmpty()) {
+            throw new RuntimeException("Solicitação não encontrada");
+        }
+
+        SolicitacaoCadastro solicitacao = solicitacaoOpt.get();
+
+        if (solicitacao.getAprovado() != null && solicitacao.getAprovado()) {
+            throw new RuntimeException("Solicitação já foi aprovada, não pode ser reativada");
+        }
+
+        if (solicitacao.getRejeitadaEm() == null) {
+            throw new RuntimeException("Solicitação não está rejeitada");
+        }
+
+        // Limpar dados de rejeição e voltar para pendente
+        solicitacao.setAprovado(false);
+        solicitacao.setMotivoRejeicao(null);
+        solicitacao.setRejeitadaEm(null);
+        solicitacaoRepository.save(solicitacao);
+
+        System.out.println("[SOLICITACAO CADASTRO] Solicitação reativada (voltou para pendente): " + solicitacao.getUsuario());
     }
 
     /**
