@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste Campo Status</title>
+</head>
+<body>
+    <h1>Teste do Campo Status</h1>
+    
+    <form id="testForm" onsubmit="testar(event)">
+        <label>CNPJ:
+            <input id="cnpj" value="82636986000155">
+        </label><br><br>
+        
+        <label>Nome:
+            <input id="nome" value="Teste Empresa Ltda">
+        </label><br><br>
+        
+        <!-- Campo Hidden -->
+        <input id="status" type="hidden" value="EM_ANALISE">
+        
+        <!-- Campo Display -->
+        <label>Status (Display):
+            <input id="status-display" readonly value="Em análise" style="background: #f0f0f0;">
+        </label><br><br>
+        
+        <button type="submit">Testar</button>
+    </form>
+    
+    <pre id="output"></pre>
+    
+    <script>
+        function testar(e) {
+            e.preventDefault();
+            
+            const dados = {
+                cnpj: document.getElementById('cnpj').value,
+                nome: document.getElementById('nome').value,
+                status: document.getElementById('status').value
+            };
+            
+            document.getElementById('output').textContent = JSON.stringify(dados, null, 2);
+            
+            console.log('Dados coletados:', dados);
+            console.log('Campo status value:', document.getElementById('status').value);
+            console.log('Campo status-display value:', document.getElementById('status-display').value);
+        }
+    </script>
+</body>
+</html>

@@ -39,25 +39,33 @@ public class CompradorService {
     public List<Comprador> listarTodos(javax.servlet.http.HttpSession session) {
         br.com.radarfornecedor.radar.model.Usuario usuario = (br.com.radarfornecedor.radar.model.Usuario) session.getAttribute("usuario");
         if (usuario != null) {
-            if (usuario.getTipo() == br.com.radarfornecedor.radar.model.TipoUsuario.CLIENTE) {
+            // ✅ ADMIN, MANUTENCAO, EDICAO: Vê tudo
+            if (usuario.getTipo() == br.com.radarfornecedor.radar.model.TipoUsuario.ADMIN ||
+                usuario.getTipo() == br.com.radarfornecedor.radar.model.TipoUsuario.MANUTENCAO ||
+                usuario.getTipo() == br.com.radarfornecedor.radar.model.TipoUsuario.EDICAO) {
+                return compradorRepository.findAll();
+            }
+            
+            // ✅ Cliente não vê compradores
+            if (Boolean.TRUE.equals(usuario.getCliente())) {
                 return java.util.Collections.emptyList();
             }
-            if (usuario.getTipo() == br.com.radarfornecedor.radar.model.TipoUsuario.COMPRADOR) {
-                String cnpjClean = usuario.getUsername().replaceAll("\\D", "");
-                Optional<Comprador> compradorOpt = compradorRepository.findByCnpj(cnpjClean);
-                
-                // Fallback for default 'comprador' login
-                if (compradorOpt.isEmpty()) {
-                    compradorOpt = compradorRepository.findAll().stream().findFirst();
+            
+            // ✅ PADRAO ou RESTRITO com perfil COMPRADOR: Vê apenas sua própria empresa
+            if (Boolean.TRUE.equals(usuario.getComprador())) {
+                String cnpjOuCpf = usuario.getCnpjOuCpf();
+                if (cnpjOuCpf != null) {
+                    String cnpjClean = cnpjOuCpf.replaceAll("\\D", "");
+                    Optional<Comprador> compradorOpt = compradorRepository.findByCnpj(cnpjClean);
+                    
+                    if (compradorOpt.isPresent()) {
+                        return List.of(compradorOpt.get());
+                    }
                 }
-
-                if (compradorOpt.isPresent()) {
-                    return List.of(compradorOpt.get());
-                } else {
-                    return List.of();
-                }
+                return List.of();
             }
         }
+        // Fornecedor, Representante: vê tudo
         return compradorRepository.findAll();
     }
 
@@ -69,9 +77,49 @@ public class CompradorService {
         return compradorRepository.findByCnpj(cnpj);
     }
 
-    public Comprador atualizar(Long id, Comprador dadosNovos) {
+    public Comprador atualizar(Long id, Comprador dadosNovos, javax.servlet.http.HttpSession session) {
         Comprador existente = compradorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Comprador não encontrado com o ID: " + id));
+
+        br.com.radarfornecedor.radar.model.Usuario usuario = (br.com.radarfornecedor.radar.model.Usuario) session.getAttribute("usuario");
+        
+        if (usuario != null) {
+            // ✅ ADMIN, MANUTENCAO, EDICAO: Podem editar qualquer comprador
+            if (usuario.getTipo() == br.com.radarfornecedor.radar.model.TipoUsuario.ADMIN ||
+                usuario.getTipo() == br.com.radarfornecedor.radar.model.TipoUsuario.MANUTENCAO ||
+                usuario.getTipo() == br.com.radarfornecedor.radar.model.TipoUsuario.EDICAO) {
+                // Sem restrições
+            }
+            // ✅ RESTRITO: Não pode editar nada
+            else if (usuario.getTipo() == br.com.radarfornecedor.radar.model.TipoUsuario.RESTRITO) {
+                throw new RuntimeException("Você não tem permissão para editar cadastros.");
+            }
+            // ✅ PADRAO com perfil COMPRADOR: Pode editar apenas seu próprio cadastro
+            else if (Boolean.TRUE.equals(usuario.getComprador())) {
+                String cnpjOuCpf = usuario.getCnpjOuCpf();
+                if (cnpjOuCpf != null) {
+                    String cnpjClean = cnpjOuCpf.replaceAll("\\D", "");
+                    Optional<Comprador> compradorOpt = compradorRepository.findByCnpj(cnpjClean);
+
+                    if (compradorOpt.isPresent()) {
+                        Comprador comprador = compradorOpt.get();
+                        if (!comprador.getId().equals(id)) {
+                            throw new RuntimeException("Você só tem permissão para editar o seu próprio cadastro.");
+                        }
+                        // ✅ PADRAO não pode alterar o STATUS
+                        if (usuario.getTipo() == br.com.radarfornecedor.radar.model.TipoUsuario.PADRAO) {
+                            dadosNovos.setStatus(existente.getStatus()); // Manter status original
+                        }
+                    } else {
+                        throw new RuntimeException("Você não tem permissão para editar este cadastro.");
+                    }
+                } else {
+                    throw new RuntimeException("Usuário sem CNPJ vinculado.");
+                }
+            } else {
+                throw new RuntimeException("Você não tem permissão para editar compradores.");
+            }
+        }
 
         Optional<Comprador> comMesmoCnpj = compradorRepository.findByCnpj(dadosNovos.getCnpj());
         if (comMesmoCnpj.isPresent() && !comMesmoCnpj.get().getId().equals(id)) {

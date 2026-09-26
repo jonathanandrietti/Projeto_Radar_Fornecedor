@@ -97,6 +97,42 @@ public class ConsultaCnpjController {
     }
 
     /**
+     * Endpoint de teste para visualizar todos os campos retornados pela API
+     * GET /api/consulta-cnpj/teste/{cnpj}
+     * 
+     * @param cnpj CNPJ para teste
+     * @return Todos os campos retornados da API da Receita com suas chaves
+     */
+    @GetMapping("/teste/{cnpj}")
+    public ResponseEntity<?> testarConsultaCnpj(@PathVariable String cnpj) {
+        try {
+            if (!consultaCnpjService.validarFormatoCnpj(cnpj)) {
+                return ResponseEntity.badRequest().body(criarErro("CNPJ inválido. Deve conter 14 dígitos"));
+            }
+
+            Map<String, Object> dados = consultaCnpjService.consultarCnpj(cnpj);
+            
+            if (dados == null || dados.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(criarErro("Empresa não encontrada"));
+            }
+
+            // Retorna dados formatados para visualização
+            Map<String, Object> resposta = new HashMap<>();
+            resposta.put("mensagem", "Dados retornados da consulta CNPJ");
+            resposta.put("totalCampos", dados.size());
+            resposta.put("campos", dados.keySet());
+            resposta.put("dados", dados);
+            
+            return ResponseEntity.ok(resposta);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(criarErro("Erro: " + e.getMessage()));
+        }
+    }
+
+    /**
      * Cria estrutura de erro padronizada
      */
     private Map<String, Object> criarErro(String mensagem) {

@@ -103,15 +103,20 @@ function aplicarControlesDeAcesso() {
         links.forEach(link => {
             const href = link.getAttribute('href');
             if (href) {
+                // ✅ Administração: apenas ADMIN
                 if (href.includes('admin.html') && tipo !== 'ADMIN') {
                     link.style.display = 'none';
                 }
+                // ✅ Config Email: apenas ADMIN
+                if (href.includes('configuracoes-email.html') && tipo !== 'ADMIN') {
+                    link.style.display = 'none';
+                }
+                // ✅ Clientes: esconder para COMPRADOR
                 if (href.includes('clientes.html') && tipo === 'COMPRADOR') {
                     link.style.display = 'none';
                 }
-                if (href.includes('compradores.html') && tipo === 'CLIENTE') {
-                    link.style.display = 'none';
-                }
+                // ✅ REMOVIDO: Não esconder mais Compradores para CLIENTE
+                // Agora CLIENTE pode ver a lista de compradores (sem editar)
             }
         });
 
@@ -661,7 +666,12 @@ async function salvar(evento) {
             return;
         }
 
-        dados = Object.fromEntries(['nome','status','cep','logradouro','numero','complemento','bairro','cidade','estado','latitude','longitude'].map(campo => [campo, document.getElementById(campo)?.value.trim()]));
+        dados = Object.fromEntries(['nome','cep','logradouro','numero','complemento','bairro','cidade','estado','latitude','longitude'].map(campo => [campo, document.getElementById(campo)?.value.trim()]));
+        
+        // Campo status - garante que sempre tenha um valor
+        const statusField = document.getElementById('status');
+        dados.status = statusField && statusField.value ? statusField.value : 'EM_ANALISE';
+        
         dados.codCidade = document.getElementById('codCidade')?.value || null;
         if(cnpj) dados.cnpj = cnpj.value.replace(/\D/g, '');
         const pontuacao = document.getElementById('pontuacao');
@@ -1384,6 +1394,22 @@ async function verificarEIniciarFinalizacaoCadastro() {
                     cnpjEl.value = valorCnpjOuCpf;
                     if (typeof mascaraCnpj === 'function') {
                         mascaraCnpj(cnpjEl);
+                    }
+                    
+                    // ✅ BUSCAR FORNECEDOR EXISTENTE PARA PEGAR O ID
+                    console.log('[FINALIZACAO DE CADASTRO] Buscando fornecedor existente...');
+                    const cnpjLimpo = valorCnpjOuCpf.replace(/\D/g, '');
+                    const fornecedorResponse = await fetch(`${endpoint}/cnpj/${cnpjLimpo}`);
+                    if (fornecedorResponse.ok) {
+                        const fornecedorExistente = await fornecedorResponse.json();
+                        console.log('[FINALIZACAO DE CADASTRO] Fornecedor encontrado! ID:', fornecedorExistente.id);
+                        
+                        // ✅ PREENCHER O ID NO CAMPO HIDDEN PARA FORÇAR PUT EM VEZ DE POST
+                        const idEl = document.getElementById('id');
+                        if (idEl) {
+                            idEl.value = fornecedorExistente.id;
+                            console.log('[FINALIZACAO DE CADASTRO] Campo ID preenchido:', fornecedorExistente.id);
+                        }
                     }
                     
                     // Disparar consulta automática de CNPJ/CPF para carregar o resto das informações da BrasilAPI!

@@ -22,7 +22,7 @@ public class SessionFilter implements Filter {
         String uri = httpRequest.getRequestURI();
 
         // Permitir acesso a H2 Console e arquivos públicos SEM autenticação
-        if (uri.startsWith("/h2-console") || uri.startsWith("/api/login") || uri.startsWith("/api/validacao")) {
+        if (uri.startsWith("/h2-console") || uri.startsWith("/api/login") || uri.startsWith("/api/validacao") || uri.startsWith("/api/cadastro/solicitar")) {
             chain.doFilter(request, response);
             return;
         }

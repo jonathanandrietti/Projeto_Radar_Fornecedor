@@ -47,6 +47,9 @@ public class Usuario {
     @Column(name = "CadastroCompleto", nullable = false)
     private Boolean cadastroCompleto = false; // Flag para indicar se finalizou cadastro
 
+    @Column(name = "CnpjOuCpf")
+    private String cnpjOuCpf; // CNPJ ou CPF do usuário (para vincular com cadastros)
+
     public Usuario() {}
 
     public Usuario(String username, String senha, TipoUsuario tipo) {
@@ -87,4 +90,7 @@ public class Usuario {
 
     public Boolean getCadastroCompleto() { return cadastroCompleto; }
     public void setCadastroCompleto(Boolean cadastroCompleto) { this.cadastroCompleto = cadastroCompleto; }
+
+    public String getCnpjOuCpf() { return cnpjOuCpf; }
+    public void setCnpjOuCpf(String cnpjOuCpf) { this.cnpjOuCpf = cnpjOuCpf; }
 }

@@ -108,18 +108,9 @@
                     <input id="cnpj" required maxlength="18" placeholder="00.000.000/0000-00" oninput="mascaraCnpj(this)" onblur="consultarCnpjComprador()" class="mt-1">
                 </label>
 
-                <label class="campo">Status Operacional
-                    <select id="status" class="mt-1">
-                        <option value="EM_ANALISE">Em análise</option>
-                        <option value="APROVADO">Aprovado</option>
-                        <option value="REJEITADO">Rejeitado</option>
-                        <option value="SUSPENSO">Suspenso</option>
-                    </select>
-                </label>
-
-                <label class="campo">Pontuação de Risco (0-10)
-                    <input id="pontuacao" type="number" min="0" max="10" step="0.1" value="0" class="mt-1">
-                </label>
+                <!-- Campos administrativos (Status e Pontuação) removidos - uso exclusivo admin -->
+                <input id="status" type="hidden" value="EM_ANALISE">
+                <input id="pontuacao" type="hidden" value="0">
 
                 <label class="campo md:col-span-2">Empresa / Razão Social
                     <input id="nome" required maxlength="100" class="mt-1">
@@ -180,7 +171,48 @@
     </div>
 </div>
 <script src="/js/preenchimento-automatico.js?v=2"></script>
+
+<script>
+// Atualiza campo de status quando consultar CNPJ
+const preencherOriginal = window.preencherCamposComCnpj;
+if (typeof preencherOriginal === 'function') {
+    window.preencherCamposComCnpj = function(dados) {
+        console.log('[DEBUG] preencherCamposComCnpj chamado com:', dados);
+        preencherOriginal(dados);
+        
+        // Atualiza status se vier da consulta
+        const statusField = document.getElementById('status');
+        if (statusField && dados && dados.status) {
+            const statusValor = dados.status.toUpperCase();
+            
+            // Mapeia valores da API para valores aceitos
+            const mapa = {
+                'OK': 'ATIVA',
+                'ATIVA': 'ATIVA',
+                'ATIVO': 'ATIVA',
+                'INATIVA': 'INATIVA',
+                'SUSPENSO': 'SUSPENSA',
+                'SUSPENSA': 'SUSPENSA',
+                'EM_ANALISE': 'EM_ANALISE',
+                'APROVADO': 'APROVADO',
+                'REJEITADO': 'REJEITADO'
+            };
+            
+            statusField.value = mapa[statusValor] || 'EM_ANALISE';
+            console.log('[DEBUG] Status atualizado para:', statusField.value);
+        }
+    };
+}
+
+// Garante que o campo status sempre tenha um valor ao carregar
+document.addEventListener('DOMContentLoaded', function() {
+    const statusField = document.getElementById('status');
+    if (statusField && !statusField.value) {
+        statusField.value = 'EM_ANALISE';
+        console.log('[DEBUG] Status inicializado com EM_ANALISE');
+    }
+});
+</script>
 </body>
 </html>
-<script src="/js/preenchimento-automatico.js?v=2"></script>
 

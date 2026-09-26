@@ -207,14 +207,32 @@
             <label class="campo">Username
                 <input id="usuario-username" required maxlength="50" class="mt-1" placeholder="Ex: admin.radar">
             </label>
-            <label class="campo">Senha
-                <input id="usuario-senha" type="text" required class="mt-1" placeholder="Crie uma senha segura">
-            </label>
+            
+            <!-- Campo de senha com botão para alterar -->
+            <div class="campo">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-black uppercase text-slate-500">Senha</span>
+                    <button type="button" id="btn-alterar-senha" onclick="toggleAlterarSenha()" class="text-xs font-bold text-sky-600 hover:text-sky-800 hidden">
+                        <i class="fa-solid fa-key"></i> Alterar senha
+                    </button>
+                </div>
+                <div id="senha-display" class="mt-1 px-4 py-3 bg-slate-100 rounded-xl border border-slate-200 text-slate-500 text-sm font-mono hidden">
+                    ••••••••••••
+                </div>
+                <div id="senha-inputs" class="space-y-3">
+                    <input id="usuario-senha" type="password" required class="mt-1" placeholder="Crie uma senha segura">
+                    <input id="usuario-senha-confirma" type="password" class="mt-1 hidden" placeholder="Confirme a nova senha">
+                </div>
+                <p id="senha-erro" class="mt-2 text-xs text-rose-600 font-semibold hidden"></p>
+            </div>
+            
             <label class="campo">Tipo de Perfil
                 <select id="usuario-tipo" required class="mt-1">
                     <option value="ADMIN">ADMINISTRADOR</option>
                     <option value="MANUTENCAO">MANUTENÇÃO</option>
                     <option value="EDICAO">EDIÇÃO</option>
+                    <option value="PADRAO">PADRÃO</option>
+                    <option value="RESTRITO">RESTRITO</option>
                 </select>
             </label>
 
@@ -302,7 +320,9 @@
         const tipoBadge = {
             ADMIN: 'bg-rose-100 text-rose-700',
             MANUTENCAO: 'bg-amber-100 text-amber-700',
-            EDICAO: 'bg-sky-100 text-sky-700'
+            EDICAO: 'bg-sky-100 text-sky-700',
+            PADRAO: 'bg-emerald-100 text-emerald-700',
+            RESTRITO: 'bg-slate-100 text-slate-600'
         }[u.tipo] || 'bg-slate-100 text-slate-600';
 
         const statusBadge = u.ativo
@@ -351,12 +371,50 @@
         document.getElementById('usuario-id').value = '';
         document.getElementById('form-usuario').reset();
         document.getElementById('titulo-modal').textContent = 'NOVO USUÁRIO';
+        
+        // Modo criação: senha obrigatória, sem botão alterar
         document.getElementById('usuario-senha').required = true;
+        document.getElementById('usuario-senha').type = 'password';
+        document.getElementById('usuario-senha-confirma').classList.add('hidden');
+        document.getElementById('btn-alterar-senha').classList.add('hidden');
+        document.getElementById('senha-display').classList.add('hidden');
+        document.getElementById('senha-inputs').classList.remove('hidden');
+        document.getElementById('senha-erro').classList.add('hidden');
+        
         document.getElementById('modal-usuario').classList.remove('hidden');
     }
 
     function fecharModalUsuario() {
         document.getElementById('modal-usuario').classList.add('hidden');
+        document.getElementById('senha-erro').classList.add('hidden');
+    }
+
+    function toggleAlterarSenha() {
+        const senhaDisplay = document.getElementById('senha-display');
+        const senhaInputs = document.getElementById('senha-inputs');
+        const btnAlterar = document.getElementById('btn-alterar-senha');
+        const campoSenha = document.getElementById('usuario-senha');
+        const campoConfirma = document.getElementById('usuario-senha-confirma');
+        
+        if (senhaDisplay.classList.contains('hidden')) {
+            // Cancelar alteração
+            senhaDisplay.classList.remove('hidden');
+            senhaInputs.classList.add('hidden');
+            campoSenha.value = '';
+            campoConfirma.value = '';
+            campoSenha.required = false;
+            campoConfirma.classList.add('hidden');
+            btnAlterar.innerHTML = '<i class="fa-solid fa-key"></i> Alterar senha';
+            document.getElementById('senha-erro').classList.add('hidden');
+        } else {
+            // Ativar alteração
+            senhaDisplay.classList.add('hidden');
+            senhaInputs.classList.remove('hidden');
+            campoSenha.required = true;
+            campoConfirma.classList.remove('hidden');
+            campoConfirma.required = true;
+            btnAlterar.innerHTML = '<i class="fa-solid fa-times"></i> Cancelar';
+        }
     }
 
     function editarUsuario(id) {
@@ -365,21 +423,69 @@
 
         document.getElementById('usuario-id').value = u.id;
         document.getElementById('usuario-username').value = u.username;
-        document.getElementById('usuario-senha').value = u.senha;
         document.getElementById('usuario-tipo').value = u.tipo;
         document.getElementById('usuario-fornecedor').checked = !!u.fornecedor;
         document.getElementById('usuario-comprador').checked = !!u.comprador;
         document.getElementById('usuario-representante').checked = !!u.representante;
         document.getElementById('usuario-cliente').checked = !!u.cliente;
 
+        // Modo edição: senha oculta com botão para alterar
         document.getElementById('titulo-modal').textContent = 'EDITAR USUÁRIO';
+        document.getElementById('usuario-senha').value = '';
+        document.getElementById('usuario-senha-confirma').value = '';
         document.getElementById('usuario-senha').required = false;
+        document.getElementById('usuario-senha-confirma').required = false;
+        document.getElementById('usuario-senha-confirma').classList.add('hidden');
+        document.getElementById('btn-alterar-senha').classList.remove('hidden');
+        document.getElementById('senha-display').classList.remove('hidden');
+        document.getElementById('senha-inputs').classList.add('hidden');
+        document.getElementById('btn-alterar-senha').innerHTML = '<i class="fa-solid fa-key"></i> Alterar senha';
+        document.getElementById('senha-erro').classList.add('hidden');
+        
         document.getElementById('modal-usuario').classList.remove('hidden');
     }
 
     async function salvarUsuario(evento) {
         evento.preventDefault();
         const id = document.getElementById('usuario-id').value;
+        const senhaErro = document.getElementById('senha-erro');
+        
+        // Validação de senha na edição (se estiver alterando)
+        if (id) {
+            const senhaInputsVisiveis = !document.getElementById('senha-inputs').classList.contains('hidden');
+            if (senhaInputsVisiveis) {
+                const senha = document.getElementById('usuario-senha').value;
+                const confirma = document.getElementById('usuario-senha-confirma').value;
+                
+                if (!senha) {
+                    senhaErro.textContent = 'Por favor, digite a nova senha.';
+                    senhaErro.classList.remove('hidden');
+                    return;
+                }
+                
+                if (senha !== confirma) {
+                    senhaErro.textContent = 'As senhas não coincidem. Por favor, verifique.';
+                    senhaErro.classList.remove('hidden');
+                    return;
+                }
+                
+                if (senha.length < 4) {
+                    senhaErro.textContent = 'A senha deve ter pelo menos 4 caracteres.';
+                    senhaErro.classList.remove('hidden');
+                    return;
+                }
+            }
+        } else {
+            // Validação na criação
+            const senha = document.getElementById('usuario-senha').value;
+            if (senha.length < 4) {
+                senhaErro.textContent = 'A senha deve ter pelo menos 4 caracteres.';
+                senhaErro.classList.remove('hidden');
+                return;
+            }
+        }
+
+        senhaErro.classList.add('hidden');
 
         const dados = {
             username: document.getElementById('usuario-username').value.trim(),

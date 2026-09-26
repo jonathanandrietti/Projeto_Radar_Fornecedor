@@ -216,9 +216,10 @@
                     <!-- Botões -->
                     <div class="flex gap-4 pt-4">
                         <button type="submit" id="btnEnviar" disabled class="flex-1 bg-slate-400 text-white font-bold py-3 rounded-lg cursor-not-allowed transition">
-                            <i class="fa-solid fa-paper-plane mr-2"></i> Enviar Solicitação
+                            <i id="iconEnviar" class="fa-solid fa-paper-plane mr-2"></i> 
+                            <span id="textoEnviar">Enviar Solicitação</span>
                         </button>
-                        <a href="/login.html" class="flex-1 bg-slate-200 text-slate-700 font-bold py-3 rounded-lg hover:bg-slate-300 transition text-center">
+                        <a href="/login.html" id="btnVoltar" class="flex-1 bg-slate-200 text-slate-700 font-bold py-3 rounded-lg hover:bg-slate-300 transition text-center">
                             <i class="fa-solid fa-arrow-left mr-2"></i> Voltar
                         </a>
                     </div>
@@ -426,6 +427,14 @@
                 aceitouTermos: document.getElementById('aceitouTermos').checked
             };
 
+            // Mostrar estado de "Enviando..."
+            btnEnviar.disabled = true;
+            document.getElementById('btnVoltar').style.pointerEvents = 'none';
+            document.getElementById('btnVoltar').style.opacity = '0.5';
+            document.getElementById('iconEnviar').className = 'fa-solid fa-spinner fa-spin mr-2';
+            document.getElementById('textoEnviar').textContent = 'Enviando solicitação...';
+            btnEnviar.className = 'flex-1 bg-sky-500 text-white font-bold py-3 rounded-lg cursor-wait transition';
+
             try {
                 const response = await fetch('/api/cadastro/solicitar', {
                     method: 'POST',
@@ -436,18 +445,35 @@
                 const resultado = await response.json();
 
                 if (response.ok) {
-                    alert('✓ Solicitação enviada com sucesso!\nAguarde a aprovação do administrador.');
-                    // Redireciona para página de login
-                    window.location.href = '/login.html';
+                    // Mostrar sucesso
+                    document.getElementById('iconEnviar').className = 'fa-solid fa-check mr-2';
+                    document.getElementById('textoEnviar').textContent = 'Solicitação enviada!';
+                    btnEnviar.className = 'flex-1 bg-green-600 text-white font-bold py-3 rounded-lg transition';
+                    
+                    setTimeout(() => {
+                        alert('✓ Solicitação enviada com sucesso!\nAguarde a aprovação do administrador.');
+                        window.location.href = '/login.html';
+                    }, 1000);
                 } else {
                     console.error('[CADASTRO] Erro:', resultado);
                     mostrarErro(resultado.erro || 'Erro ao enviar solicitação');
+                    resetarBotao();
                 }
             } catch (e) {
                 console.error('[CADASTRO] Exception:', e);
                 mostrarErro('Erro de conexão: ' + e.message);
+                resetarBotao();
             }
         });
+
+        function resetarBotao() {
+            btnEnviar.disabled = false;
+            document.getElementById('btnVoltar').style.pointerEvents = 'auto';
+            document.getElementById('btnVoltar').style.opacity = '1';
+            document.getElementById('iconEnviar').className = 'fa-solid fa-paper-plane mr-2';
+            document.getElementById('textoEnviar').textContent = 'Enviar Solicitação';
+            btnEnviar.className = 'flex-1 bg-[#d4af37] text-white font-bold py-3 rounded-lg hover:bg-[#c29a2f] transition cursor-pointer';
+        }
 
         function mostrarErro(msg) {
             mensagemErro.textContent = msg;

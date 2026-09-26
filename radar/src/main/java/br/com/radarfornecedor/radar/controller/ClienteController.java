@@ -81,9 +81,9 @@ public class ClienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> atualizar(@PathVariable Long id, @Valid @RequestBody Cliente cliente) {
+    public ResponseEntity<Cliente> atualizar(@PathVariable Long id, @Valid @RequestBody Cliente cliente, HttpSession session) {
         try {
-            Cliente atualizado = clienteService.atualizar(id, cliente);
+            Cliente atualizado = clienteService.atualizar(id, cliente, session);
             return ResponseEntity.ok(atualizado);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();

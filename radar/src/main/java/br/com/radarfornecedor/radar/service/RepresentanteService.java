@@ -62,26 +62,42 @@ public class RepresentanteService {
     public List<Representante> listarTodos(HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario != null) {
-            if (usuario.getTipo() == TipoUsuario.FORNECEDOR) {
-                String cnpjClean = usuario.getUsername().replaceAll("\\D", "");
-                Optional<Fornecedor> fornecedorOpt = fornecedorRepository.findByCnpj(cnpjClean);
-                if (fornecedorOpt.isEmpty()) {
-                    fornecedorOpt = fornecedorRepository.findAll().stream().findFirst();
+            // ✅ ADMIN, MANUTENCAO, EDICAO: Vê tudo
+            if (usuario.getTipo() == TipoUsuario.ADMIN ||
+                usuario.getTipo() == TipoUsuario.MANUTENCAO ||
+                usuario.getTipo() == TipoUsuario.EDICAO) {
+                return representanteRepository.findAll();
+            }
+            
+            // ✅ PADRAO ou RESTRITO com perfil FORNECEDOR: Vê representantes vinculados a ele
+            if (Boolean.TRUE.equals(usuario.getFornecedor())) {
+                String cnpjOuCpf = usuario.getCnpjOuCpf();
+                if (cnpjOuCpf != null) {
+                    String cnpjClean = cnpjOuCpf.replaceAll("\\D", "");
+                    Optional<Fornecedor> fornecedorOpt = fornecedorRepository.findByCnpj(cnpjClean);
+                    if (fornecedorOpt.isPresent()) {
+                        Fornecedor fornecedor = fornecedorOpt.get();
+                        return representanteRepository.findByCodEmpresaAndCnpjFornecedor(fornecedor.getId(), fornecedor.getCnpj());
+                    }
                 }
-                if (fornecedorOpt.isPresent()) {
-                    Fornecedor fornecedor = fornecedorOpt.get();
-                    return representanteRepository.findByCodEmpresaAndCnpjFornecedor(fornecedor.getId(), fornecedor.getCnpj());
+                return List.of();
+            }
+            
+            // ✅ PADRAO ou RESTRITO com perfil REPRESENTANTE: Vê apenas seu próprio cadastro
+            if (Boolean.TRUE.equals(usuario.getRepresentante())) {
+                String cnpjOuCpf = usuario.getCnpjOuCpf();
+                if (cnpjOuCpf != null) {
+                    final String cnpjClean = cnpjOuCpf.replaceAll("\\D", "");
+                    Optional<Representante> repOpt = representanteRepository.findAll().stream()
+                            .filter(r -> r.getCnpj() != null && r.getCnpj().replaceAll("\\D", "").equals(cnpjClean))
+                            .findFirst();
+                    return repOpt.map(List::of).orElse(List.of());
                 }
-            } else if (usuario.getTipo() == TipoUsuario.REPRESENTANTE) {
-                String cnpjClean = usuario.getUsername().replaceAll("\\D", "");
-                Optional<Representante> repOpt = representanteRepository.findAll().stream()
-                        .filter(r -> r.getCnpj() != null && r.getCnpj().replaceAll("\\D", "").equals(cnpjClean))
-                        .findFirst();
-                if (repOpt.isEmpty()) {
-                    repOpt = representanteRepository.findAll().stream().findFirst();
-                }
-                return repOpt.map(List::of).orElse(List.of());
-            } else if (usuario.getTipo() == TipoUsuario.CLIENTE) {
+                return List.of();
+            }
+            
+            // ✅ PADRAO ou RESTRITO com perfil CLIENTE: Vê representantes de fornecedores que aceitam CPF
+            if (Boolean.TRUE.equals(usuario.getCliente())) {
                 return representanteRepository.findAll().stream()
                         .filter(rep -> {
                             if (rep.getCnpjFornecedor() == null) return false;
@@ -91,7 +107,7 @@ public class RepresentanteService {
                         .collect(Collectors.toList());
             }
         }
-        return representanteRepository.findAll();
+        return List.of();
     }
 
     public Optional<Representante> buscarPorId(Long id) {
@@ -103,32 +119,90 @@ public class RepresentanteService {
                 .orElseThrow(() -> new RuntimeException("Representante nao encontrado: " + id));
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario != null && usuario.getTipo() == TipoUsuario.FORNECEDOR) {
-            String cnpjClean = usuario.getUsername().replaceAll("\\D", "");
-            Optional<Fornecedor> fornecedorOpt = fornecedorRepository.findByCnpj(cnpjClean);
-            if (fornecedorOpt.isEmpty()) {
-                fornecedorOpt = fornecedorRepository.findAll().stream().findFirst();
+        
+        if (usuario != null) {
+            // ✅ ADMIN, MANUTENCAO, EDICAO: Podem editar qualquer representante
+            if (usuario.getTipo() == TipoUsuario.ADMIN ||
+                usuario.getTipo() == TipoUsuario.MANUTENCAO ||
+                usuario.getTipo() == TipoUsuario.EDICAO) {
+                // Sem restrições
             }
-            if (fornecedorOpt.isPresent()) {
-                Fornecedor fornecedor = fornecedorOpt.get();
-                if (existente.getCodEmpresa() != null && !existente.getCodEmpresa().equals(fornecedor.getId())) {
-                    throw new RuntimeException("Sem permissao para editar representantes de outro fornecedor.");
+            // ✅ RESTRITO: Não pode editar nada
+            else if (usuario.getTipo() == TipoUsuario.RESTRITO) {
+                throw new RuntimeException("Você não tem permissão para editar cadastros.");
+            }
+            // ✅ PADRAO com perfil FORNECEDOR: Pode editar representantes vinculados a ele
+            else if (Boolean.TRUE.equals(usuario.getFornecedor())) {
+                String cnpjOuCpf = usuario.getCnpjOuCpf();
+                if (cnpjOuCpf != null) {
+                    String cnpjClean = cnpjOuCpf.replaceAll("\\D", "");
+                    Optional<Fornecedor> fornecedorOpt = fornecedorRepository.findByCnpj(cnpjClean);
+                    
+                    if (fornecedorOpt.isPresent()) {
+                        Fornecedor fornecedor = fornecedorOpt.get();
+                        if (existente.getCodEmpresa() != null && !existente.getCodEmpresa().equals(fornecedor.getId())) {
+                            throw new RuntimeException("Você só pode editar representantes vinculados à sua empresa.");
+                        }
+                        // Força os dados do fornecedor
+                        dadosNovos.setCnpjFornecedor(fornecedor.getCnpj());
+                        dadosNovos.setCodEmpresa(fornecedor.getId());
+                        
+                        // ✅ PADRAO não pode alterar o STATUS
+                        if (usuario.getTipo() == TipoUsuario.PADRAO) {
+                            dadosNovos.setStatus(existente.getStatus());
+                        }
+                    } else {
+                        throw new RuntimeException("Fornecedor não encontrado.");
+                    }
+                } else {
+                    throw new RuntimeException("Usuário sem CNPJ vinculado.");
                 }
+            }
+            // ✅ PADRAO com perfil REPRESENTANTE: Pode editar apenas seu próprio cadastro
+            else if (Boolean.TRUE.equals(usuario.getRepresentante())) {
+                String cnpjOuCpf = usuario.getCnpjOuCpf();
+                if (cnpjOuCpf != null) {
+                    String cnpjClean = cnpjOuCpf.replaceAll("\\D", "");
+                    Optional<Representante> repOpt = representanteRepository.findAll().stream()
+                            .filter(r -> r.getCnpj() != null && r.getCnpj().replaceAll("\\D", "").equals(cnpjClean))
+                            .findFirst();
+
+                    if (repOpt.isPresent()) {
+                        Representante rep = repOpt.get();
+                        if (!rep.getId().equals(id)) {
+                            throw new RuntimeException("Você só tem permissão para editar o seu próprio cadastro.");
+                        }
+                        // ✅ PADRAO não pode alterar o STATUS
+                        if (usuario.getTipo() == TipoUsuario.PADRAO) {
+                            dadosNovos.setStatus(existente.getStatus());
+                        }
+                    } else {
+                        throw new RuntimeException("Você não tem permissão para editar este cadastro.");
+                    }
+                } else {
+                    throw new RuntimeException("Usuário sem CNPJ vinculado.");
+                }
+            } else {
+                throw new RuntimeException("Você não tem permissão para editar representantes.");
+            }
+            
+            // Validação padrão para ADMIN/MANUTENCAO/EDICAO (quando não é fornecedor)
+            if (!Boolean.TRUE.equals(usuario.getFornecedor()) && 
+                (usuario.getTipo() == TipoUsuario.ADMIN || 
+                 usuario.getTipo() == TipoUsuario.MANUTENCAO || 
+                 usuario.getTipo() == TipoUsuario.EDICAO)) {
+                if (dadosNovos.getCnpjFornecedor() == null || dadosNovos.getCnpjFornecedor().isBlank()) {
+                    throw new RuntimeException("O CNPJ do fornecedor e obrigatorio.");
+                }
+                String cnpjFornecedorClean = dadosNovos.getCnpjFornecedor().replaceAll("\\D", "");
+                Optional<Fornecedor> fornecedorOpt = fornecedorRepository.findByCnpj(cnpjFornecedorClean);
+                if (fornecedorOpt.isEmpty()) {
+                    throw new RuntimeException("O CNPJ do fornecedor informado nao existe.");
+                }
+                Fornecedor fornecedor = fornecedorOpt.get();
                 dadosNovos.setCnpjFornecedor(fornecedor.getCnpj());
                 dadosNovos.setCodEmpresa(fornecedor.getId());
             }
-        } else {
-            if (dadosNovos.getCnpjFornecedor() == null || dadosNovos.getCnpjFornecedor().isBlank()) {
-                throw new RuntimeException("O CNPJ do fornecedor e obrigatorio.");
-            }
-            String cnpjFornecedorClean = dadosNovos.getCnpjFornecedor().replaceAll("\\D", "");
-            Optional<Fornecedor> fornecedorOpt = fornecedorRepository.findByCnpj(cnpjFornecedorClean);
-            if (fornecedorOpt.isEmpty()) {
-                throw new RuntimeException("O CNPJ do fornecedor informado nao existe.");
-            }
-            Fornecedor fornecedor = fornecedorOpt.get();
-            dadosNovos.setCnpjFornecedor(fornecedor.getCnpj());
-            dadosNovos.setCodEmpresa(fornecedor.getId());
         }
 
         if (dadosNovos.getCnpj() != null) {

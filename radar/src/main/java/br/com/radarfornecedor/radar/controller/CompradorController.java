@@ -2,6 +2,7 @@ package br.com.radarfornecedor.radar.controller;
 
 import br.com.radarfornecedor.radar.model.Comprador;
 import br.com.radarfornecedor.radar.service.CompradorService;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,9 +47,9 @@ public class CompradorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Comprador> atualizar(@PathVariable Long id, @Valid @RequestBody Comprador comprador) {
+    public ResponseEntity<Comprador> atualizar(@PathVariable Long id, @Valid @RequestBody Comprador comprador, HttpSession session) {
         try {
-            Comprador atualizado = compradorService.atualizar(id, comprador);
+            Comprador atualizado = compradorService.atualizar(id, comprador, session);
             return ResponseEntity.ok(atualizado);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();

@@ -80,12 +80,16 @@ public class SolicitacaoCadastroService {
         Usuario usuario = new Usuario();
         usuario.setUsername(solicitacao.getUsuario());
         usuario.setSenha(solicitacao.getSenha()); // Já criptografada
-        usuario.setTipo(TipoUsuario.CLIENTE); // Padrão: CLIENTE
+        
+        // ✅ CORRIGIDO: Tipo PADRAO = vê e edita apenas seu próprio cadastro
+        usuario.setTipo(TipoUsuario.PADRAO);
+        
         usuario.setAtivo(true);
         usuario.setAguardandoAprovacao(false); // ✅ Aprovado - pode fazer login
         usuario.setCadastroCompleto(false); // ✅ Precisa completar cadastro na primeira vez
+        usuario.setCnpjOuCpf(solicitacao.getCnpjOuCpf()); // ✅ Vincular CNPJ/CPF ao usuário
         
-        // Transferir perfis da solicitação para o usuário
+        // ✅ Transferir perfis de negócio da solicitação para o usuário
         usuario.setFornecedor(solicitacao.getFornecedor());
         usuario.setComprador(solicitacao.getComprador());
         usuario.setRepresentante(solicitacao.getRepresentante());

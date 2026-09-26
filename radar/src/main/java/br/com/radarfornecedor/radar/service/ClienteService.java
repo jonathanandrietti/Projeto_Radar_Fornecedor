@@ -43,100 +43,134 @@ public class ClienteService {
     public List<Cliente> listarTodos(HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario != null) {
-            if (usuario.getTipo() == TipoUsuario.COMPRADOR) {
+            // ✅ ADMIN, MANUTENCAO, EDICAO: Vê tudo
+            if (usuario.getTipo() == TipoUsuario.ADMIN ||
+                usuario.getTipo() == TipoUsuario.MANUTENCAO ||
+                usuario.getTipo() == TipoUsuario.EDICAO) {
+                return clienteRepository.findAll();
+            }
+            
+            // ✅ Comprador não vê clientes
+            if (Boolean.TRUE.equals(usuario.getComprador())) {
                 return java.util.Collections.emptyList();
             }
-            if (usuario.getTipo() == TipoUsuario.CLIENTE) {
-                String cpfClean = usuario.getUsername().replaceAll("\\D", "");
-                // Find Client with matching CPF
-                Optional<Cliente> clienteOpt = clienteRepository.findAll().stream()
-                        .filter(c -> c.getCpfCnpj() != null && c.getCpfCnpj().replaceAll("\\D", "").equals(cpfClean))
-                        .findFirst();
-                
-                // Fallback for default 'cliente' login
-                if (clienteOpt.isEmpty()) {
-                    clienteOpt = clienteRepository.findByTipoPessoa("PF").stream().findFirst();
-                }
-                
-                // Ultimate fallback
-                if (clienteOpt.isEmpty()) {
-                    clienteOpt = clienteRepository.findAll().stream().findFirst();
-                }
+            
+            // ✅ PADRAO ou RESTRITO com perfil CLIENTE: Vê apenas seu próprio cadastro
+            if (Boolean.TRUE.equals(usuario.getCliente())) {
+                String cpfOuCnpj = usuario.getCnpjOuCpf();
+                if (cpfOuCnpj != null) {
+                    String cpfClean = cpfOuCnpj.replaceAll("\\D", "");
+                    Optional<Cliente> clienteOpt = clienteRepository.findAll().stream()
+                            .filter(c -> c.getCpfCnpj() != null && c.getCpfCnpj().replaceAll("\\D", "").equals(cpfClean))
+                            .findFirst();
 
-                if (clienteOpt.isPresent()) {
-                    return List.of(clienteOpt.get());
-                } else {
-                    return List.of();
-                }
-            }
-            if (usuario.getTipo() == TipoUsuario.FORNECEDOR) {
-                String cnpjClean = usuario.getUsername().replaceAll("\\D", "");
-                Optional<Fornecedor> fornecedorOpt = fornecedorRepository.findByCnpj(cnpjClean);
-                
-                // Fallback for default 'fornecedor' login
-                if (fornecedorOpt.isEmpty()) {
-                    fornecedorOpt = fornecedorRepository.findAll().stream().findFirst();
-                }
-
-                if (fornecedorOpt.isPresent()) {
-                    Fornecedor fornecedor = fornecedorOpt.get();
-                    // If the supplier accepts CPF, return all clients.
-                    // Otherwise, return only PJ clients (excluding CPF/PF clients).
-                    if (Boolean.TRUE.equals(fornecedor.getAceitaCpf())) {
-                        return clienteRepository.findAll();
-                    } else {
-                        return clienteRepository.findByTipoPessoa("PJ");
+                    if (clienteOpt.isPresent()) {
+                        return List.of(clienteOpt.get());
                     }
                 }
-            } else if (usuario.getTipo() == TipoUsuario.REPRESENTANTE) {
-                String cnpjClean = usuario.getUsername().replaceAll("\\D", "");
-                // Find Representative matching CNPJ
-                Optional<Representante> repOpt = representanteRepository.findAll().stream()
-                        .filter(r -> r.getCnpj() != null && r.getCnpj().replaceAll("\\D", "").equals(cnpjClean))
-                        .findFirst();
-                
-                // Fallback for default 'representante' login
-                if (repOpt.isEmpty()) {
-                    repOpt = representanteRepository.findAll().stream().findFirst();
-                }
+                return List.of();
+            }
+            
+            // ✅ PADRAO ou RESTRITO com perfil FORNECEDOR: Vê clientes conforme aceitaCpf
+            if (Boolean.TRUE.equals(usuario.getFornecedor())) {
+                String cnpjOuCpf = usuario.getCnpjOuCpf();
+                if (cnpjOuCpf != null) {
+                    String cnpjClean = cnpjOuCpf.replaceAll("\\D", "");
+                    Optional<Fornecedor> fornecedorOpt = fornecedorRepository.findByCnpj(cnpjClean);
 
-                if (repOpt.isPresent()) {
-                    Representante rep = repOpt.get();
-                    String cnpjFornecedor = rep.getCnpjFornecedor();
-                    if (cnpjFornecedor != null) {
-                        Optional<Fornecedor> fornecedorOpt = fornecedorRepository.findByCnpj(cnpjFornecedor.replaceAll("\\D", ""));
-                        
-                        // Fallback to first Supplier if not found
-                        if (fornecedorOpt.isEmpty()) {
-                            fornecedorOpt = fornecedorRepository.findAll().stream().findFirst();
+                    if (fornecedorOpt.isPresent()) {
+                        Fornecedor fornecedor = fornecedorOpt.get();
+                        if (Boolean.TRUE.equals(fornecedor.getAceitaCpf())) {
+                            return clienteRepository.findAll();
+                        } else {
+                            return clienteRepository.findByTipoPessoa("PJ");
                         }
+                    }
+                }
+                return List.of();
+            }
+            
+            // ✅ PADRAO ou RESTRITO com perfil REPRESENTANTE: Vê clientes do fornecedor vinculado
+            if (Boolean.TRUE.equals(usuario.getRepresentante())) {
+                String cnpjOuCpf = usuario.getCnpjOuCpf();
+                if (cnpjOuCpf != null) {
+                    final String cnpjClean = cnpjOuCpf.replaceAll("\\D", "");
+                    Optional<Representante> repOpt = representanteRepository.findAll().stream()
+                            .filter(r -> r.getCnpj() != null && r.getCnpj().replaceAll("\\D", "").equals(cnpjClean))
+                            .findFirst();
 
-                        if (fornecedorOpt.isPresent()) {
-                            Fornecedor fornecedor = fornecedorOpt.get();
-                            // If represented supplier accepts CPF, return all clients.
-                            // Otherwise, return only PJ clients (excluding CPF/PF).
-                            if (Boolean.TRUE.equals(fornecedor.getAceitaCpf())) {
-                                return clienteRepository.findAll();
-                            } else {
-                                return clienteRepository.findByTipoPessoa("PJ");
+                    if (repOpt.isPresent()) {
+                        Representante rep = repOpt.get();
+                        String cnpjFornecedor = rep.getCnpjFornecedor();
+                        if (cnpjFornecedor != null) {
+                            Optional<Fornecedor> fornecedorOpt = fornecedorRepository.findByCnpj(cnpjFornecedor.replaceAll("\\D", ""));
+
+                            if (fornecedorOpt.isPresent()) {
+                                Fornecedor fornecedor = fornecedorOpt.get();
+                                if (Boolean.TRUE.equals(fornecedor.getAceitaCpf())) {
+                                    return clienteRepository.findAll();
+                                } else {
+                                    return clienteRepository.findByTipoPessoa("PJ");
+                                }
                             }
                         }
                     }
                 }
-                // Fallback if no representative/supplier details can be parsed
                 return clienteRepository.findByTipoPessoa("PJ");
             }
         }
-        return clienteRepository.findAll();
+        return List.of();
     }
 
     public Optional<Cliente> buscarPorId(Long id) {
         return clienteRepository.findById(id);
     }
 
-    public Cliente atualizar(Long id, Cliente dadosNovos) {
+    public Cliente atualizar(Long id, Cliente dadosNovos, HttpSession session) {
         Cliente existente = clienteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado com o ID: " + id));
+
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        
+        if (usuario != null) {
+            // ✅ ADMIN, MANUTENCAO, EDICAO: Podem editar qualquer cliente
+            if (usuario.getTipo() == TipoUsuario.ADMIN ||
+                usuario.getTipo() == TipoUsuario.MANUTENCAO ||
+                usuario.getTipo() == TipoUsuario.EDICAO) {
+                // Sem restrições
+            }
+            // ✅ RESTRITO: Não pode editar nada
+            else if (usuario.getTipo() == TipoUsuario.RESTRITO) {
+                throw new RuntimeException("Você não tem permissão para editar cadastros.");
+            }
+            // ✅ PADRAO com perfil CLIENTE: Pode editar apenas seu próprio cadastro
+            else if (Boolean.TRUE.equals(usuario.getCliente())) {
+                String cpfOuCnpj = usuario.getCnpjOuCpf();
+                if (cpfOuCnpj != null) {
+                    String cpfClean = cpfOuCnpj.replaceAll("\\D", "");
+                    Optional<Cliente> clienteOpt = clienteRepository.findAll().stream()
+                            .filter(c -> c.getCpfCnpj() != null && c.getCpfCnpj().replaceAll("\\D", "").equals(cpfClean))
+                            .findFirst();
+
+                    if (clienteOpt.isPresent()) {
+                        Cliente cliente = clienteOpt.get();
+                        if (!cliente.getId().equals(id)) {
+                            throw new RuntimeException("Você só tem permissão para editar o seu próprio cadastro.");
+                        }
+                        // ✅ PADRAO não pode alterar o STATUS
+                        if (usuario.getTipo() == TipoUsuario.PADRAO) {
+                            dadosNovos.setStatus(existente.getStatus()); // Manter status original
+                        }
+                    } else {
+                        throw new RuntimeException("Você não tem permissão para editar este cadastro.");
+                    }
+                } else {
+                    throw new RuntimeException("Usuário sem CPF vinculado.");
+                }
+            } else {
+                throw new RuntimeException("Você não tem permissão para editar clientes.");
+            }
+        }
 
         existente.setNome(dadosNovos.getNome());
         existente.setStatus(dadosNovos.getStatus());

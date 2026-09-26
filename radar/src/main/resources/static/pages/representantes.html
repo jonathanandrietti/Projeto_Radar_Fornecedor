@@ -106,9 +106,17 @@
             <label class="campo">Nome Completo do Agente
                 <input id="nome" required class="mt-1" placeholder="Ex: Carlos Alberto Representações">
             </label>
-                <label class="campo">CNPJ Fornecedora
-                    <input id="cnpjFornecedor" required class="mt-1" placeholder="00.000.000/0000-00" oninput="mascaraCnpj(this)" onblur="buscarFornecedorPorCnpj()">
+            <div class="grid grid-cols-2 gap-6">
+                <label class="campo">Telefone de Contato
+                    <input id="contato" class="mt-1" placeholder="(00) 0000-0000" oninput="mascaraTelefone(this)">
                 </label>
+                <label class="campo">E-mail
+                    <input id="email" type="email" class="mt-1" placeholder="representante@empresa.com.br">
+                </label>
+            </div>
+            <label class="campo">CNPJ Fornecedora
+                <input id="cnpjFornecedor" required class="mt-1" placeholder="00.000.000/0000-00" oninput="mascaraCnpj(this)" onblur="buscarFornecedorPorCnpj()">
+            </label>
             </div>
             <div class="grid grid-cols-2 gap-6">
                 <label class="campo">ID da Empresa (Link)

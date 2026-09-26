@@ -2,6 +2,10 @@ package br.com.radarfornecedor.radar.controller;
 
 import br.com.radarfornecedor.radar.model.SolicitacaoCadastro;
 import br.com.radarfornecedor.radar.model.Usuario;
+import br.com.radarfornecedor.radar.repository.FornecedorRepository;
+import br.com.radarfornecedor.radar.repository.CompradorRepository;
+import br.com.radarfornecedor.radar.repository.ClienteRepository;
+import br.com.radarfornecedor.radar.repository.RepresentanteRepository;
 import br.com.radarfornecedor.radar.service.EmailService;
 import br.com.radarfornecedor.radar.service.SolicitacaoCadastroService;
 import br.com.radarfornecedor.radar.service.UsuarioService;
@@ -19,11 +23,26 @@ public class CadastroController {
     private final SolicitacaoCadastroService solicitacaoService;
     private final UsuarioService usuarioService;
     private final EmailService emailService;
+    private final FornecedorRepository fornecedorRepository;
+    private final CompradorRepository compradorRepository;
+    private final ClienteRepository clienteRepository;
+    private final RepresentanteRepository representanteRepository;
 
-    public CadastroController(SolicitacaoCadastroService solicitacaoService, UsuarioService usuarioService, EmailService emailService) {
+    public CadastroController(
+            SolicitacaoCadastroService solicitacaoService, 
+            UsuarioService usuarioService, 
+            EmailService emailService,
+            FornecedorRepository fornecedorRepository,
+            CompradorRepository compradorRepository,
+            ClienteRepository clienteRepository,
+            RepresentanteRepository representanteRepository) {
         this.solicitacaoService = solicitacaoService;
         this.usuarioService = usuarioService;
         this.emailService = emailService;
+        this.fornecedorRepository = fornecedorRepository;
+        this.compradorRepository = compradorRepository;
+        this.clienteRepository = clienteRepository;
+        this.representanteRepository = representanteRepository;
     }
 
     /**
@@ -212,6 +231,78 @@ public class CadastroController {
         Usuario usuario = usuarioOpt.get();
         usuario.setCadastroCompleto(true);
         Usuario usuarioSalvo = usuarioService.salvar(usuario);
+        
+        // ✅ ATUALIZAR STATUS DO CADASTRO: EM_ANALISE → PENDENTE
+        String cnpjOuCpf = usuario.getCnpjOuCpf();
+        if (cnpjOuCpf != null) {
+            String cnpjOuCpfLimpo = cnpjOuCpf.replaceAll("\\D", "");
+            
+            try {
+                // Fornecedor
+                if (Boolean.TRUE.equals(usuario.getFornecedor())) {
+                    Optional<br.com.radarfornecedor.radar.model.Fornecedor> fornecedorOpt = 
+                        fornecedorRepository.findByCnpj(cnpjOuCpfLimpo);
+                    if (fornecedorOpt.isPresent()) {
+                        br.com.radarfornecedor.radar.model.Fornecedor fornecedor = fornecedorOpt.get();
+                        if ("EM_ANALISE".equals(fornecedor.getStatus())) {
+                            fornecedor.setStatus("PENDENTE");
+                            fornecedorRepository.save(fornecedor);
+                            System.out.println("[CADASTRO] Status do fornecedor atualizado: EM_ANALISE → PENDENTE");
+                        }
+                    }
+                }
+                
+                // Comprador
+                if (Boolean.TRUE.equals(usuario.getComprador())) {
+                    Optional<br.com.radarfornecedor.radar.model.Comprador> compradorOpt = 
+                        compradorRepository.findByCnpj(cnpjOuCpfLimpo);
+                    if (compradorOpt.isPresent()) {
+                        br.com.radarfornecedor.radar.model.Comprador comprador = compradorOpt.get();
+                        if ("EM_ANALISE".equals(comprador.getStatus())) {
+                            comprador.setStatus("PENDENTE");
+                            compradorRepository.save(comprador);
+                            System.out.println("[CADASTRO] Status do comprador atualizado: EM_ANALISE → PENDENTE");
+                        }
+                    }
+                }
+                
+                // Cliente
+                if (Boolean.TRUE.equals(usuario.getCliente())) {
+                    // Busca todos os clientes e filtra pelo CPF/CNPJ
+                    java.util.List<br.com.radarfornecedor.radar.model.Cliente> clientes = 
+                        clienteRepository.findAll();
+                    for (br.com.radarfornecedor.radar.model.Cliente cliente : clientes) {
+                        if (cliente.getCpfCnpj() != null && cliente.getCpfCnpj().replaceAll("\\D", "").equals(cnpjOuCpfLimpo)) {
+                            if ("EM_ANALISE".equals(cliente.getStatus())) {
+                                cliente.setStatus("PENDENTE");
+                                clienteRepository.save(cliente);
+                                System.out.println("[CADASTRO] Status do cliente atualizado: EM_ANALISE → PENDENTE");
+                            }
+                            break;
+                        }
+                    }
+                }
+                
+                // Representante
+                if (Boolean.TRUE.equals(usuario.getRepresentante())) {
+                    // Busca por CNPJ do representante (não do fornecedor)
+                    java.util.List<br.com.radarfornecedor.radar.model.Representante> representantes = 
+                        representanteRepository.findAll();
+                    for (br.com.radarfornecedor.radar.model.Representante rep : representantes) {
+                        if (rep.getCnpj() != null && rep.getCnpj().replaceAll("\\D", "").equals(cnpjOuCpfLimpo)) {
+                            if ("EM_ANALISE".equals(rep.getStatus())) {
+                                rep.setStatus("PENDENTE");
+                                representanteRepository.save(rep);
+                                System.out.println("[CADASTRO] Status do representante atualizado: EM_ANALISE → PENDENTE");
+                            }
+                            break;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("[CADASTRO] Erro ao atualizar status: " + e.getMessage());
+            }
+        }
         
         // Atualizar usuário na sessão
         session.setAttribute("usuario", usuarioSalvo);
