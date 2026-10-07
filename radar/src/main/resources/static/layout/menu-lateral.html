@@ -2,13 +2,104 @@
 
     <div class="flex-1 min-h-0 overflow-y-auto py-6 px-6" style="scrollbar-width: thin; scrollbar-color: #334155 #000; overflow-x: visible;">
 
-        <!-- Logo -->
+        <!-- Logo clicável -->
         <div class="flex flex-col items-center justify-center mb-8">
-            <div class="relative flex items-center justify-center">
-               <img src="/imagem/Logo.png" alt="Logo Radar" class="relative w-20 h-20 object-contain rounded-full bg-black p-1 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
-            </div>
+            <button onclick="document.getElementById('modal-sobre-radar').classList.remove('hidden')"
+                class="relative flex items-center justify-center group cursor-pointer focus:outline-none"
+                title="Sobre o Radar">
+                <div class="absolute inset-0 rounded-full bg-[#d4af37]/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <img src="/imagem/Logo.png" alt="Logo Radar"
+                    class="relative w-20 h-20 object-contain rounded-full bg-black p-1 shadow-[0_10px_30px_rgba(0,0,0,0.35)] transition-transform duration-200 group-hover:scale-105">
+            </button>
             <h2 class="mt-3 text-lg font-black tracking-tighter text-white">RADAR <span class="text-sky-500">PRO</span></h2>
             <div class="h-1 w-10 bg-sky-600 rounded-full mt-2"></div>
+        </div>
+
+        <!-- Modal Missão / Visão / Valores -->
+        <div id="modal-sobre-radar" class="hidden fixed inset-0 z-[200] flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="document.getElementById('modal-sobre-radar').classList.add('hidden')"></div>
+            <div class="relative z-10 w-full max-w-lg bg-[#0a0a0c] border border-[#d4af37]/30 rounded-3xl shadow-2xl overflow-hidden">
+
+                <!-- Cabeçalho -->
+                <div class="flex items-center justify-between px-7 pt-7 pb-4 border-b border-slate-800">
+                    <div class="flex items-center gap-3">
+                        <img src="/imagem/Logo.png" alt="Logo" class="w-10 h-10 object-contain rounded-full">
+                        <div>
+                            <h2 class="text-white font-black text-base tracking-widest uppercase">RADAR <span class="text-[#d4af37]">PRO</span></h2>
+                            <p class="text-slate-500 text-[10px] uppercase tracking-widest">Sistema de Inteligência</p>
+                        </div>
+                    </div>
+                    <button onclick="document.getElementById('modal-sobre-radar').classList.add('hidden')"
+                        class="text-slate-500 hover:text-white transition-colors text-xl">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Conteúdo -->
+                <div class="px-7 py-6 space-y-6 max-h-[65vh] overflow-y-auto" style="scrollbar-width: thin; scrollbar-color: #334155 #000;">
+
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-xl">🎯</span>
+                            <h3 class="text-[#d4af37] font-black text-sm uppercase tracking-widest">Missão</h3>
+                        </div>
+                        <p class="text-slate-300 text-sm leading-relaxed">Tornar a análise de fornecedores mais simples, transparente e acessível, reunindo informações relevantes de diferentes fontes em um único lugar para facilitar decisões comerciais mais seguras e conscientes.</p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-xl">🔭</span>
+                            <h3 class="text-[#d4af37] font-black text-sm uppercase tracking-widest">Visão</h3>
+                        </div>
+                        <p class="text-slate-300 text-sm leading-relaxed">Ser uma referência em inteligência e análise de fornecedores no Brasil, conectando dados, tecnologia e informação para tornar as relações comerciais mais transparentes e confiáveis.</p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-xl">🧭</span>
+                            <h3 class="text-[#d4af37] font-black text-sm uppercase tracking-widest">Valores</h3>
+                        </div>
+                        <ul class="space-y-2.5">
+                            <li class="flex items-start gap-3">
+                                <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#d4af37] flex-shrink-0"></span>
+                                <p class="text-slate-300 text-sm leading-relaxed"><span class="text-white font-bold">Transparência</span> — apresentar informações de forma clara, objetiva e responsável.</p>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#d4af37] flex-shrink-0"></span>
+                                <p class="text-slate-300 text-sm leading-relaxed"><span class="text-white font-bold">Confiabilidade</span> — trabalhar com dados e fontes verificáveis, deixando claro seus limites.</p>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#d4af37] flex-shrink-0"></span>
+                                <p class="text-slate-300 text-sm leading-relaxed"><span class="text-white font-bold">Agilidade</span> — transformar pesquisas demoradas em informações organizadas e acessíveis.</p>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#d4af37] flex-shrink-0"></span>
+                                <p class="text-slate-300 text-sm leading-relaxed"><span class="text-white font-bold">Tecnologia</span> — utilizar tecnologia para facilitar a análise e a tomada de decisões.</p>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#d4af37] flex-shrink-0"></span>
+                                <p class="text-slate-300 text-sm leading-relaxed"><span class="text-white font-bold">Imparcialidade</span> — apresentar dados e sinais sem rotular ou decidir pelo usuário.</p>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#d4af37] flex-shrink-0"></span>
+                                <p class="text-slate-300 text-sm leading-relaxed"><span class="text-white font-bold">Responsabilidade</span> — reconhecer que a decisão final pertence a quem utiliza as informações.</p>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#d4af37] flex-shrink-0"></span>
+                                <p class="text-slate-300 text-sm leading-relaxed"><span class="text-white font-bold">Simplicidade</span> — tornar uma análise complexa fácil de entender e utilizar.</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Rodapé -->
+                <div class="px-7 py-4 border-t border-slate-800 text-center">
+                    <button onclick="document.getElementById('modal-sobre-radar').classList.add('hidden')"
+                        class="bg-[#d4af37] text-black font-black text-xs uppercase tracking-widest px-8 py-2.5 rounded-full hover:bg-[#c29a2f] transition-colors">
+                        Fechar
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- Navegação Principal -->

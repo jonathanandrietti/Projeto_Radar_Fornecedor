@@ -98,6 +98,118 @@
         </div>
     </div>
 
+    <!-- Hint flutuante "Sobre o Radar" -->
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 group">
+        <!-- Pulsação para chamar atenção -->
+        <button onclick="document.getElementById('modal-sobre').classList.remove('hidden')"
+            class="flex items-center gap-2 bg-black/60 hover:bg-black/90 text-[#d4af37] border border-[#d4af37]/50 px-5 py-2 rounded-full shadow-lg backdrop-blur-sm transition-all duration-300 text-[11px] font-bold tracking-widest uppercase animate-pulse hover:animate-none hover:scale-105">
+            <i class="fa-solid fa-circle-info text-sm"></i>
+            Conheça o Radar
+        </button>
+        <!-- Tooltip que aparece ao passar o mouse -->
+        <div class="absolute bottom-12 left-1/2 -translate-x-1/2 w-64 bg-black/90 border border-[#d4af37]/30 rounded-2xl px-4 py-3 text-center opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 shadow-2xl backdrop-blur-sm">
+            <p class="text-[#d4af37] font-black text-[10px] uppercase tracking-widest mb-1">🎯 Nossa Missão</p>
+            <p class="text-slate-300 text-[11px] leading-relaxed">Tornar a análise de fornecedores mais simples, transparente e acessível.</p>
+            <div class="mt-2 text-slate-500 text-[10px]">Clique para saber mais →</div>
+            <!-- Setinha -->
+            <div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-black/90 border-r border-b border-[#d4af37]/30 rotate-45"></div>
+        </div>
+    </div>
+
+    <!-- Modal Missão / Visão / Valores -->
+    <div id="modal-sobre" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="document.getElementById('modal-sobre').classList.add('hidden')"></div>
+        <div class="relative z-10 w-full max-w-lg bg-[#0a0a0c] border border-[#d4af37]/30 rounded-3xl shadow-2xl overflow-hidden">
+
+            <!-- Cabeçalho -->
+            <div class="flex items-center justify-between px-7 pt-7 pb-4 border-b border-slate-800">
+                <div class="flex items-center gap-3">
+                    <img src="/imagem/Logo.png" alt="Logo" class="w-10 h-10 object-contain rounded-full">
+                    <div>
+                        <h2 class="text-white font-black text-base tracking-widest uppercase">RADAR <span class="text-[#d4af37]">PRO</span></h2>
+                        <p class="text-slate-500 text-[10px] uppercase tracking-widest">Sistema de Inteligência</p>
+                    </div>
+                </div>
+                <button onclick="document.getElementById('modal-sobre').classList.add('hidden')"
+                    class="text-slate-500 hover:text-white transition-colors text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Conteúdo rolável -->
+            <div class="px-7 py-6 space-y-6 max-h-[70vh] overflow-y-auto" style="scrollbar-width: thin; scrollbar-color: #334155 #000;">
+
+                <!-- Missão -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-xl">🎯</span>
+                        <h3 class="text-[#d4af37] font-black text-sm uppercase tracking-widest">Missão</h3>
+                    </div>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Tornar a análise de fornecedores mais simples, transparente e acessível, reunindo informações relevantes de diferentes fontes em um único lugar para facilitar decisões comerciais mais seguras e conscientes.
+                    </p>
+                </div>
+
+                <!-- Visão -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-xl">🔭</span>
+                        <h3 class="text-[#d4af37] font-black text-sm uppercase tracking-widest">Visão</h3>
+                    </div>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Ser uma referência em inteligência e análise de fornecedores no Brasil, conectando dados, tecnologia e informação para tornar as relações comerciais mais transparentes e confiáveis.
+                    </p>
+                </div>
+
+                <!-- Valores -->
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">🧭</span>
+                        <h3 class="text-[#d4af37] font-black text-sm uppercase tracking-widest">Valores</h3>
+                    </div>
+                    <ul class="space-y-2.5">
+                        <li class="flex items-start gap-3">
+                            <span class="mt-0.5 w-1.5 h-1.5 rounded-full bg-[#d4af37] flex-shrink-0"></span>
+                            <p class="text-slate-300 text-sm leading-relaxed"><span class="text-white font-bold">Transparência</span> — apresentar informações de forma clara, objetiva e responsável.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="mt-0.5 w-1.5 h-1.5 rounded-full bg-[#d4af37] flex-shrink-0"></span>
+                            <p class="text-slate-300 text-sm leading-relaxed"><span class="text-white font-bold">Confiabilidade</span> — trabalhar com dados e fontes verificáveis, deixando claro seus limites.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="mt-0.5 w-1.5 h-1.5 rounded-full bg-[#d4af37] flex-shrink-0"></span>
+                            <p class="text-slate-300 text-sm leading-relaxed"><span class="text-white font-bold">Agilidade</span> — transformar pesquisas demoradas em informações organizadas e acessíveis.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="mt-0.5 w-1.5 h-1.5 rounded-full bg-[#d4af37] flex-shrink-0"></span>
+                            <p class="text-slate-300 text-sm leading-relaxed"><span class="text-white font-bold">Tecnologia</span> — utilizar tecnologia para facilitar a análise e a tomada de decisões.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="mt-0.5 w-1.5 h-1.5 rounded-full bg-[#d4af37] flex-shrink-0"></span>
+                            <p class="text-slate-300 text-sm leading-relaxed"><span class="text-white font-bold">Imparcialidade</span> — apresentar dados e sinais sem rotular ou decidir pelo usuário.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="mt-0.5 w-1.5 h-1.5 rounded-full bg-[#d4af37] flex-shrink-0"></span>
+                            <p class="text-slate-300 text-sm leading-relaxed"><span class="text-white font-bold">Responsabilidade</span> — reconhecer que a decisão final pertence a quem utiliza as informações.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="mt-0.5 w-1.5 h-1.5 rounded-full bg-[#d4af37] flex-shrink-0"></span>
+                            <p class="text-slate-300 text-sm leading-relaxed"><span class="text-white font-bold">Simplicidade</span> — tornar uma análise complexa fácil de entender e utilizar.</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Rodapé -->
+            <div class="px-7 py-4 border-t border-slate-800 text-center">
+                <button onclick="document.getElementById('modal-sobre').classList.add('hidden')"
+                    class="bg-[#d4af37] text-black font-black text-xs uppercase tracking-widest px-8 py-2.5 rounded-full hover:bg-[#c29a2f] transition-colors">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.querySelector('#loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();

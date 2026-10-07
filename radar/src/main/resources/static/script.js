@@ -554,6 +554,14 @@ function editar(id) {
         atividadeEl.value = item.atividade.id || '';
     }
     
+    // Preencher toggle aceitaCpf
+    const aceitaCpfEl = document.getElementById('aceitaCpf');
+    const labelAceitaCpf = document.getElementById('label-aceita-cpf');
+    if (aceitaCpfEl) {
+        aceitaCpfEl.checked = item.aceitaCpf === true;
+        if (labelAceitaCpf) labelAceitaCpf.textContent = item.aceitaCpf ? 'Sim' : 'Não';
+    }
+    
     document.getElementById('titulo-form').textContent = `Editar ${configuracao.singular.toLowerCase()}`;
     document.getElementById('modal').classList.remove('hidden');
 }
@@ -678,6 +686,8 @@ async function salvar(evento) {
         if(pontuacao) dados.pontuacaoRisco = Number(pontuacao.value || 0);
         const prazoEntrega = document.getElementById('prazoEntregaDias');
         if (prazoEntrega) dados.prazoEntregaDias = Number(prazoEntrega.value || 0);
+        const aceitaCpfEl = document.getElementById('aceitaCpf');
+        if (aceitaCpfEl) dados.aceitaCpf = aceitaCpfEl.checked;
         
         // Adicionar categoria e atividade se existirem e forem selecionadas (OPCIONAIS)
         const categoriaEl = document.getElementById('categoria');
